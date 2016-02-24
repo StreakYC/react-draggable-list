@@ -1,6 +1,7 @@
 # react-draggable-list
 
 [![Circle CI](https://circleci.com/gh/StreakYC/react-draggable-list.svg?style=shield)](https://circleci.com/gh/StreakYC/react-draggable-list)
+[![npm version](https://badge.fury.io/js/react-draggable-list.svg)](https://badge.fury.io/js/react-draggable-list)
 
 This component lets you make a user re-orderable list that animates nicely:
 
