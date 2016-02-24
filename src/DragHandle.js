@@ -1,7 +1,7 @@
 /* @flow */
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {findDOMNode} from 'react-dom';
 
 export default class DragHandle extends React.Component {
   static propTypes = {
@@ -11,13 +11,13 @@ export default class DragHandle extends React.Component {
   };
 
   componentDidMount() {
-    const node = ReactDOM.findDOMNode(this);
+    const node = findDOMNode(this);
     node.addEventListener('mousedown', this._onMouseDown);
     node.addEventListener('touchstart', this._onTouchStart);
   }
 
   componentWillUnmount() {
-    const node = ReactDOM.findDOMNode(this);
+    const node = findDOMNode(this);
     node.removeEventListener('mousedown', this._onMouseDown);
     node.removeEventListener('touchstart', this._onTouchStart);
   }
