@@ -11,6 +11,14 @@ import clamp from './clamp';
 
 const DEFAULT_HEIGHT = {natural: 200, drag: 30};
 
+type Drag = {
+  itemKey: string;
+  startIndex: number;
+  startListKeys: Array<string>;
+  mouseY: number;
+  mouseOffset: number;
+};
+
 type Props = {
   itemKey: string|(item: Object)=>string;
   template: Function;
@@ -24,12 +32,7 @@ type State = {
   list: Array<Object>;
   useAbsolutePositioning: boolean;
   dragging: boolean;
-  lastDrag: ?{
-    itemKey: string;
-    startIndex: number;
-    mouseY: number;
-    mouseOffset: number;
-  };
+  lastDrag: ?Drag;
 };
 type DefaultProps = {
   springConfig: Object;
@@ -125,6 +128,7 @@ export default class DraggableList extends React.Component {
         lastDrag: {
           itemKey: keyFn(this.state.list[itemIndex]),
           startIndex: itemIndex,
+          startListKeys: this.state.list.map(keyFn),
           mouseY: itemStartY,
           mouseOffset: pageY - itemStartY
         }
@@ -143,7 +147,7 @@ export default class DraggableList extends React.Component {
     if (dragging && lastDrag) {
       const mouseY = pageY - lastDrag.mouseOffset;
       const dragIndex = this._getDragIndex();
-      const naturalPosition = this._getDistanceDuringDrag(lastDrag.startIndex, dragIndex);
+      const naturalPosition = this._getDistanceDuringDrag(lastDrag, dragIndex);
 
       // 1 down, -1 up, 0 neither
       const movementFromNatural = mouseY-naturalPosition;
@@ -217,7 +221,7 @@ export default class DraggableList extends React.Component {
     return list.map(keyFn).indexOf(lastDrag.itemKey);
   }
 
-  _getDistance(start: number, end: number, dragging: boolean): number {
+  _getDistance(start: number, end: number, dragging: boolean, listKeys: ?Array<string>): number {
     if (end < start) {
       return -this._getDistance(end, start, dragging);
     }
@@ -227,15 +231,21 @@ export default class DraggableList extends React.Component {
     const keyFn = this._getKeyFn();
     let distance = 0;
     for (let i=start; i < end; i++) {
-      const height = this._heights.get(keyFn(list[i])) || DEFAULT_HEIGHT;
+      const height = this._heights.get(listKeys ? listKeys[i] : keyFn(list[i])) || DEFAULT_HEIGHT;
       distance += (dragging ? height.drag : height.natural) + padding;
     }
     return distance;
   }
 
-  _getDistanceDuringDrag(dragStartIndex: number, index: number): number {
-    return this._getDistance(0, dragStartIndex, false) +
-      this._getDistance(dragStartIndex, index, true);
+  _getDistanceDuringDrag(lastDrag: Drag, index: number): number {
+    const keyFn = this._getKeyFn();
+    const {list} = this.state;
+
+    const dragItemHeight = (this._heights.get(lastDrag.itemKey) || DEFAULT_HEIGHT).drag;
+    const newCenterHeight = (this._heights.get(keyFn(list[lastDrag.startIndex])) || DEFAULT_HEIGHT).drag;
+    return this._getDistance(0, lastDrag.startIndex, false) +
+      this._getDistance(lastDrag.startIndex, index, true) -
+      (newCenterHeight-dragItemHeight);
   }
 
   _getKeyFn(): (item: Object) => string {
@@ -261,7 +271,7 @@ export default class DraggableList extends React.Component {
         : {
             itemSelected: spring(0, springConfig),
             y: (useAbsolutePositioning ? spring : x=>x)(dragging && lastDrag ?
-              this._getDistanceDuringDrag(lastDrag.startIndex, i)
+              this._getDistanceDuringDrag(lastDrag, i)
               : this._getDistance(0, i, false), springConfig)
           };
       const style = {
