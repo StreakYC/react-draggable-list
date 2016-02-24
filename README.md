@@ -53,6 +53,10 @@ The template component is passed the following props:
 The template component should be styled with max-height set to "100%" for best
 results.
 
+The template component will have its props updated many times quickly during
+the animation, so implementing `shouldComponentUpdate` in its children is
+highly recommended.
+
 ## Types
 
 [Flow Type](http://flowtype.org/) declarations for this module are included! As
