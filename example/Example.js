@@ -52,8 +52,8 @@ export default class Example extends React.Component {
     }
   };
 
-  _onListChange: Function = (...args) => {
-    console.log('onListChange', args);
+  _onListChange: Function = (newList: Array<Object>) => {
+    this.setState({list: newList});
   };
 
   render() {
