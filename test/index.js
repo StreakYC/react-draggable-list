@@ -48,9 +48,9 @@ describe("DraggableList", function() {
     );
 
     const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
-    assert(!root.state.drag);
+    assert(!root.state.dragging);
     renderedHandles[0]._onMouseDown({pageY: 500, preventDefault(){}});
-    assert(root.state.drag);
+    assert(root.state.dragging);
 
     root._handleMouseMove({pageY: 600});
     const reorderedList = [
@@ -84,10 +84,10 @@ describe("DraggableList", function() {
       reorderedList2
     );
 
-    assert(root.state.drag);
+    assert(root.state.dragging);
     assert(onMoveEnd.notCalled);
     root._handleMouseUp();
-    assert(!root.state.drag);
+    assert(!root.state.dragging);
     assert(onMoveEnd.calledOnce);
 
     assert.deepEqual(
@@ -171,10 +171,10 @@ describe("DraggableList", function() {
       reorderedList
     );
 
-    assert(root.state.drag);
+    assert(root.state.dragging);
     assert(onMoveEnd.notCalled);
     root._handleMouseUp();
-    assert(!root.state.drag);
+    assert(!root.state.dragging);
     assert(onMoveEnd.calledOnce);
 
     assert.deepEqual(
@@ -256,10 +256,10 @@ describe("DraggableList", function() {
       reorderedList
     );
 
-    assert(!root.state.drag);
+    assert(!root.state.dragging);
     assert(onMoveEnd.notCalled);
     root._handleMouseUp();
-    assert(!root.state.drag);
+    assert(!root.state.dragging);
     assert(onMoveEnd.notCalled);
 
     assert.deepEqual(
