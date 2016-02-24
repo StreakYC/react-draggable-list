@@ -20,7 +20,7 @@ class PlanetItem extends React.Component {
         className={cx('item', {dragged})}
         style={{
           transform: `scale(${scale})`,
-          boxShadow: `rgba(0, 0, 0, 0.2) 0px ${shadow}px ${2 * shadow}px 0px`,
+          boxShadow: `rgba(0, 0, 0, 0.3) 0px ${shadow}px ${2 * shadow}px 0px`,
         }}>
         {dragHandle(<div className="dragHandle" />)}
         <h2>{ item.name }</h2>
