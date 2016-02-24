@@ -1,6 +1,6 @@
 /* @flow */
 
-import {Component, PropTypes} from 'react';
+import React, {Component, PropTypes} from 'react';
 
 export default class OnUpdate extends Component {
   static propTypes = {
