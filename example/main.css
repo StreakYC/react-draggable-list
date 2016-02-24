@@ -6,7 +6,7 @@
   border: 1px solid black;
   width: 320px;
   overflow: hidden;
-  transform-origin: 50% 50% 0px;
+  transform-origin: 50px 50% 0px;
   padding-left: 32px;
   background: white;
   max-height: 100%;

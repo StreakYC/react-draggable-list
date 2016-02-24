@@ -17,7 +17,6 @@ class PlanetItem extends React.Component {
       <div
         className="item"
         style={{
-          height: '100px',
           transform: `scale(${scale})`,
           boxShadow: `rgba(0, 0, 0, 0.2) 0px ${shadow}px ${2 * shadow}px 0px`,
         }}>

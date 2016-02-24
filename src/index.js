@@ -9,7 +9,7 @@ import DragHandle from './DragHandle';
 import OnUpdate from './OnUpdate';
 import clamp from './clamp';
 
-const DEFAULT_HEIGHT = {natural: 100, drag: 30};
+const DEFAULT_HEIGHT = {natural: 200, drag: 30};
 
 type Props = {
   itemKey: string|(item: Object)=>string;
@@ -81,17 +81,17 @@ export default class DraggableList extends React.Component {
     this.setState({dragging, lastDrag, list: newProps.list});
   }
 
-  _handleTouchStart(itemIndex: number, pressY: number, e: Object) {
+  _handleTouchStart(itemIndex: number, pressY: ?number, e: Object) {
     event.stopPropagation();
     this._handleStartDrag(itemIndex, pressY, e.touches[0].pageY);
   }
 
-  _handleMouseDown(itemIndex: number, pressY: number, event: Object) {
+  _handleMouseDown(itemIndex: number, pressY: ?number, event: Object) {
     event.preventDefault();
     this._handleStartDrag(itemIndex, pressY, event.pageY);
   }
 
-  _handleStartDrag(itemIndex: number, pressY: number, pageY: number) {
+  _handleStartDrag(itemIndex: number, pressY: ?number, pageY: number) {
     document.documentElement.style.cursor = 'move';
     window.addEventListener('mouseup', this._handleMouseUp);
     window.addEventListener('touchend', this._handleMouseUp);
@@ -106,22 +106,29 @@ export default class DraggableList extends React.Component {
           const key = keyFn(item);
           const ref = this._itemRefs.get(key);
           return [key, {
-            natural: ref ? findDOMNode(ref).offsetHeight : 100,
-            drag: ref && ref.getDragHeight ? ref.getDragHeight() : 30
+            natural: ref ? findDOMNode(ref).offsetHeight : DEFAULT_HEIGHT.natural,
+            drag: ref && ref.getDragHeight ? ref.getDragHeight() : DEFAULT_HEIGHT.drag
           }];
         })
       );
     }
 
-    this.setState({
-      useAbsolutePositioning: true,
-      dragging: true,
-      lastDrag: {
-        itemKey: keyFn(this.state.list[itemIndex]),
-        startIndex: itemIndex,
-        mouseY: pressY,
-        mouseOffset: pageY - pressY
-      }
+    const itemStartY = pressY == null ?
+      this._getDistance(0, itemIndex, false) : pressY;
+
+    // Need to re-render once before we start dragging so that the `y` values
+    // are set using the correct _heights and then can animate from there.
+    this.forceUpdate(() => {
+      this.setState({
+        useAbsolutePositioning: true,
+        dragging: true,
+        lastDrag: {
+          itemKey: keyFn(this.state.list[itemIndex]),
+          startIndex: itemIndex,
+          mouseY: itemStartY,
+          mouseOffset: pageY - itemStartY
+        }
+      });
     });
   }
 
@@ -253,7 +260,7 @@ export default class DraggableList extends React.Component {
           }
         : {
             itemSelected: spring(0, springConfig),
-            y: spring(dragging && lastDrag ?
+            y: (useAbsolutePositioning ? spring : x=>x)(dragging && lastDrag ?
               this._getDistanceDuringDrag(lastDrag.startIndex, i)
               : this._getDistance(0, i, false), springConfig)
           };
@@ -263,8 +270,8 @@ export default class DraggableList extends React.Component {
       };
       const makeDragHandle = y => el => (
         <DragHandle
-          onMouseDown={e => this._handleMouseDown(i, y, e)}
-          onTouchStart={e => this._handleTouchStart(i, y, e)}
+          onMouseDown={e => this._handleMouseDown(i, useAbsolutePositioning ? y : null, e)}
+          onTouchStart={e => this._handleTouchStart(i, useAbsolutePositioning ? y : null, e)}
           >
           {el}
         </DragHandle>
