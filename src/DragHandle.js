@@ -1,0 +1,36 @@
+/* @flow */
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+export default class DragHandle extends React.Component {
+  static propTypes = {
+    onMouseDown: React.PropTypes.func.isRequired,
+    onTouchStart: React.PropTypes.func.isRequired,
+    children: React.PropTypes.element.isRequired
+  };
+
+  componentDidMount() {
+    const node = ReactDOM.findDOMNode(this);
+    node.addEventListener('mousedown', this._onMouseDown);
+    node.addEventListener('touchstart', this._onTouchStart);
+  }
+
+  componentWillUnmount() {
+    const node = ReactDOM.findDOMNode(this);
+    node.removeEventListener('mousedown', this._onMouseDown);
+    node.removeEventListener('touchstart', this._onTouchStart);
+  }
+
+  _onMouseDown: Function = (e) => {
+    this.props.onMouseDown.call(null, e);
+  };
+
+  _onTouchStart: Function = (e) => {
+    this.props.onTouchStart.call(null, e);
+  };
+
+  render(): React.Element {
+    return React.Children.only(this.props.children);
+  }
+}

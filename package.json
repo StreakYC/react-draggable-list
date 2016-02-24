@@ -1,0 +1,57 @@
+{
+  "name": "react-draggable-list",
+  "version": "0.1.0",
+  "description": "Make a list of draggable collapsible items.",
+  "main": "js/index.js",
+  "scripts": {
+    "prepublish": "babel -s inline -d js/ src/ && flow-copy-source -v src js",
+    "example-build": "NODE_ENV=development browserify -t babelify -do example/bundle.js example/main.js",
+    "example-watch": "NODE_ENV=development watchify -v -t babelify -do example/bundle.js example/main.js",
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StreakYC/react-draggable-list.git"
+  },
+  "keywords": [
+    "react",
+    "react-component",
+    "animation",
+    "reorder",
+    "move",
+    "drag-and-drop",
+    "draggable"
+  ],
+  "author": "Chris Cowan <agentme49@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/StreakYC/react-draggable-list/issues"
+  },
+  "homepage": "https://github.com/StreakYC/react-draggable-list#readme",
+  "devDependencies": {
+    "babel-cli": "^6.5.1",
+    "babel-plugin-add-module-exports": "^0.1.2",
+    "babel-plugin-transform-runtime": "^6.5.2",
+    "babel-preset-es2015": "^6.5.0",
+    "babel-preset-react": "^6.5.0",
+    "babel-preset-stage-1": "^6.5.0",
+    "babel-register": "^6.5.2",
+    "babelify": "^7.2.0",
+    "browserify": "^13.0.0",
+    "flow-copy-source": "^1.0.1",
+    "mocha": "^2.4.5",
+    "react": "^0.14.7",
+    "react-addons-test-utils": "^0.14.7",
+    "react-dom": "^0.14.7",
+    "watchify": "^3.7.0"
+  },
+  "dependencies": {
+    "babel-runtime": "^6.5.0",
+    "react-addons-update": "^0.14.7",
+    "react-motion": "^0.4.2"
+  },
+  "peerDependencies": {
+    "react": "^0.14.7",
+    "react-dom": "^0.14.7"
+  }
+}

@@ -1,0 +1,14 @@
+[ignore]
+.*/node_modules/babel-.*
+.*/node_modules/fbjs/.*
+.*/node_modules/.*\.json
+.*/node_modules/react-motion/.*
+
+[include]
+
+[libs]
+flow-libs/
+
+[options]
+esproposal.class_static_fields=enable
+esproposal.class_instance_fields=enable
