@@ -7,15 +7,9 @@ import update from 'react-addons-update';
 import saveRefs from 'react-save-refs';
 import DragHandle from './DragHandle';
 import OnUpdate from './OnUpdate';
-
-const FULL_HEIGHT = 70;
-const DRAG_HEIGHT = 30;
+import clamp from './clamp';
 
 const DEFAULT_HEIGHT = {natural: 100, drag: 30};
-
-function clamp(n, min, max) {
-  return Math.max(Math.min(n, max), min);
-}
 
 type Props = {
   itemKey: string|(item: Object)=>string;
