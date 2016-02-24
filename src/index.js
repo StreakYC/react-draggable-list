@@ -299,6 +299,8 @@ export default class DraggableList extends React.Component {
               style={{
                 position: useAbsolutePositioning ? 'absolute' : 'relative',
                 boxSizing: 'border-box',
+                left: '0',
+                right: '0',
                 top: useAbsolutePositioning ? `${y}px` : '0',
                 marginBottom: `${padding}px`,
                 height: useAbsolutePositioning ?

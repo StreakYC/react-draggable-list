@@ -1,18 +1,37 @@
-.list {
-  width: 300px;
+.main {
+  width: 400px;
   margin: auto;
+}
+
+.list {
+  margin: 10px auto;
 }
 .item {
   border: 1px solid black;
-  width: 320px;
   overflow: hidden;
-  transform-origin: 50px 50% 0px;
-  padding-left: 32px;
+  transform-origin: 30% 50% 0px;
+  padding-left: 20px;
   background: white;
   max-height: 100%;
 }
-.dragHandle {
+.item .dragHandle {
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
   cursor: move;
+  width: 20px;
+  height: 16px;
+  background: url('grippy.png') 30% 50% no-repeat no-repeat;
+}
+.item:hover .dragHandle, .item.dragged .dragHandle {
+  visibility: visible;
+}
+.item h2 {
+  margin: 0;
+}
+.item .subtitle {
+  font-weight: bold;
 }
 
 ::-webkit-scrollbar {
