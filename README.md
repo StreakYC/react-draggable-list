@@ -4,8 +4,13 @@ This component lets you make a user re-orderable list that animates nicely:
 
 [TODO put a gif here]
 
-See example code in the `example` directory. The example is compiled with Babel
-using the es2015, stage-1, and react presets together.
+See example code in the `example` directory. The example may be compiled by
+running:
+
+```
+npm install
+npm run example-build
+```
 
 ## DraggableList
 
