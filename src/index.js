@@ -24,7 +24,7 @@ type Props = {
 type State = {
   list: Array<Object>;
   drag: ?{
-    item: Object;
+    itemKey: string;
     startIndex: number;
     mouseY: number;
     mouseOffset: number;
@@ -63,7 +63,7 @@ export default class DraggableList extends React.Component {
     let {drag} = this.state;
     if (drag) {
       const keyFn = this._getKeyFn();
-      const dragKey = keyFn(drag.item);
+      const dragKey = drag.itemKey;
       const newListHasDragItem = newProps.list.some(item => keyFn(item) === dragKey);
       if (!newListHasDragItem) {
         drag = null;
@@ -90,7 +90,7 @@ export default class DraggableList extends React.Component {
     window.addEventListener('mousemove', this._handleMouseMove);
     this.setState({
       drag: {
-        item: this.state.list[itemIndex],
+        itemKey: this._getKeyFn()(this.state.list[itemIndex]),
         startIndex: itemIndex,
         mouseY: pressY,
         mouseOffset: pageY - pressY
@@ -140,7 +140,7 @@ export default class DraggableList extends React.Component {
       throw new Error("No drag happening");
     }
     const keyFn = this._getKeyFn();
-    return list.map(keyFn).indexOf(keyFn(drag.item));
+    return list.map(keyFn).indexOf(drag.itemKey);
   }
 
   _getKeyFn(): (item: Object) => string {
@@ -156,7 +156,8 @@ export default class DraggableList extends React.Component {
     const keyFn = this._getKeyFn();
 
     const children = list.map((item, i) => {
-      const selectedStyle = drag && drag.item === item
+      const key = keyFn(item);
+      const selectedStyle = drag && drag.itemKey === key
         ? {
             itemSelected: spring(1, springConfig),
             y: drag.mouseY
@@ -180,7 +181,7 @@ export default class DraggableList extends React.Component {
         </DragHandle>
       );
       return (
-        <Motion style={style} key={keyFn(item)}>
+        <Motion style={style} key={key}>
           {({itemSelected, anySelected, y}) =>
             <div
               style={{
@@ -189,7 +190,7 @@ export default class DraggableList extends React.Component {
                 top: `${y}px`,
                 height: anySelected === 0 ? 'auto'
                   : `${anySelected*(DRAG_HEIGHT-FULL_HEIGHT)+FULL_HEIGHT}px`,
-                zIndex: drag && drag.item === item ? list.length : i /*TODO fix wrong zindex after drop */
+                zIndex: drag && drag.itemKey === key ? list.length : i /*TODO fix wrong zindex after drop */
               }}
               >
               <Template
