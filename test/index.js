@@ -2,7 +2,7 @@
 
 import './lib/testdom';
 import assert from 'assert';
-
+import sinon from 'sinon';
 import React from 'react';
 import {findDOMNode} from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
@@ -21,6 +21,8 @@ describe("DraggableList", function() {
   it("works", function() {
     this.slow();
 
+    const onMoveEnd = sinon.spy();
+
     const list = [
       {name: 'caboose'},
       {name: 'tucker'},
@@ -31,7 +33,12 @@ describe("DraggableList", function() {
       {name: 'donut'}
     ];
     const root = TestUtils.renderIntoDocument(
-      <DraggableList itemKey="name" list={list} template={TestTemplate} />
+      <DraggableList
+        itemKey="name"
+        list={list}
+        template={TestTemplate}
+        onMoveEnd={onMoveEnd}
+        />
     );
 
     assert.deepEqual(
@@ -78,8 +85,15 @@ describe("DraggableList", function() {
     );
 
     assert(root.state.drag);
+    assert(onMoveEnd.notCalled);
     root._handleMouseUp();
     assert(!root.state.drag);
+    assert(onMoveEnd.calledOnce);
+
+    assert.deepEqual(
+      onMoveEnd.args[0],
+      [reorderedList2, {name: 'caboose'}, 0, 4]
+    );
 
     assert.deepEqual(
       TestUtils.scryRenderedComponentsWithType(root, TestTemplate)

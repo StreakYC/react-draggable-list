@@ -114,6 +114,12 @@ export default class DraggableList extends React.Component {
 
     document.documentElement.style.cursor = '';
     // this._lastDelta = 0;
+
+    const {onMoveEnd} = this.props;
+    const {drag, list} = this.state;
+    if (drag && onMoveEnd) {
+      onMoveEnd(list, drag.item, drag.startIndex, list.indexOf(drag.item));
+    }
     this.setState({drag: null});
   };
 
