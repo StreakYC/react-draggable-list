@@ -1,5 +1,7 @@
 # react-draggable-list
 
+[![Circle CI](https://circleci.com/gh/StreakYC/react-draggable-list.svg?style=shield)](https://circleci.com/gh/StreakYC/react-draggable-list)
+
 This component lets you make a user re-orderable list that animates nicely:
 
 [TODO put a gif here]
