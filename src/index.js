@@ -221,7 +221,7 @@ export default class DraggableList extends React.Component {
     return list.map(keyFn).indexOf(lastDrag.itemKey);
   }
 
-  _getDistance(start: number, end: number, dragging: boolean, listKeys: ?Array<string>): number {
+  _getDistance(start: number, end: number, dragging: boolean): number {
     if (end < start) {
       return -this._getDistance(end, start, dragging);
     }
@@ -231,7 +231,7 @@ export default class DraggableList extends React.Component {
     const keyFn = this._getKeyFn();
     let distance = 0;
     for (let i=start; i < end; i++) {
-      const height = this._heights.get(listKeys ? listKeys[i] : keyFn(list[i])) || DEFAULT_HEIGHT;
+      const height = this._heights.get(keyFn(list[i])) || DEFAULT_HEIGHT;
       distance += (dragging ? height.drag : height.natural) + padding;
     }
     return distance;
