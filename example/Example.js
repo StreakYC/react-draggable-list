@@ -61,7 +61,7 @@ export default class Example extends React.Component {
       <div className="list">
         foo
         <div>
-          <input type="button" value="Toggle" onClick={this._toggleExtra} />
+          <input type="button" value="Toggle Pluto" onClick={this._toggleExtra} />
         </div>
         <DraggableList ref="list"
           itemKey="name"
