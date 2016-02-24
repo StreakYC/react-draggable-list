@@ -50,6 +50,9 @@ The template component is passed the following props:
  element to be used as the drag handle. The whole item will be draggable by the
  wrapped element.
 
+The template component should be styled with max-height set to "100%" for best
+results.
+
 ## Types
 
 [Flow Type](http://flowtype.org/) declarations for this module are included! As

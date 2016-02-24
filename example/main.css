@@ -9,7 +9,6 @@
   transform-origin: 50% 50% 0px;
   padding-left: 32px;
   background: white;
-  box-sizing: border-box;
   max-height: 100%;
 }
 .dragHandle {
