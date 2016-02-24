@@ -15,6 +15,10 @@ class TestTemplate extends React.Component {
     const {item, dragHandle} = this.props;
     return dragHandle(<div className="item">{item.name}</div>);
   }
+
+  componentDidMount() {
+    findDOMNode(this).offsetHeight = 115;
+  }
 }
 
 describe("DraggableList", function() {
@@ -64,8 +68,8 @@ describe("DraggableList", function() {
     const reorderedList = [
       {name: 'tucker'},
       {name: 'church'},
-      {name: 'simmons'},
       {name: 'caboose'},
+      {name: 'simmons'},
       {name: 'sarge'},
       {name: 'grif'},
       {name: 'donut'}
@@ -75,6 +79,8 @@ describe("DraggableList", function() {
         .map(e=>e.props.item),
       reorderedList
     );
+
+    await delay(30);
 
     root._handleMouseMove({pageY: 650});
     const reorderedList2 = [

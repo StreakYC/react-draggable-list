@@ -19,5 +19,5 @@ onReady.then(main).catch(e => {
 
 function main() {
   const mainDiv = document.getElementById('main');
-  ReactDOM.render(<Example />, mainDiv);
+  global._root = ReactDOM.render(<Example />, mainDiv);
 }

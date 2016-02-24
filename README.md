@@ -35,6 +35,8 @@ following props:
  object passed to
  React-Motion](https://github.com/chenglou/react-motion/tree/85ca75c6de9ed85937d1c95646b6044a66981eee#--spring-val-number-config-springhelperconfig--opaqueconfig)
  for animations. This prop defaults to `{stiffness: 300, damping: 50}`.
+* `padding` is an optional number of pixels to leave between items. Defaults to
+ 10.
 
 ## Template
 
@@ -56,6 +58,10 @@ results.
 The template component will have its props updated many times quickly during
 the animation, so implementing `shouldComponentUpdate` in its children is
 highly recommended.
+
+The template component may have a `getDragHeight` method which returns a number
+to set the height in pixels of the item while the user is dragging it. If the
+method is not present, then it will default to 30.
 
 ## Types
 
