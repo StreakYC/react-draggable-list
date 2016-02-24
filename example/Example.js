@@ -63,6 +63,7 @@ export default class Example extends React.Component {
           template={PlanetItem}
           list={this.state.list}
           onMoveEnd={this._onListChange}
+          container={()=>document.body}
           />
       </div>
     );

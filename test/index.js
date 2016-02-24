@@ -3,6 +3,7 @@
 import './lib/testdom';
 import assert from 'assert';
 import sinon from 'sinon';
+import delay from './lib/delay';
 import React from 'react';
 import ReactDOM, {findDOMNode} from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
@@ -18,10 +19,16 @@ class TestTemplate extends React.Component {
 
 describe("DraggableList", function() {
 
-  it("drag works", function() {
+  it("drag works", async function() {
     this.slow();
 
     const onMoveEnd = sinon.spy();
+
+    let _scrollTop = 0;
+    const containerEl: Object = {
+      get scrollTop() { return _scrollTop; },
+      set scrollTop(x) { _scrollTop = x; }
+    };
 
     const list = [
       {name: 'caboose'},
@@ -38,6 +45,7 @@ describe("DraggableList", function() {
         list={list}
         template={TestTemplate}
         onMoveEnd={onMoveEnd}
+        container={()=>containerEl}
         />
     ): any);
 
@@ -100,6 +108,10 @@ describe("DraggableList", function() {
         .map(e=>e.props.item),
       reorderedList2
     );
+
+    assert.strictEqual(_scrollTop, 0);
+    await delay(30);
+    assert(_scrollTop > 50);
   });
 
   it("props reordered during drag works", function() {

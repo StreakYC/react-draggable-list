@@ -4,6 +4,7 @@ import React from 'react';
 import {Motion, spring} from 'react-motion';
 import update from 'react-addons-update';
 import DragHandle from './DragHandle';
+import OnUpdate from './OnUpdate';
 
 const MARGIN = 10;
 const FULL_HEIGHT = 70;
@@ -127,7 +128,7 @@ export default class DraggableList extends React.Component {
     window.removeEventListener('mousemove', this._handleMouseMove);
 
     document.documentElement.style.cursor = '';
-    // this._lastDelta = 0;
+    this._lastScrollDelta = 0;
 
     const {onMoveEnd} = this.props;
     const {dragging, lastDrag, list} = this.state;
@@ -138,10 +139,24 @@ export default class DraggableList extends React.Component {
     this.setState({dragging: false});
   };
 
+  _lastScrollDelta: number = 0;
+  _adjustScrollAtEnd(delta: number) {
+    const {dragging, lastDrag} = this.state;
+    if (dragging || !lastDrag) return;
+    const {container} = this.props;
+    if (!container) return;
+    const containerEl = container();
+    if (!containerEl) return;
+
+    const frameDelta = Math.round(delta - this._lastScrollDelta);
+    containerEl.scrollTop += frameDelta;
+    this._lastScrollDelta += frameDelta;
+  };
+
   _getDragIndex(): number {
     const {list, lastDrag} = this.state;
     if (!lastDrag) {
-      throw new Error("No drag happening");
+      throw new Error("No drag happened");
     }
     const keyFn = this._getKeyFn();
     return list.map(keyFn).indexOf(lastDrag.itemKey);
@@ -153,7 +168,7 @@ export default class DraggableList extends React.Component {
   }
 
   render() {
-    const {springConfig, itemKey} = this.props;
+    const {springConfig, itemKey, container} = this.props;
     const {list, dragging, lastDrag} = this.state;
     const Template = this.props.template;
 
@@ -209,6 +224,12 @@ export default class DraggableList extends React.Component {
         </Motion>
       );
     });
+
+    const adjustScroll = dragging || !lastDrag ? 0 : spring(
+      (this._getDragIndex() - lastDrag.startIndex) * (FULL_HEIGHT-DRAG_HEIGHT),
+      springConfig
+    );
+
     return (
       <div
         style={{
@@ -216,6 +237,12 @@ export default class DraggableList extends React.Component {
           height: `${list.length*(FULL_HEIGHT+MARGIN)}px`
         }}
         >
+        {container && <Motion style={{adjustScroll}}>
+          {({adjustScroll}) =>
+            <OnUpdate
+              cb={() => this._adjustScrollAtEnd(adjustScroll)} />
+          }
+        </Motion>}
         {children}
       </div>
     );
