@@ -199,7 +199,11 @@ export default class DraggableList extends React.Component {
     if (!containerEl) return;
 
     const frameDelta = Math.round(delta - this._lastScrollDelta);
-    containerEl.scrollTop += frameDelta;
+    if (window.scrollBy && containerEl === document.body) {
+      window.scrollBy(0, frameDelta);
+    } else {
+      containerEl.scrollTop += frameDelta;
+    }
     this._lastScrollDelta += frameDelta;
   };
 
