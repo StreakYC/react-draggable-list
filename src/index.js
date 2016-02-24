@@ -241,11 +241,16 @@ export default class DraggableList extends React.Component {
     const keyFn = this._getKeyFn();
     const {list} = this.state;
 
-    const dragItemHeight = (this._heights.get(lastDrag.itemKey) || DEFAULT_HEIGHT).drag;
-    const newCenterHeight = (this._heights.get(keyFn(list[lastDrag.startIndex])) || DEFAULT_HEIGHT).drag;
-    return this._getDistance(0, lastDrag.startIndex, false) +
-      this._getDistance(lastDrag.startIndex, index, true) -
-      (newCenterHeight-dragItemHeight);
+    let offset = 0;
+    if (this._getDragIndex() < lastDrag.startIndex) {
+      const dragItemHeight = (
+        this._heights.get(lastDrag.itemKey) || DEFAULT_HEIGHT).drag;
+      const newCenterHeight = (
+        this._heights.get(keyFn(list[lastDrag.startIndex])) || DEFAULT_HEIGHT).drag;
+      offset = dragItemHeight - newCenterHeight;
+    }
+    return this._getDistance(0, lastDrag.startIndex, false, lastDrag.startListKeys) +
+      this._getDistance(lastDrag.startIndex, index, true) + offset;
   }
 
   _getKeyFn(): (item: Object) => string {
