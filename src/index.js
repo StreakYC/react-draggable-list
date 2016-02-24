@@ -60,7 +60,16 @@ export default class DraggableList extends React.Component {
   }
 
   componentWillReceiveProps(newProps: Props) {
-    this.setState({list: newProps.list});
+    let {drag} = this.state;
+    if (drag) {
+      const keyFn = this._getKeyFn();
+      const dragKey = keyFn(drag.item);
+      const newListHasDragItem = newProps.list.some(item => keyFn(item) === dragKey);
+      if (!newListHasDragItem) {
+        drag = null;
+      }
+    }
+    this.setState({drag, list: newProps.list});
   }
 
   _handleTouchStart(itemIndex: number, pressY: number, e: Object) {
@@ -99,8 +108,9 @@ export default class DraggableList extends React.Component {
     if (drag) {
       const mouseY = pageY - drag.mouseOffset;
       const row = clamp(Math.round((mouseY - drag.startIndex*(FULL_HEIGHT-DRAG_HEIGHT)) / (DRAG_HEIGHT+MARGIN)), 0, list.length-1);
+      const dragIndex = this._getDragIndex();
       const newList = update(list, {
-        $splice: [[list.indexOf(drag.item), 1], [row, 0, drag.item]]
+        $splice: [[dragIndex, 1], [row, 0, list[dragIndex]]]
       });
       this.setState({drag: {...drag, mouseY}, list: newList});
     }
@@ -118,17 +128,32 @@ export default class DraggableList extends React.Component {
     const {onMoveEnd} = this.props;
     const {drag, list} = this.state;
     if (drag && onMoveEnd) {
-      onMoveEnd(list, drag.item, drag.startIndex, list.indexOf(drag.item));
+      const dragIndex = this._getDragIndex();
+      onMoveEnd(list, list[dragIndex], drag.startIndex, dragIndex);
     }
     this.setState({drag: null});
   };
 
+  _getDragIndex(): number {
+    const {list, drag} = this.state;
+    if (!drag) {
+      throw new Error("No drag happening");
+    }
+    const keyFn = this._getKeyFn();
+    return list.map(keyFn).indexOf(keyFn(drag.item));
+  }
+
+  _getKeyFn(): (item: Object) => string {
+    const {itemKey} = this.props;
+    return typeof itemKey === 'function' ? itemKey : x => x[itemKey];
+  }
+
   render() {
-    const {springConfig, itemKey, onMoveEnd} = this.props;
+    const {springConfig, itemKey} = this.props;
     const {list, drag} = this.state;
     const Template = this.props.template;
 
-    const keyFn = typeof itemKey === 'function' ? itemKey : x => x[itemKey];
+    const keyFn = this._getKeyFn();
 
     const children = list.map((item, i) => {
       const selectedStyle = drag && drag.item === item
