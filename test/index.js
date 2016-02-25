@@ -16,6 +16,10 @@ class TestTemplate extends React.Component {
     return dragHandle(<div className="item">{item.name}</div>);
   }
 
+  shouldComponentUpdate(nextProps) {
+    return this.props.item !== nextProps.item;
+  }
+
   componentDidMount() {
     findDOMNode(this).offsetHeight = 115;
   }
@@ -107,6 +111,125 @@ describe("DraggableList", function() {
     assert.deepEqual(
       onMoveEnd.args[0],
       [reorderedList2, {name: 'caboose'}, 0, 4]
+    );
+
+    assert.deepEqual(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
+        .map(e=>e.props.item),
+      reorderedList2
+    );
+
+    assert.strictEqual(_scrollTop, 0);
+    await delay(30);
+    assert(_scrollTop > 20);
+  });
+
+  it("two drags work", async function() {
+    this.slow();
+
+    const onMoveEnd = sinon.spy();
+
+    let _scrollTop = 0;
+    const containerEl: Object = {
+      get scrollTop() { return _scrollTop; },
+      set scrollTop(x) { _scrollTop = x; }
+    };
+
+    const list = [
+      {name: 'caboose'},
+      {name: 'tucker'},
+      {name: 'church'},
+      {name: 'simmons'},
+      {name: 'sarge'},
+      {name: 'grif'},
+      {name: 'donut'}
+    ];
+    const root: DraggableList = (TestUtils.renderIntoDocument(
+      <DraggableList
+        itemKey="name"
+        list={list}
+        template={TestTemplate}
+        onMoveEnd={onMoveEnd}
+        container={()=>containerEl}
+        />
+    ): any);
+
+    assert.deepEqual(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
+        .map(e=>e.props.item),
+      list
+    );
+
+    const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
+    assert(!root.state.dragging);
+    renderedHandles[0]._onMouseDown({pageY: 500, preventDefault(){}});
+    assert(root.state.dragging);
+
+    root._handleMouseMove({pageY: 600});
+    const reorderedList = [
+      {name: 'tucker'},
+      {name: 'church'},
+      {name: 'caboose'},
+      {name: 'simmons'},
+      {name: 'sarge'},
+      {name: 'grif'},
+      {name: 'donut'}
+    ];
+    assert.deepEqual(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
+        .map(e=>e.props.item),
+      reorderedList
+    );
+
+    await delay(30);
+
+    assert(root.state.dragging);
+    assert(onMoveEnd.notCalled);
+    root._handleMouseUp();
+    assert(!root.state.dragging);
+    assert(onMoveEnd.calledOnce);
+
+    assert.deepEqual(
+      onMoveEnd.args[0],
+      [reorderedList, {name: 'caboose'}, 0, 2]
+    );
+
+    assert.deepEqual(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
+        .map(e=>e.props.item),
+      reorderedList
+    );
+
+    assert(!root.state.dragging);
+    renderedHandles[0]._onMouseDown({pageY: 600, preventDefault(){}});
+    assert(root.state.dragging);
+
+    root._handleMouseMove({pageY: 650});
+
+    const reorderedList2 = [
+      {name: 'tucker'},
+      {name: 'church'},
+      {name: 'simmons'},
+      {name: 'caboose'},
+      {name: 'sarge'},
+      {name: 'grif'},
+      {name: 'donut'}
+    ];
+    assert.deepEqual(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
+        .map(e=>e.props.item),
+      reorderedList2
+    );
+
+    assert(root.state.dragging);
+    assert(onMoveEnd.calledOnce);
+    root._handleMouseUp();
+    assert(!root.state.dragging);
+    assert(onMoveEnd.calledTwice);
+
+    assert.deepEqual(
+      onMoveEnd.args[1],
+      [reorderedList2, {name: 'caboose'}, 2, 3]
     );
 
     assert.deepEqual(

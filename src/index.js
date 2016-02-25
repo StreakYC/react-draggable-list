@@ -102,17 +102,17 @@ export default class DraggableList extends React.Component {
     this._handleMouseUp();
   }
 
-  _handleTouchStart(itemIndex: number, pressY: ?number, e: Object) {
+  _handleTouchStart(itemKey: string, pressY: ?number, e: Object) {
     event.stopPropagation();
-    this._handleStartDrag(itemIndex, pressY, e.touches[0].pageY);
+    this._handleStartDrag(itemKey, pressY, e.touches[0].pageY);
   }
 
-  _handleMouseDown(itemIndex: number, pressY: ?number, event: Object) {
+  _handleMouseDown(itemKey: string, pressY: ?number, event: Object) {
     event.preventDefault();
-    this._handleStartDrag(itemIndex, pressY, event.pageY);
+    this._handleStartDrag(itemKey, pressY, event.pageY);
   }
 
-  _handleStartDrag(itemIndex: number, pressY: ?number, pageY: number) {
+  _handleStartDrag(itemKey: string, pressY: ?number, pageY: number) {
     document.documentElement.style.cursor = 'move';
     window.addEventListener('mouseup', this._handleMouseUp);
     window.addEventListener('touchend', this._handleMouseUp);
@@ -148,6 +148,8 @@ export default class DraggableList extends React.Component {
       );
     }
 
+    const itemIndex = this.state.list.map(keyFn).indexOf(itemKey);
+
     const startY = pressY == null ?
       this._getDistance(0, itemIndex, false) : pressY;
 
@@ -162,7 +164,7 @@ export default class DraggableList extends React.Component {
         useAbsolutePositioning: true,
         dragging: true,
         lastDrag: {
-          itemKey: keyFn(this.state.list[itemIndex]),
+          itemKey: itemKey,
           startIndex: itemIndex,
           startListKeys: this.state.list.map(keyFn),
           startY,
@@ -372,8 +374,8 @@ export default class DraggableList extends React.Component {
       };
       const makeDragHandle = (el, y: ?number) => (
         <DragHandle
-          onMouseDown={e => this._handleMouseDown(i, y, e)}
-          onTouchStart={e => this._handleTouchStart(i, y, e)}
+          onMouseDown={e => this._handleMouseDown(key, y, e)}
+          onTouchStart={e => this._handleTouchStart(key, y, e)}
           >
           {el}
         </DragHandle>
