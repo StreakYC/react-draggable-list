@@ -320,11 +320,11 @@ export default class DraggableList extends React.Component {
 
     let offset = 0;
     if (this._getDragIndex() < lastDrag.startIndex) {
-      const dragItemHeight = (
-        this._heights.get(lastDrag.itemKey) || DEFAULT_HEIGHT).drag;
-      const newCenterHeight = (
-        this._heights.get(keyFn(list[lastDrag.startIndex])) || DEFAULT_HEIGHT).drag;
-      offset = dragItemHeight - newCenterHeight;
+      const dragItemHeight = this._heights.get(lastDrag.itemKey) || DEFAULT_HEIGHT;
+      const newCenterHeight =
+        this._heights.get(keyFn(list[lastDrag.startIndex])) || DEFAULT_HEIGHT;
+      offset = dragItemHeight.drag - newCenterHeight.drag +
+        newCenterHeight.natural - dragItemHeight.natural;
     }
     return this._getDistance(0, lastDrag.startIndex, false, lastDrag.startListKeys) +
       this._getDistance(lastDrag.startIndex, index, true) + offset;
