@@ -400,7 +400,7 @@ export default class DraggableList extends React.Component {
     if (!dragging && lastDrag && useAbsolutePositioning) {
       const dragIndex = this._getDragIndex();
       adjustScroll = spring(
-        this._getDistance(0, dragIndex, false, lastDrag.startListKeys)
+        this._getDistance(0, dragIndex, false)
         - lastDrag.mouseY,
         springConfig
       );
