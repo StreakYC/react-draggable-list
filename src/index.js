@@ -11,6 +11,17 @@ import clamp from './clamp';
 
 const DEFAULT_HEIGHT = {natural: 200, drag: 30};
 
+const AUTOSCROLL_REGION_SIZE = 30;
+const AUTOSCROLL_MAX_SPEED = 15;
+
+function getScrollSpeed(distance) {
+  // If distance is zero, then the result is the max speed. Otherwise,
+  // the result tapers toward zero as it gets closer to the opposite
+  // edge of the region.
+  return Math.round(AUTOSCROLL_MAX_SPEED -
+    (AUTOSCROLL_MAX_SPEED/AUTOSCROLL_REGION_SIZE) * distance);
+}
+
 type Drag = {
   itemKey: string;
   startIndex: number;
@@ -59,6 +70,7 @@ export default class DraggableList extends React.Component {
   };
   _itemRefs: Map<string, Object> = new Map();
   _heights: Map<string, {natural: number, drag: number}> = new Map();
+  _autoScrollerTimer: any;
 
   constructor(props: Props) {
     super(props);
@@ -84,6 +96,10 @@ export default class DraggableList extends React.Component {
     this.setState({dragging, lastDrag, list: newProps.list});
   }
 
+  componentWillUnmount() {
+    this._handleMouseUp();
+  }
+
   _handleTouchStart(itemIndex: number, pressY: ?number, e: Object) {
     event.stopPropagation();
     this._handleStartDrag(itemIndex, pressY, e.touches[0].pageY);
@@ -100,6 +116,19 @@ export default class DraggableList extends React.Component {
     window.addEventListener('touchend', this._handleMouseUp);
     window.addEventListener('touchmove', this._handleTouchMove);
     window.addEventListener('mousemove', this._handleMouseMove);
+
+    // If an element has focus while we drag around the parent, some browsers
+    // try to scroll the parent element to keep the focused element in view.
+    // Stop that.
+    {
+      const listEl = findDOMNode(this);
+      if (
+        listEl.contains && document.activeElement &&
+        listEl.contains(document.activeElement)
+      ) {
+        document.activeElement.blur();
+      }
+    }
 
     const keyFn = this._getKeyFn();
 
@@ -119,6 +148,10 @@ export default class DraggableList extends React.Component {
     const itemStartY = pressY == null ?
       this._getDistance(0, itemIndex, false) : pressY;
 
+    const containerEl = this._getContainer();
+    const containerScroll = !containerEl || containerEl === document.body ?
+      0 : containerEl.scrollTop;
+
     // Need to re-render once before we start dragging so that the `y` values
     // are set using the correct _heights and then can animate from there.
     this.forceUpdate(() => {
@@ -130,7 +163,7 @@ export default class DraggableList extends React.Component {
           startIndex: itemIndex,
           startListKeys: this.state.list.map(keyFn),
           mouseY: itemStartY,
-          mouseOffset: pageY - itemStartY
+          mouseOffset: pageY - itemStartY + containerScroll
         }
       });
     });
@@ -141,40 +174,85 @@ export default class DraggableList extends React.Component {
     this._handleMouseMove(e.touches[0]);
   };
 
-  _handleMouseMove: Function = ({pageY}) => {
+  _handleMouseMove: Function = ({pageY, clientY}) => {
     const {padding} = this.props;
     const {list, dragging, lastDrag} = this.state;
-    if (dragging && lastDrag) {
-      const mouseY = pageY - lastDrag.mouseOffset;
-      const dragIndex = this._getDragIndex();
-      const naturalPosition = this._getDistanceDuringDrag(lastDrag, dragIndex);
+    if (!dragging || !lastDrag) return;
 
-      // 1 down, -1 up, 0 neither
-      const movementFromNatural = mouseY-naturalPosition;
-      const direction = movementFromNatural > 0 ? 1 :
-        movementFromNatural < 0 ? -1 : 0;
-      let newIndex = dragIndex;
-      if (direction !== 0) {
-        const keyFn = this._getKeyFn();
-        let reach = Math.abs(movementFromNatural);
-        for (let i=dragIndex+direction; i < list.length && i >= 0; i += direction) {
-          const iDragHeight = (this._heights.get(keyFn(list[i])) || DEFAULT_HEIGHT).drag;
-          if (reach < iDragHeight/2 + padding) break;
-          reach -= iDragHeight + padding;
-          newIndex = i;
+    const containerEl = this._getContainer();
+    const dragIndex = this._getDragIndex();
+    const naturalPosition = this._getDistanceDuringDrag(lastDrag, dragIndex);
+
+    clearInterval(this._autoScrollerTimer);
+
+    // If the user has the mouse near the top or bottom of the container and
+    // not at the end of the list, then autoscroll.
+    if (dragIndex !== 0 && dragIndex !== list.length-1) {
+      let scrollSpeed = 0;
+
+      const containerRect = containerEl && containerEl !== document.body &&
+        containerEl.getBoundingClientRect ?
+          containerEl.getBoundingClientRect() :
+          {top: 0, bottom: Infinity};
+      const listEl = findDOMNode(this);
+      const listTop = listEl.getBoundingClientRect ?
+        listEl.getBoundingClientRect().top : 0;
+
+      // Get the lowest of the screen top and the container top.
+      const top = Math.max(0, containerRect.top);
+
+      const distanceFromTop = clientY-top;
+      if (distanceFromTop > 0 && distanceFromTop < AUTOSCROLL_REGION_SIZE) {
+        scrollSpeed = -1 * getScrollSpeed(distanceFromTop);
+      } else {
+        // Get the lowest of the screen bottom and the container bottom.
+        const bottom = Math.min(window.innerHeight, containerRect.bottom);
+        const distanceFromBottom = bottom-clientY;
+        if (distanceFromBottom > 0 && distanceFromBottom < AUTOSCROLL_REGION_SIZE) {
+          scrollSpeed = getScrollSpeed(distanceFromBottom);
         }
       }
-      let newList = list;
-      if (newIndex !== dragIndex) {
-        newList = update(list, {
-          $splice: [[dragIndex, 1], [newIndex, 0, list[dragIndex]]]
-        });
+
+      if (scrollSpeed !== 0) {
+        this._scrollContainer(scrollSpeed);
+        this._autoScrollerTimer = setTimeout(() => {
+          this._handleMouseMove({pageY, clientY});
+        }, 16);
       }
-      this.setState({lastDrag: {...lastDrag, mouseY}, list: newList});
     }
+
+    const containerScroll = !containerEl || containerEl === document.body ?
+      0 : containerEl.scrollTop;
+    const mouseY = pageY - lastDrag.mouseOffset + containerScroll;
+
+    // 1 down, -1 up, 0 neither
+    const movementFromNatural = mouseY-naturalPosition;
+    const direction = movementFromNatural > 0 ? 1 :
+      movementFromNatural < 0 ? -1 : 0;
+    let newIndex = dragIndex;
+    if (direction !== 0) {
+      const keyFn = this._getKeyFn();
+      let reach = Math.abs(movementFromNatural);
+      for (let i=dragIndex+direction; i < list.length && i >= 0; i += direction) {
+        const iDragHeight = (this._heights.get(keyFn(list[i])) || DEFAULT_HEIGHT).drag;
+        if (reach < iDragHeight/2 + padding) break;
+        reach -= iDragHeight + padding;
+        newIndex = i;
+      }
+    }
+
+    let newList = list;
+    if (newIndex !== dragIndex) {
+      newList = update(list, {
+        $splice: [[dragIndex, 1], [newIndex, 0, list[dragIndex]]]
+      });
+    }
+
+    this.setState({lastDrag: {...lastDrag, mouseY}, list: newList});
   };
 
   _handleMouseUp: Function = () => {
+    clearInterval(this._autoScrollerTimer);
     window.removeEventListener('mouseup', this._handleMouseUp);
     window.removeEventListener('touchend', this._handleMouseUp);
     window.removeEventListener('touchmove', this._handleTouchMove);
@@ -194,21 +272,20 @@ export default class DraggableList extends React.Component {
     this.setState({dragging: false});
   };
 
+  _scrollContainer(delta: number) {
+    const containerEl = this._getContainer();
+    if (!containerEl) return;
+    if (window.scrollBy && containerEl === document.body) {
+      window.scrollBy(0, delta);
+    } else {
+      containerEl.scrollTop += delta;
+    }
+  }
+
   _lastScrollDelta: number = 0;
   _adjustScrollAtEnd(delta: number) {
-    const {dragging, lastDrag, useAbsolutePositioning} = this.state;
-    if (dragging || !lastDrag || !useAbsolutePositioning) return;
-    const {container} = this.props;
-    if (!container) return;
-    const containerEl = container();
-    if (!containerEl) return;
-
     const frameDelta = Math.round(delta - this._lastScrollDelta);
-    if (window.scrollBy && containerEl === document.body) {
-      window.scrollBy(0, frameDelta);
-    } else {
-      containerEl.scrollTop += frameDelta;
-    }
+    this._scrollContainer(frameDelta);
     this._lastScrollDelta += frameDelta;
   };
 
@@ -251,6 +328,11 @@ export default class DraggableList extends React.Component {
     }
     return this._getDistance(0, lastDrag.startIndex, false, lastDrag.startListKeys) +
       this._getDistance(lastDrag.startIndex, index, true) + offset;
+  }
+
+  _getContainer(): ?HTMLElement {
+    const {container} = this.props;
+    return container ? container() : null;
   }
 
   _getKeyFn(): (item: Object) => string {
@@ -348,8 +430,9 @@ export default class DraggableList extends React.Component {
                 if (!dragging && anySelected === 0 && useAbsolutePositioning) {
                   this._heights.clear();
                   this.setState({useAbsolutePositioning: false});
+                } else if (!dragging && lastDrag && useAbsolutePositioning) {
+                  this._adjustScrollAtEnd(adjustScroll);
                 }
-                this._adjustScrollAtEnd(adjustScroll);
               }} />
             </div>
           }

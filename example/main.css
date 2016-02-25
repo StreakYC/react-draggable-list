@@ -1,10 +1,12 @@
-.main {
+.intro {
   width: 400px;
   margin: auto;
 }
 
 .list {
+  width: 430px;
   margin: 10px auto;
+  padding: 15px;
 }
 .item {
   border: 1px solid black;

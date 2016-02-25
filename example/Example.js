@@ -5,12 +5,23 @@ import cx from 'classnames';
 import DraggableList from '../src';
 
 class PlanetItem extends React.Component {
+  state: Object = {
+    value: 0
+  };
+
+  _inc: ()=>void = () => {
+    this.setState({
+      value: this.state.value+1
+    });
+  };
+
   getDragHeight() {
     return this.props.item.subtitle ? 47 : 28;
   }
 
   render() {
     const {item, itemSelected, anySelected, dragHandle} = this.props;
+    const {value} = this.state;
     const scale = itemSelected * 0.05 + 1;
     const shadow = itemSelected * 15 + 1;
     const dragged = itemSelected !== 0;
@@ -38,6 +49,10 @@ class PlanetItem extends React.Component {
             and have longer descriptions
           </div>
         }
+        <div>
+          State works and is retained during movement:
+          {' '}<input type="button" value={value} onClick={this._inc} />
+        </div>
       </div>
     );
   }
@@ -45,6 +60,7 @@ class PlanetItem extends React.Component {
 
 export default class Example extends React.Component {
   state: Object = {
+    useContainer: false,
     list: [
       {name: 'Mercury'},
       {name: 'Venus'},
@@ -57,8 +73,8 @@ export default class Example extends React.Component {
     ]
   };
 
-  _toggleExtra: ()=>void = () => {
-    const noPluto = this.state.list.filter(item => item.name !== 'pluto');
+  _togglePluto: ()=>void = () => {
+    const noPluto = this.state.list.filter(item => item.name !== 'Pluto');
     if (noPluto.length !== this.state.list.length) {
       this.setState({list: noPluto});
     } else {
@@ -66,11 +82,17 @@ export default class Example extends React.Component {
     }
   };
 
+  _toggleContainer: ()=>void = () => {
+    this.setState({useContainer: !this.state.useContainer});
+  };
+
   _onListChange: Function = (newList: Array<Object>) => {
     this.setState({list: newList});
   };
 
   render() {
+    const {useContainer} = this.state;
+
     return (
       <div className="main">
         <div className="intro">
@@ -87,17 +109,25 @@ export default class Example extends React.Component {
             be scrolled if possible to keep the moved item visible and on the
             same part of the screen.
           </p>
+          <div>
+            <input type="button" value="Toggle Pluto" onClick={this._togglePluto} />
+            <input type="button" value="Toggle Container" onClick={this._toggleContainer} />
+          </div>
         </div>
-        <div>
-          <input type="button" value="Toggle Pluto" onClick={this._toggleExtra} />
-        </div>
-        <div className="list">
+        <div
+          className="list" ref="container"
+          style={{
+            overflow: useContainer ? 'auto' : '',
+            height: useContainer ? '200px' : '',
+            border: useContainer ? '1px solid gray' : ''
+          }}
+          >
           <DraggableList
             itemKey="name"
             template={PlanetItem}
             list={this.state.list}
             onMoveEnd={this._onListChange}
-            container={()=>document.body}
+            container={()=>useContainer ? this.refs.container : document.body}
             />
         </div>
       </div>

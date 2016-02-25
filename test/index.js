@@ -117,7 +117,7 @@ describe("DraggableList", function() {
 
     assert.strictEqual(_scrollTop, 0);
     await delay(30);
-    assert(_scrollTop > 50);
+    assert(_scrollTop > 20);
   });
 
   it("props reordered during drag works", function() {
