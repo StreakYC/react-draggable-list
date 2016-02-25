@@ -27,6 +27,7 @@ type Drag = {
   itemKey: string;
   startIndex: number;
   startListKeys: Array<string>;
+  startY: number;
   mouseY: number;
   mouseOffset: number;
 };
@@ -147,7 +148,7 @@ export default class DraggableList extends React.Component {
       );
     }
 
-    const itemStartY = pressY == null ?
+    const startY = pressY == null ?
       this._getDistance(0, itemIndex, false) : pressY;
 
     const containerEl = this._getContainer();
@@ -164,8 +165,9 @@ export default class DraggableList extends React.Component {
           itemKey: keyFn(this.state.list[itemIndex]),
           startIndex: itemIndex,
           startListKeys: this.state.list.map(keyFn),
-          mouseY: itemStartY,
-          mouseOffset: pageY - itemStartY + containerScroll
+          startY,
+          mouseY: startY,
+          mouseOffset: pageY - startY + containerScroll
         }
       });
     });
@@ -325,11 +327,10 @@ export default class DraggableList extends React.Component {
       const dragItemHeight = this._heights.get(lastDrag.itemKey) || DEFAULT_HEIGHT;
       const newCenterHeight =
         this._heights.get(keyFn(list[lastDrag.startIndex])) || DEFAULT_HEIGHT;
-      offset = dragItemHeight.drag - newCenterHeight.drag +
-        newCenterHeight.natural - dragItemHeight.natural;
+      offset = dragItemHeight.drag - newCenterHeight.drag;
     }
-    return this._getDistance(0, lastDrag.startIndex, false, lastDrag.startListKeys) +
-      this._getDistance(lastDrag.startIndex, index, true) + offset;
+    return lastDrag.startY + offset +
+      this._getDistance(lastDrag.startIndex, index, true);
   }
 
   _getContainer(): ?HTMLElement {
@@ -399,8 +400,9 @@ export default class DraggableList extends React.Component {
     if (!dragging && lastDrag && useAbsolutePositioning) {
       const dragIndex = this._getDragIndex();
       adjustScroll = spring(
-        this._getDistance(lastDrag.startIndex, dragIndex, false) -
-        this._getDistance(lastDrag.startIndex, dragIndex, true),
+        this._getDistance(0, dragIndex, false, lastDrag.startListKeys)
+        - lastDrag.startY
+        - this._getDistance(lastDrag.startIndex, dragIndex, true),
         springConfig
       );
     }
