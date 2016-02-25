@@ -220,7 +220,10 @@ export default class DraggableList extends React.Component {
       if (scrollSpeed !== 0) {
         this._scrollContainer(scrollSpeed);
         this._autoScrollerTimer = setTimeout(() => {
-          this._handleMouseMove({pageY, clientY});
+          this._handleMouseMove({
+            pageY: pageY + (containerEl===document.body?scrollSpeed:0),
+            clientY
+          });
         }, 16);
       }
     }
