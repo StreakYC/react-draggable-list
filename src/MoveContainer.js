@@ -42,7 +42,7 @@ export default class MoveContainer extends React.Component {
       this.props.zIndex !== nextProps.zIndex;
   }
 
-  _dragHandle: Function = (el) => this.props.makeDragHandle(el, this.props.y);
+  _dragHandle: Function = (el) => this.props.makeDragHandle(el, ()=>this.props.y);
 
   render() {
     const {

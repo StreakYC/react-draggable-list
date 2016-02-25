@@ -372,10 +372,10 @@ export default class DraggableList extends React.Component {
         anySelected,
         ...selectedStyle
       };
-      const makeDragHandle = (el, y: ?number) => (
+      const makeDragHandle = (el, getY: ()=>?number) => (
         <DragHandle
-          onMouseDown={e => this._handleMouseDown(key, y, e)}
-          onTouchStart={e => this._handleTouchStart(key, y, e)}
+          onMouseDown={e => this._handleMouseDown(key, getY(), e)}
+          onTouchStart={e => this._handleTouchStart(key, getY(), e)}
           >
           {el}
         </DragHandle>
