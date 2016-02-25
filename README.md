@@ -3,7 +3,8 @@
 [![Circle CI](https://circleci.com/gh/StreakYC/react-draggable-list.svg?style=shield)](https://circleci.com/gh/StreakYC/react-draggable-list)
 [![npm version](https://badge.fury.io/js/react-draggable-list.svg)](https://badge.fury.io/js/react-draggable-list)
 
-This component lets you make a user re-orderable list that animates nicely:
+This component lets you make a user re-orderable list that animates nicely so
+that the user can easily move large items:
 
 ![Example](https://streakyc.github.io/react-draggable-list/video/dragitem.gif)
 
