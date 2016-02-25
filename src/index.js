@@ -1,12 +1,13 @@
 /* @flow */
 
-import React from 'react';
+import React, {PropTypes} from 'react';
 import {findDOMNode} from 'react-dom';
 import {Motion, spring} from 'react-motion';
 import update from 'react-addons-update';
 import saveRefs from 'react-save-refs';
 import DragHandle from './DragHandle';
 import OnUpdate from './OnUpdate';
+import MoveContainer from './MoveContainer';
 import clamp from './clamp';
 
 const DEFAULT_HEIGHT = {natural: 200, drag: 30};
@@ -53,16 +54,16 @@ export default class DraggableList extends React.Component {
   props: Props;
   state: State;
   static propTypes = {
-    itemKey: React.PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.func
+    itemKey: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.func
     ]).isRequired,
-    template: React.PropTypes.func,
-    list: React.PropTypes.array.isRequired,
-    onMoveEnd: React.PropTypes.func,
-    container: React.PropTypes.func,
-    springConfig: React.PropTypes.object,
-    padding: React.PropTypes.number
+    template: PropTypes.func,
+    list: PropTypes.array.isRequired,
+    onMoveEnd: PropTypes.func,
+    container: PropTypes.func,
+    springConfig: PropTypes.object,
+    padding: PropTypes.number
   };
   static defaultProps: DefaultProps = {
     springConfig: {stiffness: 300, damping: 50},
@@ -136,7 +137,8 @@ export default class DraggableList extends React.Component {
       this._heights = new Map(
         this.state.list.map(item => {
           const key = keyFn(item);
-          const ref = this._itemRefs.get(key);
+          const containerRef = this._itemRefs.get(key);
+          const ref = containerRef ? containerRef.getTemplate() : null;
           return [key, {
             natural: ref ? findDOMNode(ref).offsetHeight : DEFAULT_HEIGHT.natural,
             drag: ref && ref.getDragHeight ? ref.getDragHeight() : DEFAULT_HEIGHT.drag
@@ -341,9 +343,8 @@ export default class DraggableList extends React.Component {
   }
 
   render() {
-    const {springConfig, itemKey, container, padding} = this.props;
+    const {springConfig, itemKey, container, padding, template} = this.props;
     const {list, dragging, lastDrag, useAbsolutePositioning} = this.state;
-    const Template = this.props.template;
 
     const keyFn = this._getKeyFn();
     const anySelected = spring(dragging ? 1 : 0, springConfig);
@@ -365,10 +366,10 @@ export default class DraggableList extends React.Component {
         anySelected,
         ...selectedStyle
       };
-      const makeDragHandle = y => el => (
+      const makeDragHandle = (el, y: ?number) => (
         <DragHandle
-          onMouseDown={e => this._handleMouseDown(i, useAbsolutePositioning ? y : null, e)}
-          onTouchStart={e => this._handleTouchStart(i, useAbsolutePositioning ? y : null, e)}
+          onMouseDown={e => this._handleMouseDown(i, y, e)}
+          onTouchStart={e => this._handleTouchStart(i, y, e)}
           >
           {el}
         </DragHandle>
@@ -377,28 +378,18 @@ export default class DraggableList extends React.Component {
       return (
         <Motion style={style} key={key}>
           {({itemSelected, anySelected, y}) =>
-            <div
-              style={{
-                position: useAbsolutePositioning ? 'absolute' : 'relative',
-                boxSizing: 'border-box',
-                left: '0',
-                right: '0',
-                top: useAbsolutePositioning ? `${y}px` : '0',
-                marginBottom: `${padding}px`,
-                height: useAbsolutePositioning ?
-                  `${anySelected*(height.drag-height.natural)+height.natural}px`
-                  : 'auto',
-                zIndex: lastDrag && lastDrag.itemKey === key ? list.length : i
-              }}
-              >
-              <Template
-                ref={saveRefs(this._itemRefs, key)}
-                item={item}
-                itemSelected={itemSelected}
-                anySelected={anySelected}
-                dragHandle={makeDragHandle(y)}
-                />
-            </div>
+            <MoveContainer
+              ref={saveRefs(this._itemRefs, key)}
+              y={useAbsolutePositioning ? y : null}
+              template={template}
+              padding={padding}
+              item={item}
+              itemSelected={itemSelected}
+              anySelected={anySelected}
+              height={height}
+              zIndex={lastDrag && lastDrag.itemKey === key ? list.length : i}
+              makeDragHandle={makeDragHandle}
+              />
           }
         </Motion>
       );
