@@ -5,10 +5,14 @@
 
 This component lets you make a user re-orderable list that animates nicely:
 
-[TODO put a gif here]
+![Example](https://streakyc.github.io/react-draggable-list/video/dragitem.gif)
 
-See example code in the `example` directory. The example may be compiled by
-running:
+The above example can be tried here:
+
+https://streakyc.github.io/react-draggable-list/example/
+
+You can find its code in the `example` directory. The example may be compiled
+by running:
 
 ```
 npm install
