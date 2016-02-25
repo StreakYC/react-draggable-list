@@ -32,14 +32,14 @@ export default class MoveContainer extends React.Component {
     return this.refs.templateContainer.getTemplate();
   }
 
-  shouldComponentUpdate(prevProps: Props): boolean {
-    return this.props.anySelected !== prevProps.anySelected ||
-      this.props.itemSelected !== prevProps.itemSelected ||
-      this.props.item !== prevProps.item ||
-      this.props.template !== prevProps.template ||
-      this.props.y !== prevProps.y ||
-      this.props.height !== prevProps.height ||
-      this.props.zIndex !== prevProps.zIndex;
+  shouldComponentUpdate(nextProps: Props): boolean {
+    return this.props.anySelected !== nextProps.anySelected ||
+      this.props.itemSelected !== nextProps.itemSelected ||
+      this.props.item !== nextProps.item ||
+      this.props.template !== nextProps.template ||
+      this.props.y !== nextProps.y ||
+      this.props.height !== nextProps.height ||
+      this.props.zIndex !== nextProps.zIndex;
   }
 
   _dragHandle: Function = (el) => this.props.makeDragHandle(el, this.props.y);

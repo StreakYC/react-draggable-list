@@ -19,11 +19,11 @@ export default class TemplateContainer extends React.Component {
     dragHandle: PropTypes.func.isRequired
   };
 
-  shouldComponentUpdate(prevProps: Props): boolean {
-    return this.props.anySelected !== prevProps.anySelected ||
-      this.props.itemSelected !== prevProps.itemSelected ||
-      this.props.item !== prevProps.item ||
-      this.props.template !== prevProps.template;
+  shouldComponentUpdate(nextProps: Props): boolean {
+    return this.props.anySelected !== nextProps.anySelected ||
+      this.props.itemSelected !== nextProps.itemSelected ||
+      this.props.item !== nextProps.item ||
+      this.props.template !== nextProps.template;
   }
 
   getTemplate(): React.Element {
