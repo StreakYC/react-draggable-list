@@ -1,4 +1,9 @@
 {
   "presets": ["es2015", "stage-1", "react"],
-  "plugins": ["transform-runtime", "add-module-exports"]
+  "plugins": ["transform-runtime", "add-module-exports"],
+  "env": {
+    "development-hmr": {
+      "presets": ["react-hmre"]
+    }
+  }
 }

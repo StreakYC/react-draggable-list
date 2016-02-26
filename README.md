@@ -20,6 +20,14 @@ npm install
 npm run example-build
 ```
 
+You can build the example with live editing enabled (using
+[react-transform-hmr](https://github.com/gaearon/react-transform-hmr) and
+[browserify-hmr](https://github.com/AgentME/browserify-hmr)) by running:
+
+```
+npm run example-watch
+```
+
 ## DraggableList
 
 This module exports the `DraggableList` React component, which takes the
