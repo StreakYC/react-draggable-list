@@ -9,11 +9,11 @@ class PlanetItem extends React.Component {
     value: 0
   };
 
-  _inc: ()=>void = () => {
+  _inc() {
     this.setState({
       value: this.state.value+1
     });
-  };
+  }
 
   getDragHeight() {
     return this.props.item.subtitle ? 47 : 28;
@@ -51,7 +51,7 @@ class PlanetItem extends React.Component {
         }
         <div>
           State works and is retained during movement:
-          {' '}<input type="button" value={value} onClick={this._inc} />
+          {' '}<input type="button" value={value} onClick={() => this._inc()} />
         </div>
       </div>
     );
@@ -73,22 +73,22 @@ export default class Example extends React.Component {
     ]
   };
 
-  _togglePluto: ()=>void = () => {
+  _togglePluto() {
     const noPluto = this.state.list.filter(item => item.name !== 'Pluto');
     if (noPluto.length !== this.state.list.length) {
       this.setState({list: noPluto});
     } else {
       this.setState({list: this.state.list.concat([{name: 'Pluto'}])});
     }
-  };
+  }
 
-  _toggleContainer: ()=>void = () => {
+  _toggleContainer() {
     this.setState({useContainer: !this.state.useContainer});
-  };
+  }
 
-  _onListChange: Function = (newList: Array<Object>) => {
+  _onListChange(newList: Array<Object>) {
     this.setState({list: newList});
-  };
+  }
 
   render() {
     const {useContainer} = this.state;
@@ -110,8 +110,8 @@ export default class Example extends React.Component {
             same part of the screen.
           </p>
           <div>
-            <input type="button" value="Toggle Pluto" onClick={this._togglePluto} />
-            <input type="button" value="Toggle Container" onClick={this._toggleContainer} />
+            <input type="button" value="Toggle Pluto" onClick={() => this._togglePluto()} />
+            <input type="button" value="Toggle Container" onClick={() => this._toggleContainer()} />
           </div>
         </div>
         <div
@@ -126,7 +126,7 @@ export default class Example extends React.Component {
             itemKey="name"
             template={PlanetItem}
             list={this.state.list}
-            onMoveEnd={this._onListChange}
+            onMoveEnd={newList => this._onListChange(newList)}
             container={()=>useContainer ? this.refs.container : document.body}
             />
         </div>
