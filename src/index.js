@@ -418,8 +418,7 @@ export default class DraggableList extends React.Component {
           {({adjustScroll, anySelected}) =>
             <div
               style={{
-                position: 'absolute',
-                width: '1px',
+                display: useAbsolutePositioning ? 'block' : 'none',
                 height: useAbsolutePositioning ? fullContainerHeight : '0'
               }}
               >
