@@ -16,6 +16,10 @@ class TestTemplate extends React.Component {
     return dragHandle(<div className="item">{item.name}</div>);
   }
 
+  getDragHeight() {
+    return 30;
+  }
+
   shouldComponentUpdate(nextProps) {
     return this.props.item !== nextProps.item;
   }

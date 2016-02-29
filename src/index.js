@@ -140,10 +140,10 @@ export default class DraggableList extends React.Component {
           const key = keyFn(item);
           const containerRef = this._itemRefs.get(key);
           const ref = containerRef ? containerRef.getTemplate() : null;
-          return [key, {
-            natural: ref ? findDOMNode(ref).offsetHeight : DEFAULT_HEIGHT.natural,
-            drag: ref && ref.getDragHeight ? ref.getDragHeight() : DEFAULT_HEIGHT.drag
-          }];
+          const natural = ref ?
+            findDOMNode(ref).offsetHeight : DEFAULT_HEIGHT.natural;
+          const drag = ref && ref.getDragHeight && ref.getDragHeight() || natural;
+          return [key, {natural, drag}];
         })
       );
     }

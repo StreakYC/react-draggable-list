@@ -75,9 +75,10 @@ The template component will have its props updated many times quickly during
 the animation, so implementing `shouldComponentUpdate` in its children is
 highly recommended.
 
-The template component may have a `getDragHeight` method which returns a number
-to set the height in pixels of the item while the user is dragging it. If the
-method is not present, then it will default to 30.
+The template component may have a `getDragHeight` method which may return a
+number to set the height in pixels of the item while the user is dragging it.
+If the method returns null or is not present, then the drag height will be
+equal to the element's natural height.
 
 ## Types
 
