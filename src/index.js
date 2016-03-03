@@ -40,6 +40,7 @@ type Props = {
   container?: ?() => ?HTMLElement;
   springConfig: Object;
   padding: number;
+  unsetZIndex: boolean;
 };
 type State = {
   list: Array<Object>;
@@ -50,6 +51,7 @@ type State = {
 type DefaultProps = {
   springConfig: Object;
   padding: number;
+  unsetZIndex: boolean;
 };
 export default class DraggableList extends React.Component {
   props: Props;
@@ -64,11 +66,13 @@ export default class DraggableList extends React.Component {
     onMoveEnd: PropTypes.func,
     container: PropTypes.func,
     springConfig: PropTypes.object,
-    padding: PropTypes.number
+    padding: PropTypes.number,
+    unsetZIndex: PropTypes.bool
   };
   static defaultProps: DefaultProps = {
     springConfig: {stiffness: 300, damping: 50},
-    padding: 10
+    padding: 10,
+    unsetZIndex: false
   };
   _itemRefs: Map<string, Object> = new Map();
   _heights: Map<string, {natural: number, drag: number}> = new Map();
@@ -349,7 +353,7 @@ export default class DraggableList extends React.Component {
   }
 
   render() {
-    const {springConfig, itemKey, container, padding, template} = this.props;
+    const {springConfig, itemKey, container, padding, template, unsetZIndex} = this.props;
     const {list, dragging, lastDrag, useAbsolutePositioning} = this.state;
 
     const keyFn = this._getKeyFn();
@@ -393,7 +397,9 @@ export default class DraggableList extends React.Component {
               itemSelected={itemSelected}
               anySelected={anySelected}
               height={height}
-              zIndex={lastDrag && lastDrag.itemKey === key ? list.length : i}
+              zIndex={unsetZIndex && !useAbsolutePositioning ? 'auto' :
+                (lastDrag && lastDrag.itemKey === key ? list.length : i)
+              }
               makeDragHandle={makeDragHandle}
               />
           }

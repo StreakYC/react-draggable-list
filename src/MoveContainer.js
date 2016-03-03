@@ -11,7 +11,7 @@ type Props = {
   itemSelected: number;
   anySelected: number;
   height: Object;
-  zIndex: number;
+  zIndex: number|string;
   makeDragHandle: Function;
 };
 export default class MoveContainer extends React.Component {
@@ -24,7 +24,10 @@ export default class MoveContainer extends React.Component {
     itemSelected: PropTypes.number.isRequired,
     anySelected: PropTypes.number.isRequired,
     height: PropTypes.object.isRequired,
-    zIndex: PropTypes.number.isRequired,
+    zIndex: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]).isRequired,
     makeDragHandle: PropTypes.func.isRequired
   };
 
