@@ -58,9 +58,9 @@ export default class MoveContainer extends React.Component {
         style={{
           position: y == null ? 'relative' : 'absolute',
           boxSizing: 'border-box',
-          left: '0',
-          right: '0',
-          top: y == null ? '0' : `${y}px`,
+          left: '0px',
+          right: '0px',
+          top: y == null ? '0px' : `${y}px`,
           marginBottom: `${padding}px`,
           height: y == null ? 'auto' :
             `${anySelected*(height.drag-height.natural)+height.natural}px`,

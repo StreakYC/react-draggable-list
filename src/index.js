@@ -425,7 +425,7 @@ export default class DraggableList extends React.Component {
             <div
               style={{
                 display: useAbsolutePositioning ? 'block' : 'none',
-                height: useAbsolutePositioning ? fullContainerHeight : '0'
+                height: useAbsolutePositioning ? fullContainerHeight : '0px'
               }}
               >
               <OnUpdate cb={() => {
