@@ -1,4 +1,5 @@
 /* @flow */
+/* eslint-disable no-console, react/prop-types */
 
 import './lib/testdom';
 import assert from 'assert';
@@ -29,17 +30,21 @@ class TestTemplate extends React.Component {
   }
 }
 
-describe("DraggableList", function() {
+describe('DraggableList', function() {
 
-  it("drag works", async function() {
+  it('drag works', async function() {
     this.slow();
 
     const onMoveEnd = sinon.spy();
 
     let _scrollTop = 0;
     const containerEl: Object = {
-      get scrollTop() { return _scrollTop; },
-      set scrollTop(x) { _scrollTop = x; }
+      get scrollTop() {
+        return _scrollTop;
+      },
+      set scrollTop(x) {
+        _scrollTop = x;
+      }
     };
 
     const list = [
@@ -69,7 +74,7 @@ describe("DraggableList", function() {
 
     const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
     assert(!root.state.dragging);
-    renderedHandles[0]._onMouseDown({pageY: 500, preventDefault(){}});
+    renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
     assert(root.state.dragging);
 
     root._handleMouseMove({pageY: 600});
@@ -128,15 +133,19 @@ describe("DraggableList", function() {
     assert(_scrollTop > 20);
   });
 
-  it("two drags work", async function() {
+  it('two drags work', async function() {
     this.slow();
 
     const onMoveEnd = sinon.spy();
 
     let _scrollTop = 0;
     const containerEl: Object = {
-      get scrollTop() { return _scrollTop; },
-      set scrollTop(x) { _scrollTop = x; }
+      get scrollTop() {
+        return _scrollTop;
+      },
+      set scrollTop(x) {
+        _scrollTop = x;
+      }
     };
 
     const list = [
@@ -166,7 +175,7 @@ describe("DraggableList", function() {
 
     const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
     assert(!root.state.dragging);
-    renderedHandles[0]._onMouseDown({pageY: 500, preventDefault(){}});
+    renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
     assert(root.state.dragging);
 
     root._handleMouseMove({pageY: 600});
@@ -205,7 +214,7 @@ describe("DraggableList", function() {
     );
 
     assert(!root.state.dragging);
-    renderedHandles[0]._onMouseDown({pageY: 600, preventDefault(){}});
+    renderedHandles[0]._onMouseDown({pageY: 600, preventDefault() {}});
     assert(root.state.dragging);
 
     root._handleMouseMove({pageY: 650});
@@ -247,7 +256,7 @@ describe("DraggableList", function() {
     assert(_scrollTop > 20);
   });
 
-  it("props reordered during drag works", function() {
+  it('props reordered during drag works', function() {
     this.slow();
 
     const onMoveEnd = sinon.spy();
@@ -279,7 +288,7 @@ describe("DraggableList", function() {
     );
 
     const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
-    renderedHandles[0]._onMouseDown({pageY: 500, preventDefault(){}});
+    renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
 
     const propReorderedList = [
       {name: 'tucker'},
@@ -334,7 +343,7 @@ describe("DraggableList", function() {
     );
   });
 
-  it("item removed during drag works", function() {
+  it('item removed during drag works', function() {
     this.slow();
 
     const onMoveEnd = sinon.spy();
@@ -366,7 +375,7 @@ describe("DraggableList", function() {
     );
 
     const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
-    renderedHandles[0]._onMouseDown({pageY: 500, preventDefault(){}});
+    renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
 
     const propReorderedList = [
       {name: 'tucker'},

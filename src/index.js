@@ -8,7 +8,6 @@ import saveRefs from 'react-save-refs';
 import DragHandle from './DragHandle';
 import OnUpdate from './OnUpdate';
 import MoveContainer from './MoveContainer';
-import clamp from './clamp';
 
 const DEFAULT_HEIGHT = {natural: 200, drag: 30};
 
@@ -204,9 +203,6 @@ export default class DraggableList extends React.Component {
         containerEl.getBoundingClientRect ?
           containerEl.getBoundingClientRect() :
           {top: 0, bottom: Infinity};
-      const listEl = findDOMNode(this);
-      const listTop = listEl.getBoundingClientRect ?
-        listEl.getBoundingClientRect().top : 0;
 
       // Get the lowest of the screen top and the container top.
       const top = Math.max(0, containerRect.top);
@@ -300,12 +296,12 @@ export default class DraggableList extends React.Component {
     const frameDelta = Math.round(delta - this._lastScrollDelta);
     this._scrollContainer(frameDelta);
     this._lastScrollDelta += frameDelta;
-  };
+  }
 
   _getDragIndex(): number {
     const {list, lastDrag} = this.state;
     if (!lastDrag) {
-      throw new Error("No drag happened");
+      throw new Error('No drag happened');
     }
     const keyFn = this._getKeyFn();
     return list.map(keyFn).indexOf(lastDrag.itemKey);
@@ -353,7 +349,7 @@ export default class DraggableList extends React.Component {
   }
 
   render() {
-    const {springConfig, itemKey, container, padding, template, unsetZIndex} = this.props;
+    const {springConfig, container, padding, template, unsetZIndex} = this.props;
     const {list, dragging, lastDrag, useAbsolutePositioning} = this.state;
 
     const keyFn = this._getKeyFn();
@@ -363,15 +359,15 @@ export default class DraggableList extends React.Component {
       const key = keyFn(item);
       const selectedStyle = dragging && lastDrag && lastDrag.itemKey === key
         ? {
-            itemSelected: spring(1, springConfig),
-            y: lastDrag.mouseY
-          }
+          itemSelected: spring(1, springConfig),
+          y: lastDrag.mouseY
+        }
         : {
-            itemSelected: spring(0, springConfig),
-            y: (useAbsolutePositioning ? spring : x=>x)(dragging && lastDrag ?
+          itemSelected: spring(0, springConfig),
+          y: (useAbsolutePositioning ? spring : x=>x)(dragging && lastDrag ?
               this._getDistanceDuringDrag(lastDrag, i)
               : this._getDistance(0, i, false), springConfig)
-          };
+        };
       const style = {
         anySelected,
         ...selectedStyle

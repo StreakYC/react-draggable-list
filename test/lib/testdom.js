@@ -1,6 +1,6 @@
 function init() {
   if (typeof document !== 'undefined') return;
-  const jsdom = require("jsdom").jsdom
+  const jsdom = require('jsdom').jsdom;
   global.document = jsdom('');
   global.window = document.defaultView;
   global.navigator = window.navigator;

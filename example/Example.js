@@ -1,4 +1,5 @@
 /* @flow */
+/* eslint-disable no-console, react/prop-types */
 
 import React from 'react';
 import cx from 'classnames';
@@ -20,7 +21,7 @@ class PlanetItem extends React.Component {
   }
 
   render() {
-    const {item, itemSelected, anySelected, dragHandle} = this.props;
+    const {item, itemSelected, dragHandle} = this.props;
     const {value} = this.state;
     const scale = itemSelected * 0.05 + 1;
     const shadow = itemSelected * 15 + 1;
@@ -31,7 +32,7 @@ class PlanetItem extends React.Component {
         className={cx('item', {dragged})}
         style={{
           transform: `scale(${scale})`,
-          boxShadow: `rgba(0, 0, 0, 0.3) 0px ${shadow}px ${2 * shadow}px 0px`,
+          boxShadow: `rgba(0, 0, 0, 0.3) 0px ${shadow}px ${2 * shadow}px 0px`
         }}>
         {dragHandle(<div className="dragHandle" />)}
         <h2>{ item.name }</h2>

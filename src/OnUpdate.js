@@ -1,8 +1,8 @@
 /* @flow */
 
-import React, {Component, PropTypes} from 'react';
+import React, {PropTypes} from 'react';
 
-export default class OnUpdate extends Component {
+export default class OnUpdate extends React.Component {
   static propTypes = {
     cb: PropTypes.func.isRequired
   };

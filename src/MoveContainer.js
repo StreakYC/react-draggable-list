@@ -49,8 +49,7 @@ export default class MoveContainer extends React.Component {
 
   render() {
     const {
-      item, y, padding, itemSelected, anySelected, height, zIndex,
-      makeDragHandle, template
+      item, y, padding, itemSelected, anySelected, height, zIndex, template
     } = this.props;
 
     return (
