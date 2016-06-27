@@ -73,7 +73,7 @@ export default class DraggableList extends React.Component {
     padding: 10,
     unsetZIndex: false
   };
-  _itemRefs: Map<string, Object> = new Map();
+  _itemRefs: Map<string, MoveContainer> = new Map();
   _heights: Map<string, {natural: number, drag: number}> = new Map();
   _autoScrollerTimer: any;
 
