@@ -46,7 +46,9 @@ following props:
 * `container`: If the DraggableList is inside a scrollable element, then this
  property should be set to a function which returns a reference to it. When the
  user moves an item in the list, the container will be scrolled to keep the
- item in view.
+ item in view. If the DraggableList is in no scrollable elements besides the
+ page itself, then a function returning a reference to `document.body` should
+ be given.
 * `springConfig` is an optional object which sets the [SpringHelperConfig
  object passed to
  React-Motion](https://github.com/chenglou/react-motion/tree/85ca75c6de9ed85937d1c95646b6044a66981eee#--spring-val-number-config-springhelperconfig--opaqueconfig)
