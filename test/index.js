@@ -30,11 +30,12 @@ class TestTemplate extends React.Component {
   }
 }
 
+const springConfig = {stiffness: 1500, damping: 50};
+
 describe('DraggableList', function() {
+  this.slow(1000);
 
   it('drag works', async function() {
-    this.slow();
-
     const onMoveEnd = sinon.spy();
 
     let _scrollTop = 0;
@@ -62,6 +63,7 @@ describe('DraggableList', function() {
         list={list}
         template={TestTemplate}
         onMoveEnd={onMoveEnd}
+        springConfig={springConfig}
         container={()=>containerEl}
         />
     ): any);
@@ -134,8 +136,6 @@ describe('DraggableList', function() {
   });
 
   it('two drags work', async function() {
-    this.slow();
-
     const onMoveEnd = sinon.spy();
 
     let _scrollTop = 0;
@@ -163,6 +163,7 @@ describe('DraggableList', function() {
         list={list}
         template={TestTemplate}
         onMoveEnd={onMoveEnd}
+        springConfig={springConfig}
         container={()=>containerEl}
         />
     ): any);
@@ -257,8 +258,6 @@ describe('DraggableList', function() {
   });
 
   it('props reordered during drag works', function() {
-    this.slow();
-
     const onMoveEnd = sinon.spy();
 
     const list = [
@@ -277,6 +276,7 @@ describe('DraggableList', function() {
         list={list}
         template={TestTemplate}
         onMoveEnd={onMoveEnd}
+        springConfig={springConfig}
         />,
       div
     ): any);
@@ -305,6 +305,7 @@ describe('DraggableList', function() {
         list={propReorderedList}
         template={TestTemplate}
         onMoveEnd={onMoveEnd}
+        springConfig={springConfig}
         />,
       div
     );
@@ -344,8 +345,6 @@ describe('DraggableList', function() {
   });
 
   it('item removed during drag works', function() {
-    this.slow();
-
     const onMoveEnd = sinon.spy();
 
     const list = [
@@ -364,6 +363,7 @@ describe('DraggableList', function() {
         list={list}
         template={TestTemplate}
         onMoveEnd={onMoveEnd}
+        springConfig={springConfig}
         />,
       div
     ): any);
@@ -391,6 +391,7 @@ describe('DraggableList', function() {
         list={propReorderedList}
         template={TestTemplate}
         onMoveEnd={onMoveEnd}
+        springConfig={springConfig}
         />,
       div
     );
@@ -415,6 +416,87 @@ describe('DraggableList', function() {
     root._handleMouseUp();
     assert(!root.state.dragging);
     assert(onMoveEnd.notCalled);
+
+    assert.deepEqual(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
+        .map(e=>e.props.item),
+      reorderedList
+    );
+  });
+
+  it('item removed before drag end works', async function() {
+    const onMoveEnd = sinon.spy();
+
+    const list = [
+      {name: 'caboose'},
+      {name: 'tucker'},
+      {name: 'church'},
+      {name: 'simmons'},
+      {name: 'sarge'},
+      {name: 'grif'},
+      {name: 'donut'}
+    ];
+    const div = document.createElement('div');
+    const root: DraggableList = (ReactDOM.render(
+      <DraggableList
+        itemKey="name"
+        list={list}
+        template={TestTemplate}
+        onMoveEnd={onMoveEnd}
+        springConfig={springConfig}
+        />,
+      div
+    ): any);
+
+    assert.deepEqual(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
+        .map(e=>e.props.item),
+      list
+    );
+
+    const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
+    renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
+    root._handleMouseMove({pageY: 650});
+    await delay(100);
+
+    const propReorderedList = [
+      {name: 'caboose', extra: 3},
+      {name: 'tucker'},
+      {name: 'church'},
+      {name: 'simmons'},
+      {name: 'sarge'},
+      {name: 'grif', extra: 2}
+    ];
+    ReactDOM.render(
+      <DraggableList
+        itemKey="name"
+        list={propReorderedList}
+        template={TestTemplate}
+        onMoveEnd={onMoveEnd}
+        springConfig={springConfig}
+        />,
+      div
+    );
+
+    const reorderedList = [
+      {name: 'tucker'},
+      {name: 'church'},
+      {name: 'simmons'},
+      {name: 'sarge'},
+      {name: 'caboose', extra: 3},
+      {name: 'grif', extra: 2}
+    ];
+    assert.deepEqual(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
+        .map(e=>e.props.item),
+      reorderedList
+    );
+
+    assert(root.state.dragging);
+    assert(onMoveEnd.notCalled);
+    root._handleMouseUp();
+    assert(!root.state.dragging);
+    assert(onMoveEnd.calledOnce);
 
     assert.deepEqual(
       TestUtils.scryRenderedComponentsWithType(root, TestTemplate)

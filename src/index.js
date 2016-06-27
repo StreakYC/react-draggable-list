@@ -89,16 +89,27 @@ export default class DraggableList extends React.Component {
 
   componentWillReceiveProps(newProps: Props) {
     let {dragging, lastDrag} = this.state;
-    if (dragging && lastDrag) {
-      const keyFn = this._getKeyFn();
-      const dragKey = lastDrag.itemKey;
-      const newListHasDragItem = newProps.list.some(item => keyFn(item) === dragKey);
-      if (!newListHasDragItem) {
+    let {list} = newProps;
+    check: if (dragging && lastDrag) {
+      let newDragIndex;
+      try {
+        newDragIndex = this._getDragIndex(list);
+      } catch (err) {
         dragging = false;
         lastDrag = null;
+        break check;
+      }
+
+      const currentDragIndex = this._getDragIndex();
+      if (currentDragIndex !== newDragIndex) {
+        // Let's change the list so that the new drag index will be the same as
+        // the current so that the dragged item doesn't jump on the screen.
+        list = update(list, {
+          $splice: [[newDragIndex, 1], [currentDragIndex, 0, list[newDragIndex]]]
+        });
       }
     }
-    this.setState({dragging, lastDrag, list: newProps.list});
+    this.setState({dragging, lastDrag, list});
   }
 
   componentWillUnmount() {
@@ -298,13 +309,20 @@ export default class DraggableList extends React.Component {
     this._lastScrollDelta += frameDelta;
   }
 
-  _getDragIndex(): number {
-    const {list, lastDrag} = this.state;
+  _getDragIndex(list: ?Array<Object>, lastDrag: ?Drag): number {
+    if (!list) list = this.state.list;
+    if (!lastDrag) lastDrag = this.state.lastDrag;
     if (!lastDrag) {
       throw new Error('No drag happened');
     }
     const keyFn = this._getKeyFn();
-    return list.map(keyFn).indexOf(lastDrag.itemKey);
+    const {itemKey} = lastDrag;
+    for (let i=0, len=list.length; i < len; i++) {
+      if (keyFn(list[i]) === itemKey) {
+        return i;
+      }
+    }
+    throw new Error('Failed to find drag index');
   }
 
   _getDistance(start: number, end: number, dragging: boolean): number {
