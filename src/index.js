@@ -234,8 +234,8 @@ export default class DraggableList extends React.Component {
       0 : containerEl.scrollTop;
     const mouseY = pageY - lastDrag.mouseOffset + containerScroll;
 
-    // 1 down, -1 up, 0 neither
     const movementFromNatural = mouseY-naturalPosition;
+    // 1 down, -1 up, 0 neither
     const direction = movementFromNatural > 0 ? 1 :
       movementFromNatural < 0 ? -1 : 0;
     let newIndex = dragIndex;
