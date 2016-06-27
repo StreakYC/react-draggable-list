@@ -434,25 +434,30 @@ export default class DraggableList extends React.Component {
     const fullContainerHeight = `${this._getDistance(0, list.length, false)}px`;
     return (
       <div style={{position: 'relative'}}>
-        {container && <Motion style={{adjustScroll, anySelected}}>
-          {({adjustScroll, anySelected}) =>
+        <Motion
+          style={{adjustScroll, anySelected}}
+          onRest={() => {
+            if (!dragging && lastDrag) {
+              this._heights.clear();
+              this.setState({useAbsolutePositioning: false});
+            }
+          }}
+          >
+          {({adjustScroll}) =>
             <div
               style={{
                 display: useAbsolutePositioning ? 'block' : 'none',
                 height: useAbsolutePositioning ? fullContainerHeight : '0px'
               }}
               >
-              <OnUpdate cb={() => {
-                if (!dragging && anySelected === 0 && useAbsolutePositioning) {
-                  this._heights.clear();
-                  this.setState({useAbsolutePositioning: false});
-                } else if (!dragging && lastDrag && useAbsolutePositioning) {
+              {container && <OnUpdate cb={() => {
+                if (!dragging && lastDrag && useAbsolutePositioning) {
                   this._adjustScrollAtEnd(adjustScroll);
                 }
-              }} />
+              }} />}
             </div>
           }
-        </Motion>}
+        </Motion>
         {children}
       </div>
     );
