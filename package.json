@@ -8,7 +8,8 @@
     "example-build": "NODE_ENV=development browserify -t babelify -do example/bundle.js example/main.js",
     "example-watch": "NODE_ENV=development-hmr watchify -v -p browserify-hmr -t babelify -do example/bundle.js example/main.js",
     "example-build-prod": "NODE_ENV=production browserify -t babelify -do example/bundle.js example/main.js",
-    "test": "npm run lint && mocha",
+    "test": "npm run lint && npm run flow_check && mocha",
+    "flow_check": "flow check",
     "lint": "eslint .",
     "lint-fix": "eslint . --fix"
   },
@@ -45,11 +46,11 @@
     "browserify": "^13.0.0",
     "browserify-hmr": "^0.3.1",
     "classnames": "^2.2.3",
-    "eslint": "^2.7.0",
-    "eslint-plugin-react": "^5.2.2",
+    "eslint": "^3.2.2",
+    "eslint-plugin-react": "^6.0.0",
     "flow-copy-source": "^1.0.1",
     "jsdom": "^9.3.0",
-    "mocha": "^2.4.5",
+    "mocha": "^3.0.1",
     "react": "^15.0.0",
     "react-addons-test-utils": "^15.0.0",
     "react-dom": "^15.0.0",
@@ -60,7 +61,7 @@
     "babel-runtime": "^6.5.0",
     "react-addons-update": "^15.0.0",
     "react-motion": "^0.4.4",
-    "react-save-refs": "^1.0.0"
+    "react-save-refs": "^1.0.1"
   },
   "peerDependencies": {
     "react": "^15.0.0",
