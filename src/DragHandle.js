@@ -30,7 +30,7 @@ export default class DragHandle extends React.Component {
     this.props.onTouchStart.call(null, e);
   };
 
-  render(): React.Element {
+  render() {
     return React.Children.only(this.props.children);
   }
 }

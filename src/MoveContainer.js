@@ -31,7 +31,7 @@ export default class MoveContainer extends React.Component {
     makeDragHandle: PropTypes.func.isRequired
   };
 
-  getTemplate(): React.Component {
+  getTemplate(): React.Component<any,any,any> {
     return this.refs.templateContainer.getTemplate();
   }
 

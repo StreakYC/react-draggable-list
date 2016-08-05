@@ -26,7 +26,7 @@ export default class TemplateContainer extends React.Component {
       this.props.template !== nextProps.template;
   }
 
-  getTemplate(): React.Component {
+  getTemplate(): React.Component<any,any,any> {
     return this.refs.template;
   }
 
