@@ -89,7 +89,7 @@ equal to the element's natural height.
 
 ## Types
 
-[Flow Type](http://flowtype.org/) declarations for this module are included! As
+[Flow](https://flowtype.org/) type declarations for this module are included! As
 of Flow v0.22, you must add the following entries to your `.flowconfig` file's
 options section for them to work:
 
