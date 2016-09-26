@@ -59,9 +59,9 @@
     "watchify": "^3.7.0"
   },
   "dependencies": {
-    "babel-runtime": "^6.5.0",
+    "babel-runtime": "^6.11.6",
     "react-addons-update": "^15.0.0",
-    "react-motion": "^0.4.4",
+    "react-motion": "^0.4.5",
     "react-save-refs": "^1.0.1"
   },
   "peerDependencies": {

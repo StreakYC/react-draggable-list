@@ -400,8 +400,9 @@ export default class DraggableList extends React.Component {
       );
       const height = this._heights.get(key) || DEFAULT_HEIGHT;
       return (
-        <Motion style={style} key={key}>
-          {({itemSelected, anySelected, y}) =>
+        <Motion
+          style={style} key={key}
+          children={({itemSelected, anySelected, y}) =>
             <MoveContainer
               ref={saveRefs(this._itemRefs, key)}
               y={useAbsolutePositioning ? y : null}
@@ -417,7 +418,7 @@ export default class DraggableList extends React.Component {
               makeDragHandle={makeDragHandle}
               />
           }
-        </Motion>
+          />
       );
     });
 
@@ -442,8 +443,7 @@ export default class DraggableList extends React.Component {
               this.setState({useAbsolutePositioning: false});
             }
           }}
-          >
-          {({adjustScroll}) =>
+          children={({adjustScroll}) =>
             <div
               style={{
                 display: useAbsolutePositioning ? 'block' : 'none',
@@ -457,7 +457,7 @@ export default class DraggableList extends React.Component {
               }} />}
             </div>
           }
-        </Motion>
+          />
         {children}
       </div>
     );
