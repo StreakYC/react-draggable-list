@@ -1,10 +1,7 @@
 /* @flow */
 /* eslint-disable no-console, react/prop-types */
 
-import './lib/testdom';
-import assert from 'assert';
-import sinon from 'sinon';
-import delay from './lib/delay';
+import delay from 'pdelay';
 import React from 'react';
 import ReactDOM, {findDOMNode} from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
@@ -33,10 +30,8 @@ class TestTemplate extends React.Component {
 const springConfig = {stiffness: 1500, damping: 50};
 
 describe('DraggableList', function() {
-  this.slow(1000);
-
   it('drag works', async function() {
-    const onMoveEnd = sinon.spy();
+    const onMoveEnd = jest.fn();
 
     let _scrollTop = 0;
     const containerEl: Object = {
@@ -68,16 +63,14 @@ describe('DraggableList', function() {
         />
     ): any);
 
-    assert.deepEqual(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
-        .map(e=>e.props.item),
-      list
-    );
+    expect(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+    ).toEqual(list);
 
     const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
-    assert(!root.state.dragging);
+    expect(root.state.dragging).toBe(false);
     renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
-    assert(root.state.dragging);
+    expect(root.state.dragging).toBe(true);
 
     root._handleMouseMove({pageY: 600});
     const reorderedList = [
@@ -89,11 +82,9 @@ describe('DraggableList', function() {
       {name: 'grif'},
       {name: 'donut'}
     ];
-    assert.deepEqual(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
-        .map(e=>e.props.item),
-      reorderedList
-    );
+    expect(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+    ).toEqual(reorderedList);
 
     await delay(30);
 
@@ -107,36 +98,31 @@ describe('DraggableList', function() {
       {name: 'grif'},
       {name: 'donut'}
     ];
-    assert.deepEqual(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
-        .map(e=>e.props.item),
-      reorderedList2
-    );
+    expect(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+    ).toEqual(reorderedList2);
 
-    assert(root.state.dragging);
-    assert(onMoveEnd.notCalled);
+    expect(root.state.dragging).toBe(true);
+    expect(onMoveEnd).toHaveBeenCalledTimes(0);
     root._handleMouseUp();
-    assert(!root.state.dragging);
-    assert(onMoveEnd.calledOnce);
+    expect(root.state.dragging).toBe(false);
+    expect(onMoveEnd).toHaveBeenCalledTimes(1);
 
-    assert.deepEqual(
-      onMoveEnd.args[0],
+    expect(onMoveEnd.mock.calls[0]).toEqual(
       [reorderedList2, {name: 'caboose'}, 0, 4]
     );
 
-    assert.deepEqual(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
-        .map(e=>e.props.item),
-      reorderedList2
-    );
+    expect(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+    ).toEqual(reorderedList2);
 
-    assert.strictEqual(_scrollTop, 0);
+    expect(_scrollTop).toBe(0);
     await delay(30);
-    assert(_scrollTop > 20);
+    expect(_scrollTop).toBeGreaterThan(20);
   });
 
   it('two drags work', async function() {
-    const onMoveEnd = sinon.spy();
+    const onMoveEnd = jest.fn();
 
     let _scrollTop = 0;
     const containerEl: Object = {
@@ -168,16 +154,14 @@ describe('DraggableList', function() {
         />
     ): any);
 
-    assert.deepEqual(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
-        .map(e=>e.props.item),
-      list
-    );
+    expect(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+    ).toEqual(list);
 
     const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
-    assert(!root.state.dragging);
+    expect(root.state.dragging).toBe(false);
     renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
-    assert(root.state.dragging);
+    expect(root.state.dragging).toBe(true);
 
     root._handleMouseMove({pageY: 600});
     const reorderedList = [
@@ -189,34 +173,31 @@ describe('DraggableList', function() {
       {name: 'grif'},
       {name: 'donut'}
     ];
-    assert.deepEqual(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
-        .map(e=>e.props.item),
-      reorderedList
-    );
+    expect(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+    ).toEqual(reorderedList);
 
     await delay(30);
 
-    assert(root.state.dragging);
-    assert(onMoveEnd.notCalled);
+    expect(root.state.dragging).toBe(true);
+    expect(onMoveEnd).toHaveBeenCalledTimes(0);
     root._handleMouseUp();
-    assert(!root.state.dragging);
-    assert(onMoveEnd.calledOnce);
+    expect(root.state.dragging).toBe(false);
+    expect(onMoveEnd).toHaveBeenCalledTimes(1);
 
-    assert.deepEqual(
-      onMoveEnd.args[0],
+    expect(onMoveEnd.mock.calls[0]).toEqual(
       [reorderedList, {name: 'caboose'}, 0, 2]
     );
 
-    assert.deepEqual(
+    expect(
       TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
         .map(e=>e.props.item),
       reorderedList
     );
 
-    assert(!root.state.dragging);
+    expect(root.state.dragging).toBe(false);
     renderedHandles[0]._onMouseDown({pageY: 600, preventDefault() {}});
-    assert(root.state.dragging);
+    expect(root.state.dragging).toBe(true);
 
     root._handleMouseMove({pageY: 650});
 
@@ -229,36 +210,31 @@ describe('DraggableList', function() {
       {name: 'grif'},
       {name: 'donut'}
     ];
-    assert.deepEqual(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
-        .map(e=>e.props.item),
-      reorderedList2
-    );
+    expect(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+    ).toEqual(reorderedList2);
 
-    assert(root.state.dragging);
-    assert(onMoveEnd.calledOnce);
+    expect(root.state.dragging).toBe(true);
+    expect(onMoveEnd).toHaveBeenCalledTimes(1);
     root._handleMouseUp();
-    assert(!root.state.dragging);
-    assert(onMoveEnd.calledTwice);
+    expect(root.state.dragging).toBe(false);
+    expect(onMoveEnd).toHaveBeenCalledTimes(2);
 
-    assert.deepEqual(
-      onMoveEnd.args[1],
+    expect(onMoveEnd.mock.calls[1]).toEqual(
       [reorderedList2, {name: 'caboose'}, 2, 3]
     );
 
-    assert.deepEqual(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
-        .map(e=>e.props.item),
-      reorderedList2
-    );
+    expect(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+    ).toEqual(reorderedList2);
 
-    assert.strictEqual(_scrollTop, 0);
+    expect(_scrollTop).toBe(0);
     await delay(30);
-    assert(_scrollTop > 20);
+    expect(_scrollTop).toBeGreaterThan(20);
   });
 
   it('props reordered during drag works', function() {
-    const onMoveEnd = sinon.spy();
+    const onMoveEnd = jest.fn();
 
     const list = [
       {name: 'caboose'},
@@ -281,11 +257,9 @@ describe('DraggableList', function() {
       div
     ): any);
 
-    assert.deepEqual(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
-        .map(e=>e.props.item),
-      list
-    );
+    expect(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+    ).toEqual(list);
 
     const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
     renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
@@ -320,32 +294,27 @@ describe('DraggableList', function() {
       {name: 'grif'},
       {name: 'donut'}
     ];
-    assert.deepEqual(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
-        .map(e=>e.props.item),
-      reorderedList
-    );
+    expect(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+    ).toEqual(reorderedList);
 
-    assert(root.state.dragging);
-    assert(onMoveEnd.notCalled);
+    expect(root.state.dragging).toBe(true);
+    expect(onMoveEnd).toHaveBeenCalledTimes(0);
     root._handleMouseUp();
-    assert(!root.state.dragging);
-    assert(onMoveEnd.calledOnce);
+    expect(root.state.dragging).toBe(false);
+    expect(onMoveEnd).toHaveBeenCalledTimes(1);
 
-    assert.deepEqual(
-      onMoveEnd.args[0],
+    expect(onMoveEnd.mock.calls[0]).toEqual(
       [reorderedList, {name: 'caboose', extra: 1}, 0, 4]
     );
 
-    assert.deepEqual(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
-        .map(e=>e.props.item),
-      reorderedList
-    );
+    expect(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+    ).toEqual(reorderedList);
   });
 
   it('item removed during drag works', function() {
-    const onMoveEnd = sinon.spy();
+    const onMoveEnd = jest.fn();
 
     const list = [
       {name: 'caboose'},
@@ -368,11 +337,9 @@ describe('DraggableList', function() {
       div
     ): any);
 
-    assert.deepEqual(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
-        .map(e=>e.props.item),
-      list
-    );
+    expect(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+    ).toEqual(list);
 
     const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
     renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
@@ -405,27 +372,23 @@ describe('DraggableList', function() {
       {name: 'grif', extra: 2},
       {name: 'donut'}
     ];
-    assert.deepEqual(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
-        .map(e=>e.props.item),
-      reorderedList
-    );
+    expect(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+    ).toEqual(reorderedList);
 
-    assert(!root.state.dragging);
-    assert(onMoveEnd.notCalled);
+    expect(root.state.dragging).toBe(false);
+    expect(onMoveEnd).toHaveBeenCalledTimes(0);
     root._handleMouseUp();
-    assert(!root.state.dragging);
-    assert(onMoveEnd.notCalled);
+    expect(root.state.dragging).toBe(false);
+    expect(onMoveEnd).toHaveBeenCalledTimes(0);
 
-    assert.deepEqual(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
-        .map(e=>e.props.item),
-      reorderedList
-    );
+    expect(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+    ).toEqual(reorderedList);
   });
 
   it('item removed before drag end works', async function() {
-    const onMoveEnd = sinon.spy();
+    const onMoveEnd = jest.fn();
 
     const list = [
       {name: 'caboose'},
@@ -448,11 +411,9 @@ describe('DraggableList', function() {
       div
     ): any);
 
-    assert.deepEqual(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
-        .map(e=>e.props.item),
-      list
-    );
+    expect(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+    ).toEqual(list);
 
     const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
     renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
@@ -486,22 +447,18 @@ describe('DraggableList', function() {
       {name: 'caboose', extra: 3},
       {name: 'grif', extra: 2}
     ];
-    assert.deepEqual(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
-        .map(e=>e.props.item),
-      reorderedList
-    );
+    expect(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+    ).toEqual(reorderedList);
 
-    assert(root.state.dragging);
-    assert(onMoveEnd.notCalled);
+    expect(root.state.dragging).toBe(true);
+    expect(onMoveEnd).toHaveBeenCalledTimes(0);
     root._handleMouseUp();
-    assert(!root.state.dragging);
-    assert(onMoveEnd.calledOnce);
+    expect(root.state.dragging).toBe(false);
+    expect(onMoveEnd).toHaveBeenCalledTimes(1);
 
-    assert.deepEqual(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
-        .map(e=>e.props.item),
-      reorderedList
-    );
+    expect(
+      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+    ).toEqual(reorderedList);
   });
 });
