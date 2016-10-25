@@ -87,6 +87,12 @@ export default class DraggableList extends React.Component {
     };
   }
 
+  getItemInstance(key: string): Object {
+    const ref = this._itemRefs.get(key);
+    if (!ref) throw new Error('key not found');
+    return ref.getTemplate();
+  }
+
   componentWillReceiveProps(newProps: Props) {
     let {dragging, lastDrag} = this.state;
     let {list} = newProps;

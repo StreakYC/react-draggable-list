@@ -61,6 +61,10 @@ following props:
  and stops animating. Use this if you need to avoid having the list item create
  a stacking context when it's not being animated.
 
+A DraggableList instance has the following methods:
+* `getItemInstance(key)` will return a reference to the mounted instance of the
+ template for a given key.
+
 ## Template
 
 The template component is passed the following props:

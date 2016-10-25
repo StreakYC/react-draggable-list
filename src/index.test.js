@@ -14,6 +14,10 @@ class TestTemplate extends React.Component {
     return dragHandle(<div className="item">{item.name}</div>);
   }
 
+  getName() {
+    return this.props.item.name;
+  }
+
   getDragHeight() {
     return 30;
   }
@@ -66,6 +70,12 @@ describe('DraggableList', function() {
     expect(
       TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
     ).toEqual(list);
+
+    expect(root.getItemInstance('grif').getName()).toBe('grif');
+    expect(root.getItemInstance('grif').getDragHeight()).toBe(30);
+    expect(() => {
+      root.getItemInstance('grif').blah();
+    }).toThrowError();
 
     const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
     expect(root.state.dragging).toBe(false);
