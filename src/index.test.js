@@ -242,7 +242,7 @@ test('two drags work', async () => {
   expect(_scrollTop).toBeGreaterThan(20);
 });
 
-test('props reordered during drag works', function() {
+test('props reordered during drag works', () => {
   const onMoveEnd = jest.fn();
 
   const list = [
@@ -322,7 +322,7 @@ test('props reordered during drag works', function() {
   ).toEqual(reorderedList);
 });
 
-test('item removed during drag works', function() {
+test('item removed during drag works', () => {
   const onMoveEnd = jest.fn();
 
   const list = [
