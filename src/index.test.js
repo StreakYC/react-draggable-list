@@ -532,3 +532,53 @@ test('dragged item removed after drag during animation works', () => {
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
   ).toEqual(listMinusOne);
 });
+
+test('list is shown with correct positions after being fully changed during animation', async () => {
+  const onMoveEnd = jest.fn();
+
+  const div = document.createElement('div');
+  const root: DraggableList = (ReactDOM.render(
+    <DraggableList
+      itemKey="name"
+      list={[
+        {name: 'caboose'},
+        {name: 'tucker'},
+        {name: 'church'},
+        {name: 'simmons'},
+        {name: 'sarge'},
+        {name: 'grif'},
+        {name: 'donut'}
+      ]}
+      template={TestTemplate}
+      onMoveEnd={onMoveEnd}
+      springConfig={springConfig}
+    />,
+    div
+  ): any);
+
+  const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
+  renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
+
+  await delay(20);
+
+  root._handleMouseUp();
+  await delay(1);
+
+  expect(findDOMNode(root.getItemInstance('caboose')).parentElement.style.position).toBe('absolute');
+
+  ReactDOM.render(
+    <DraggableList
+      itemKey="name"
+      list={[
+        {name: 'lopez'},
+        {name: "o'malley"}
+      ]}
+      template={TestTemplate}
+      onMoveEnd={onMoveEnd}
+      springConfig={springConfig}
+    />,
+    div
+  );
+  await delay(200);
+  expect(findDOMNode(root.getItemInstance('lopez')).parentElement.style.position).toBe('relative');
+});

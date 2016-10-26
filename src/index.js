@@ -447,7 +447,7 @@ export default class DraggableList extends React.Component {
         <Motion
           style={{adjustScroll, anySelected}}
           onRest={() => {
-            if (!dragging && lastDrag) {
+            if (!dragging) {
               this._heights.clear();
               this.setState({useAbsolutePositioning: false});
             }
