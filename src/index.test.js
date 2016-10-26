@@ -470,3 +470,65 @@ test('item removed before drag end works', async () => {
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
   ).toEqual(reorderedList);
 });
+
+test('dragged item removed after drag during animation works', () => {
+  const onMoveEnd = jest.fn();
+
+  const list = [
+    {name: 'caboose'},
+    {name: 'tucker'},
+    {name: 'church'},
+    {name: 'simmons'},
+    {name: 'sarge'},
+    {name: 'grif'},
+    {name: 'donut'}
+  ];
+  const div = document.createElement('div');
+  const root: DraggableList = (ReactDOM.render(
+    <DraggableList
+      itemKey="name"
+      list={list}
+      template={TestTemplate}
+      onMoveEnd={onMoveEnd}
+      springConfig={springConfig}
+      />,
+    div
+  ): any);
+
+  expect(
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+  ).toEqual(list);
+
+  const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
+  renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
+  root._handleMouseMove({pageY: 650});
+
+  expect(root.state.dragging).toBe(true);
+  expect(onMoveEnd).toHaveBeenCalledTimes(0);
+  root._handleMouseUp();
+  expect(root.state.dragging).toBe(false);
+  expect(onMoveEnd).toHaveBeenCalledTimes(1);
+
+  const listMinusOne = [
+    {name: 'tucker'},
+    {name: 'church'},
+    {name: 'simmons'},
+    {name: 'sarge'},
+    {name: 'grif'},
+    {name: 'donut'}
+  ];
+  ReactDOM.render(
+    <DraggableList
+      itemKey="name"
+      list={listMinusOne}
+      template={TestTemplate}
+      onMoveEnd={onMoveEnd}
+      springConfig={springConfig}
+      />,
+    div
+  );
+
+  expect(
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+  ).toEqual(listMinusOne);
+});

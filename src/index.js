@@ -96,7 +96,8 @@ export default class DraggableList extends React.Component {
   componentWillReceiveProps(newProps: Props) {
     let {dragging, lastDrag} = this.state;
     let {list} = newProps;
-    check: if (dragging && lastDrag) {
+
+    check: if (lastDrag) {
       let newDragIndex;
       try {
         newDragIndex = this._getDragIndex(list);
@@ -106,13 +107,15 @@ export default class DraggableList extends React.Component {
         break check;
       }
 
-      const currentDragIndex = this._getDragIndex();
-      if (currentDragIndex !== newDragIndex) {
-        // Let's change the list so that the new drag index will be the same as
-        // the current so that the dragged item doesn't jump on the screen.
-        list = update(list, {
-          $splice: [[newDragIndex, 1], [currentDragIndex, 0, list[newDragIndex]]]
-        });
+      if (dragging) {
+        const currentDragIndex = this._getDragIndex();
+        if (currentDragIndex !== newDragIndex) {
+          // Let's change the list so that the new drag index will be the same as
+          // the current so that the dragged item doesn't jump on the screen.
+          list = update(list, {
+            $splice: [[newDragIndex, 1], [currentDragIndex, 0, list[newDragIndex]]]
+          });
+        }
       }
     }
     this.setState({dragging, lastDrag, list});
