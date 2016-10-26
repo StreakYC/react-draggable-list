@@ -33,442 +33,440 @@ class TestTemplate extends React.Component {
 
 const springConfig = {stiffness: 1500, damping: 50};
 
-describe('DraggableList', function() {
-  it('drag works', async function() {
-    const onMoveEnd = jest.fn();
+test('drag works', async () => {
+  const onMoveEnd = jest.fn();
 
-    let _scrollTop = 0;
-    const containerEl: Object = {
-      get scrollTop() {
-        return _scrollTop;
-      },
-      set scrollTop(x) {
-        _scrollTop = x;
-      }
-    };
+  let _scrollTop = 0;
+  const containerEl: Object = {
+    get scrollTop() {
+      return _scrollTop;
+    },
+    set scrollTop(x) {
+      _scrollTop = x;
+    }
+  };
 
-    const list = [
-      {name: 'caboose'},
-      {name: 'tucker'},
-      {name: 'church'},
-      {name: 'simmons'},
-      {name: 'sarge'},
-      {name: 'grif'},
-      {name: 'donut'}
-    ];
-    const root: DraggableList = (TestUtils.renderIntoDocument(
-      <DraggableList
-        itemKey="name"
-        list={list}
-        template={TestTemplate}
-        onMoveEnd={onMoveEnd}
-        springConfig={springConfig}
-        container={()=>containerEl}
-        />
-    ): any);
+  const list = [
+    {name: 'caboose'},
+    {name: 'tucker'},
+    {name: 'church'},
+    {name: 'simmons'},
+    {name: 'sarge'},
+    {name: 'grif'},
+    {name: 'donut'}
+  ];
+  const root: DraggableList = (TestUtils.renderIntoDocument(
+    <DraggableList
+      itemKey="name"
+      list={list}
+      template={TestTemplate}
+      onMoveEnd={onMoveEnd}
+      springConfig={springConfig}
+      container={()=>containerEl}
+      />
+  ): any);
 
-    expect(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
-    ).toEqual(list);
+  expect(
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+  ).toEqual(list);
 
-    expect(root.getItemInstance('grif').getName()).toBe('grif');
-    expect(root.getItemInstance('grif').getDragHeight()).toBe(30);
-    expect(() => {
-      root.getItemInstance('grif').blah();
-    }).toThrowError();
+  expect(root.getItemInstance('grif').getName()).toBe('grif');
+  expect(root.getItemInstance('grif').getDragHeight()).toBe(30);
+  expect(() => {
+    root.getItemInstance('grif').blah();
+  }).toThrowError();
 
-    const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
-    expect(root.state.dragging).toBe(false);
-    renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
-    expect(root.state.dragging).toBe(true);
+  const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
+  expect(root.state.dragging).toBe(false);
+  renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
+  expect(root.state.dragging).toBe(true);
 
-    root._handleMouseMove({pageY: 600});
-    const reorderedList = [
-      {name: 'tucker'},
-      {name: 'church'},
-      {name: 'caboose'},
-      {name: 'simmons'},
-      {name: 'sarge'},
-      {name: 'grif'},
-      {name: 'donut'}
-    ];
-    expect(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
-    ).toEqual(reorderedList);
+  root._handleMouseMove({pageY: 600});
+  const reorderedList = [
+    {name: 'tucker'},
+    {name: 'church'},
+    {name: 'caboose'},
+    {name: 'simmons'},
+    {name: 'sarge'},
+    {name: 'grif'},
+    {name: 'donut'}
+  ];
+  expect(
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+  ).toEqual(reorderedList);
 
-    await delay(30);
+  await delay(30);
 
-    root._handleMouseMove({pageY: 650});
-    const reorderedList2 = [
-      {name: 'tucker'},
-      {name: 'church'},
-      {name: 'simmons'},
-      {name: 'sarge'},
-      {name: 'caboose'},
-      {name: 'grif'},
-      {name: 'donut'}
-    ];
-    expect(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
-    ).toEqual(reorderedList2);
+  root._handleMouseMove({pageY: 650});
+  const reorderedList2 = [
+    {name: 'tucker'},
+    {name: 'church'},
+    {name: 'simmons'},
+    {name: 'sarge'},
+    {name: 'caboose'},
+    {name: 'grif'},
+    {name: 'donut'}
+  ];
+  expect(
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+  ).toEqual(reorderedList2);
 
-    expect(root.state.dragging).toBe(true);
-    expect(onMoveEnd).toHaveBeenCalledTimes(0);
-    root._handleMouseUp();
-    expect(root.state.dragging).toBe(false);
-    expect(onMoveEnd).toHaveBeenCalledTimes(1);
+  expect(root.state.dragging).toBe(true);
+  expect(onMoveEnd).toHaveBeenCalledTimes(0);
+  root._handleMouseUp();
+  expect(root.state.dragging).toBe(false);
+  expect(onMoveEnd).toHaveBeenCalledTimes(1);
 
-    expect(onMoveEnd.mock.calls[0]).toEqual(
-      [reorderedList2, {name: 'caboose'}, 0, 4]
-    );
+  expect(onMoveEnd.mock.calls[0]).toEqual(
+    [reorderedList2, {name: 'caboose'}, 0, 4]
+  );
 
-    expect(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
-    ).toEqual(reorderedList2);
+  expect(
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+  ).toEqual(reorderedList2);
 
-    expect(_scrollTop).toBe(0);
-    await delay(30);
-    expect(_scrollTop).toBeGreaterThan(20);
-  });
+  expect(_scrollTop).toBe(0);
+  await delay(30);
+  expect(_scrollTop).toBeGreaterThan(20);
+});
 
-  it('two drags work', async function() {
-    const onMoveEnd = jest.fn();
+test('two drags work', async () => {
+  const onMoveEnd = jest.fn();
 
-    let _scrollTop = 0;
-    const containerEl: Object = {
-      get scrollTop() {
-        return _scrollTop;
-      },
-      set scrollTop(x) {
-        _scrollTop = x;
-      }
-    };
+  let _scrollTop = 0;
+  const containerEl: Object = {
+    get scrollTop() {
+      return _scrollTop;
+    },
+    set scrollTop(x) {
+      _scrollTop = x;
+    }
+  };
 
-    const list = [
-      {name: 'caboose'},
-      {name: 'tucker'},
-      {name: 'church'},
-      {name: 'simmons'},
-      {name: 'sarge'},
-      {name: 'grif'},
-      {name: 'donut'}
-    ];
-    const root: DraggableList = (TestUtils.renderIntoDocument(
-      <DraggableList
-        itemKey="name"
-        list={list}
-        template={TestTemplate}
-        onMoveEnd={onMoveEnd}
-        springConfig={springConfig}
-        container={()=>containerEl}
-        />
-    ): any);
+  const list = [
+    {name: 'caboose'},
+    {name: 'tucker'},
+    {name: 'church'},
+    {name: 'simmons'},
+    {name: 'sarge'},
+    {name: 'grif'},
+    {name: 'donut'}
+  ];
+  const root: DraggableList = (TestUtils.renderIntoDocument(
+    <DraggableList
+      itemKey="name"
+      list={list}
+      template={TestTemplate}
+      onMoveEnd={onMoveEnd}
+      springConfig={springConfig}
+      container={()=>containerEl}
+      />
+  ): any);
 
-    expect(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
-    ).toEqual(list);
+  expect(
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+  ).toEqual(list);
 
-    const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
-    expect(root.state.dragging).toBe(false);
-    renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
-    expect(root.state.dragging).toBe(true);
+  const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
+  expect(root.state.dragging).toBe(false);
+  renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
+  expect(root.state.dragging).toBe(true);
 
-    root._handleMouseMove({pageY: 600});
-    const reorderedList = [
-      {name: 'tucker'},
-      {name: 'church'},
-      {name: 'caboose'},
-      {name: 'simmons'},
-      {name: 'sarge'},
-      {name: 'grif'},
-      {name: 'donut'}
-    ];
-    expect(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
-    ).toEqual(reorderedList);
+  root._handleMouseMove({pageY: 600});
+  const reorderedList = [
+    {name: 'tucker'},
+    {name: 'church'},
+    {name: 'caboose'},
+    {name: 'simmons'},
+    {name: 'sarge'},
+    {name: 'grif'},
+    {name: 'donut'}
+  ];
+  expect(
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+  ).toEqual(reorderedList);
 
-    await delay(30);
+  await delay(30);
 
-    expect(root.state.dragging).toBe(true);
-    expect(onMoveEnd).toHaveBeenCalledTimes(0);
-    root._handleMouseUp();
-    expect(root.state.dragging).toBe(false);
-    expect(onMoveEnd).toHaveBeenCalledTimes(1);
+  expect(root.state.dragging).toBe(true);
+  expect(onMoveEnd).toHaveBeenCalledTimes(0);
+  root._handleMouseUp();
+  expect(root.state.dragging).toBe(false);
+  expect(onMoveEnd).toHaveBeenCalledTimes(1);
 
-    expect(onMoveEnd.mock.calls[0]).toEqual(
-      [reorderedList, {name: 'caboose'}, 0, 2]
-    );
+  expect(onMoveEnd.mock.calls[0]).toEqual(
+    [reorderedList, {name: 'caboose'}, 0, 2]
+  );
 
-    expect(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
-        .map(e=>e.props.item),
-      reorderedList
-    );
+  expect(
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
+      .map(e=>e.props.item),
+    reorderedList
+  );
 
-    expect(root.state.dragging).toBe(false);
-    renderedHandles[0]._onMouseDown({pageY: 600, preventDefault() {}});
-    expect(root.state.dragging).toBe(true);
+  expect(root.state.dragging).toBe(false);
+  renderedHandles[0]._onMouseDown({pageY: 600, preventDefault() {}});
+  expect(root.state.dragging).toBe(true);
 
-    root._handleMouseMove({pageY: 650});
+  root._handleMouseMove({pageY: 650});
 
-    const reorderedList2 = [
-      {name: 'tucker'},
-      {name: 'church'},
-      {name: 'simmons'},
-      {name: 'caboose'},
-      {name: 'sarge'},
-      {name: 'grif'},
-      {name: 'donut'}
-    ];
-    expect(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
-    ).toEqual(reorderedList2);
+  const reorderedList2 = [
+    {name: 'tucker'},
+    {name: 'church'},
+    {name: 'simmons'},
+    {name: 'caboose'},
+    {name: 'sarge'},
+    {name: 'grif'},
+    {name: 'donut'}
+  ];
+  expect(
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+  ).toEqual(reorderedList2);
 
-    expect(root.state.dragging).toBe(true);
-    expect(onMoveEnd).toHaveBeenCalledTimes(1);
-    root._handleMouseUp();
-    expect(root.state.dragging).toBe(false);
-    expect(onMoveEnd).toHaveBeenCalledTimes(2);
+  expect(root.state.dragging).toBe(true);
+  expect(onMoveEnd).toHaveBeenCalledTimes(1);
+  root._handleMouseUp();
+  expect(root.state.dragging).toBe(false);
+  expect(onMoveEnd).toHaveBeenCalledTimes(2);
 
-    expect(onMoveEnd.mock.calls[1]).toEqual(
-      [reorderedList2, {name: 'caboose'}, 2, 3]
-    );
+  expect(onMoveEnd.mock.calls[1]).toEqual(
+    [reorderedList2, {name: 'caboose'}, 2, 3]
+  );
 
-    expect(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
-    ).toEqual(reorderedList2);
+  expect(
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+  ).toEqual(reorderedList2);
 
-    expect(_scrollTop).toBe(0);
-    await delay(30);
-    expect(_scrollTop).toBeGreaterThan(20);
-  });
+  expect(_scrollTop).toBe(0);
+  await delay(30);
+  expect(_scrollTop).toBeGreaterThan(20);
+});
 
-  it('props reordered during drag works', function() {
-    const onMoveEnd = jest.fn();
+test('props reordered during drag works', function() {
+  const onMoveEnd = jest.fn();
 
-    const list = [
-      {name: 'caboose'},
-      {name: 'tucker'},
-      {name: 'church'},
-      {name: 'simmons'},
-      {name: 'sarge'},
-      {name: 'grif'},
-      {name: 'donut'}
-    ];
-    const div = document.createElement('div');
-    const root: DraggableList = (ReactDOM.render(
-      <DraggableList
-        itemKey="name"
-        list={list}
-        template={TestTemplate}
-        onMoveEnd={onMoveEnd}
-        springConfig={springConfig}
-        />,
-      div
-    ): any);
+  const list = [
+    {name: 'caboose'},
+    {name: 'tucker'},
+    {name: 'church'},
+    {name: 'simmons'},
+    {name: 'sarge'},
+    {name: 'grif'},
+    {name: 'donut'}
+  ];
+  const div = document.createElement('div');
+  const root: DraggableList = (ReactDOM.render(
+    <DraggableList
+      itemKey="name"
+      list={list}
+      template={TestTemplate}
+      onMoveEnd={onMoveEnd}
+      springConfig={springConfig}
+      />,
+    div
+  ): any);
 
-    expect(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
-    ).toEqual(list);
+  expect(
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+  ).toEqual(list);
 
-    const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
-    renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
+  const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
+  renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
 
-    const propReorderedList = [
-      {name: 'tucker'},
-      {name: 'church'},
-      {name: 'simmons'},
-      {name: 'sarge'},
-      {name: 'grif'},
-      {name: 'caboose', extra: 1},
-      {name: 'donut'}
-    ];
-    ReactDOM.render(
-      <DraggableList
-        itemKey="name"
-        list={propReorderedList}
-        template={TestTemplate}
-        onMoveEnd={onMoveEnd}
-        springConfig={springConfig}
-        />,
-      div
-    );
+  const propReorderedList = [
+    {name: 'tucker'},
+    {name: 'church'},
+    {name: 'simmons'},
+    {name: 'sarge'},
+    {name: 'grif'},
+    {name: 'caboose', extra: 1},
+    {name: 'donut'}
+  ];
+  ReactDOM.render(
+    <DraggableList
+      itemKey="name"
+      list={propReorderedList}
+      template={TestTemplate}
+      onMoveEnd={onMoveEnd}
+      springConfig={springConfig}
+      />,
+    div
+  );
 
-    root._handleMouseMove({pageY: 650});
-    const reorderedList = [
-      {name: 'tucker'},
-      {name: 'church'},
-      {name: 'simmons'},
-      {name: 'sarge'},
-      {name: 'caboose', extra: 1},
-      {name: 'grif'},
-      {name: 'donut'}
-    ];
-    expect(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
-    ).toEqual(reorderedList);
+  root._handleMouseMove({pageY: 650});
+  const reorderedList = [
+    {name: 'tucker'},
+    {name: 'church'},
+    {name: 'simmons'},
+    {name: 'sarge'},
+    {name: 'caboose', extra: 1},
+    {name: 'grif'},
+    {name: 'donut'}
+  ];
+  expect(
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+  ).toEqual(reorderedList);
 
-    expect(root.state.dragging).toBe(true);
-    expect(onMoveEnd).toHaveBeenCalledTimes(0);
-    root._handleMouseUp();
-    expect(root.state.dragging).toBe(false);
-    expect(onMoveEnd).toHaveBeenCalledTimes(1);
+  expect(root.state.dragging).toBe(true);
+  expect(onMoveEnd).toHaveBeenCalledTimes(0);
+  root._handleMouseUp();
+  expect(root.state.dragging).toBe(false);
+  expect(onMoveEnd).toHaveBeenCalledTimes(1);
 
-    expect(onMoveEnd.mock.calls[0]).toEqual(
-      [reorderedList, {name: 'caboose', extra: 1}, 0, 4]
-    );
+  expect(onMoveEnd.mock.calls[0]).toEqual(
+    [reorderedList, {name: 'caboose', extra: 1}, 0, 4]
+  );
 
-    expect(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
-    ).toEqual(reorderedList);
-  });
+  expect(
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+  ).toEqual(reorderedList);
+});
 
-  it('item removed during drag works', function() {
-    const onMoveEnd = jest.fn();
+test('item removed during drag works', function() {
+  const onMoveEnd = jest.fn();
 
-    const list = [
-      {name: 'caboose'},
-      {name: 'tucker'},
-      {name: 'church'},
-      {name: 'simmons'},
-      {name: 'sarge'},
-      {name: 'grif'},
-      {name: 'donut'}
-    ];
-    const div = document.createElement('div');
-    const root: DraggableList = (ReactDOM.render(
-      <DraggableList
-        itemKey="name"
-        list={list}
-        template={TestTemplate}
-        onMoveEnd={onMoveEnd}
-        springConfig={springConfig}
-        />,
-      div
-    ): any);
+  const list = [
+    {name: 'caboose'},
+    {name: 'tucker'},
+    {name: 'church'},
+    {name: 'simmons'},
+    {name: 'sarge'},
+    {name: 'grif'},
+    {name: 'donut'}
+  ];
+  const div = document.createElement('div');
+  const root: DraggableList = (ReactDOM.render(
+    <DraggableList
+      itemKey="name"
+      list={list}
+      template={TestTemplate}
+      onMoveEnd={onMoveEnd}
+      springConfig={springConfig}
+      />,
+    div
+  ): any);
 
-    expect(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
-    ).toEqual(list);
+  expect(
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+  ).toEqual(list);
 
-    const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
-    renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
+  const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
+  renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
 
-    const propReorderedList = [
-      {name: 'tucker'},
-      {name: 'church'},
-      {name: 'simmons'},
-      {name: 'sarge'},
-      {name: 'grif', extra: 2},
-      {name: 'donut'}
-    ];
-    ReactDOM.render(
-      <DraggableList
-        itemKey="name"
-        list={propReorderedList}
-        template={TestTemplate}
-        onMoveEnd={onMoveEnd}
-        springConfig={springConfig}
-        />,
-      div
-    );
+  const propReorderedList = [
+    {name: 'tucker'},
+    {name: 'church'},
+    {name: 'simmons'},
+    {name: 'sarge'},
+    {name: 'grif', extra: 2},
+    {name: 'donut'}
+  ];
+  ReactDOM.render(
+    <DraggableList
+      itemKey="name"
+      list={propReorderedList}
+      template={TestTemplate}
+      onMoveEnd={onMoveEnd}
+      springConfig={springConfig}
+      />,
+    div
+  );
 
-    root._handleMouseMove({pageY: 650});
-    const reorderedList = [
-      {name: 'tucker'},
-      {name: 'church'},
-      {name: 'simmons'},
-      {name: 'sarge'},
-      {name: 'grif', extra: 2},
-      {name: 'donut'}
-    ];
-    expect(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
-    ).toEqual(reorderedList);
+  root._handleMouseMove({pageY: 650});
+  const reorderedList = [
+    {name: 'tucker'},
+    {name: 'church'},
+    {name: 'simmons'},
+    {name: 'sarge'},
+    {name: 'grif', extra: 2},
+    {name: 'donut'}
+  ];
+  expect(
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+  ).toEqual(reorderedList);
 
-    expect(root.state.dragging).toBe(false);
-    expect(onMoveEnd).toHaveBeenCalledTimes(0);
-    root._handleMouseUp();
-    expect(root.state.dragging).toBe(false);
-    expect(onMoveEnd).toHaveBeenCalledTimes(0);
+  expect(root.state.dragging).toBe(false);
+  expect(onMoveEnd).toHaveBeenCalledTimes(0);
+  root._handleMouseUp();
+  expect(root.state.dragging).toBe(false);
+  expect(onMoveEnd).toHaveBeenCalledTimes(0);
 
-    expect(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
-    ).toEqual(reorderedList);
-  });
+  expect(
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+  ).toEqual(reorderedList);
+});
 
-  it('item removed before drag end works', async function() {
-    const onMoveEnd = jest.fn();
+test('item removed before drag end works', async () => {
+  const onMoveEnd = jest.fn();
 
-    const list = [
-      {name: 'caboose'},
-      {name: 'tucker'},
-      {name: 'church'},
-      {name: 'simmons'},
-      {name: 'sarge'},
-      {name: 'grif'},
-      {name: 'donut'}
-    ];
-    const div = document.createElement('div');
-    const root: DraggableList = (ReactDOM.render(
-      <DraggableList
-        itemKey="name"
-        list={list}
-        template={TestTemplate}
-        onMoveEnd={onMoveEnd}
-        springConfig={springConfig}
-        />,
-      div
-    ): any);
+  const list = [
+    {name: 'caboose'},
+    {name: 'tucker'},
+    {name: 'church'},
+    {name: 'simmons'},
+    {name: 'sarge'},
+    {name: 'grif'},
+    {name: 'donut'}
+  ];
+  const div = document.createElement('div');
+  const root: DraggableList = (ReactDOM.render(
+    <DraggableList
+      itemKey="name"
+      list={list}
+      template={TestTemplate}
+      onMoveEnd={onMoveEnd}
+      springConfig={springConfig}
+      />,
+    div
+  ): any);
 
-    expect(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
-    ).toEqual(list);
+  expect(
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+  ).toEqual(list);
 
-    const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
-    renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
-    root._handleMouseMove({pageY: 650});
-    await delay(100);
+  const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
+  renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
+  root._handleMouseMove({pageY: 650});
+  await delay(100);
 
-    const propReorderedList = [
-      {name: 'caboose', extra: 3},
-      {name: 'tucker'},
-      {name: 'church'},
-      {name: 'simmons'},
-      {name: 'sarge'},
-      {name: 'grif', extra: 2}
-    ];
-    ReactDOM.render(
-      <DraggableList
-        itemKey="name"
-        list={propReorderedList}
-        template={TestTemplate}
-        onMoveEnd={onMoveEnd}
-        springConfig={springConfig}
-        />,
-      div
-    );
+  const propReorderedList = [
+    {name: 'caboose', extra: 3},
+    {name: 'tucker'},
+    {name: 'church'},
+    {name: 'simmons'},
+    {name: 'sarge'},
+    {name: 'grif', extra: 2}
+  ];
+  ReactDOM.render(
+    <DraggableList
+      itemKey="name"
+      list={propReorderedList}
+      template={TestTemplate}
+      onMoveEnd={onMoveEnd}
+      springConfig={springConfig}
+      />,
+    div
+  );
 
-    const reorderedList = [
-      {name: 'tucker'},
-      {name: 'church'},
-      {name: 'simmons'},
-      {name: 'sarge'},
-      {name: 'caboose', extra: 3},
-      {name: 'grif', extra: 2}
-    ];
-    expect(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
-    ).toEqual(reorderedList);
+  const reorderedList = [
+    {name: 'tucker'},
+    {name: 'church'},
+    {name: 'simmons'},
+    {name: 'sarge'},
+    {name: 'caboose', extra: 3},
+    {name: 'grif', extra: 2}
+  ];
+  expect(
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+  ).toEqual(reorderedList);
 
-    expect(root.state.dragging).toBe(true);
-    expect(onMoveEnd).toHaveBeenCalledTimes(0);
-    root._handleMouseUp();
-    expect(root.state.dragging).toBe(false);
-    expect(onMoveEnd).toHaveBeenCalledTimes(1);
+  expect(root.state.dragging).toBe(true);
+  expect(onMoveEnd).toHaveBeenCalledTimes(0);
+  root._handleMouseUp();
+  expect(root.state.dragging).toBe(false);
+  expect(onMoveEnd).toHaveBeenCalledTimes(1);
 
-    expect(
-      TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
-    ).toEqual(reorderedList);
-  });
+  expect(
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+  ).toEqual(reorderedList);
 });
