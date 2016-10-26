@@ -425,9 +425,9 @@ export default class DraggableList extends React.Component {
                 (lastDrag && lastDrag.itemKey === key ? list.length : i)
               }
               makeDragHandle={makeDragHandle}
-              />
+            />
           }
-          />
+        />
       );
     });
 
@@ -458,7 +458,7 @@ export default class DraggableList extends React.Component {
                 display: useAbsolutePositioning ? 'block' : 'none',
                 height: useAbsolutePositioning ? fullContainerHeight : '0px'
               }}
-              >
+            >
               {container && <OnUpdate cb={() => {
                 if (!dragging && lastDrag && useAbsolutePositioning) {
                   this._adjustScrollAtEnd(adjustScroll);
@@ -466,7 +466,7 @@ export default class DraggableList extends React.Component {
               }} />}
             </div>
           }
-          />
+        />
         {children}
       </div>
     );

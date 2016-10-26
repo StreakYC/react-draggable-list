@@ -41,7 +41,7 @@ export default class TemplateContainer extends React.Component {
         itemSelected={itemSelected}
         anySelected={anySelected}
         dragHandle={dragHandle}
-        />
+      />
     );
   }
 }

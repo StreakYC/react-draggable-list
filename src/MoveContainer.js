@@ -65,7 +65,7 @@ export default class MoveContainer extends React.Component {
             `${anySelected*(height.drag-height.natural)+height.natural}px`,
           zIndex
         }}
-        >
+      >
         <TemplateContainer
           ref="templateContainer"
           item={item}
@@ -73,7 +73,7 @@ export default class MoveContainer extends React.Component {
           itemSelected={itemSelected}
           anySelected={anySelected}
           dragHandle={this._dragHandle}
-          />
+        />
       </div>
     );
   }

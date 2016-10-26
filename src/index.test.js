@@ -63,7 +63,7 @@ test('drag works', async () => {
       onMoveEnd={onMoveEnd}
       springConfig={springConfig}
       container={()=>containerEl}
-      />
+    />
   ): any);
 
   expect(
@@ -160,7 +160,7 @@ test('two drags work', async () => {
       onMoveEnd={onMoveEnd}
       springConfig={springConfig}
       container={()=>containerEl}
-      />
+    />
   ): any);
 
   expect(
@@ -262,7 +262,7 @@ test('props reordered during drag works', () => {
       template={TestTemplate}
       onMoveEnd={onMoveEnd}
       springConfig={springConfig}
-      />,
+    />,
     div
   ): any);
 
@@ -289,7 +289,7 @@ test('props reordered during drag works', () => {
       template={TestTemplate}
       onMoveEnd={onMoveEnd}
       springConfig={springConfig}
-      />,
+    />,
     div
   );
 
@@ -342,7 +342,7 @@ test('item removed during drag works', () => {
       template={TestTemplate}
       onMoveEnd={onMoveEnd}
       springConfig={springConfig}
-      />,
+    />,
     div
   ): any);
 
@@ -368,7 +368,7 @@ test('item removed during drag works', () => {
       template={TestTemplate}
       onMoveEnd={onMoveEnd}
       springConfig={springConfig}
-      />,
+    />,
     div
   );
 
@@ -416,7 +416,7 @@ test('item removed before drag end works', async () => {
       template={TestTemplate}
       onMoveEnd={onMoveEnd}
       springConfig={springConfig}
-      />,
+    />,
     div
   ): any);
 
@@ -444,7 +444,7 @@ test('item removed before drag end works', async () => {
       template={TestTemplate}
       onMoveEnd={onMoveEnd}
       springConfig={springConfig}
-      />,
+    />,
     div
   );
 
@@ -491,7 +491,7 @@ test('dragged item removed after drag during animation works', () => {
       template={TestTemplate}
       onMoveEnd={onMoveEnd}
       springConfig={springConfig}
-      />,
+    />,
     div
   ): any);
 
@@ -524,7 +524,7 @@ test('dragged item removed after drag during animation works', () => {
       template={TestTemplate}
       onMoveEnd={onMoveEnd}
       springConfig={springConfig}
-      />,
+    />,
     div
   );
 

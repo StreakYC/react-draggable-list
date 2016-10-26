@@ -33,7 +33,8 @@ class PlanetItem extends React.Component {
         style={{
           transform: `scale(${scale})`,
           boxShadow: `rgba(0, 0, 0, 0.3) 0px ${shadow}px ${2 * shadow}px 0px`
-        }}>
+        }}
+      >
         {dragHandle(<div className="dragHandle" />)}
         <h2>{ item.name }</h2>
         {item.subtitle &&
@@ -122,14 +123,14 @@ export default class Example extends React.Component {
             height: useContainer ? '200px' : '',
             border: useContainer ? '1px solid gray' : ''
           }}
-          >
+        >
           <DraggableList
             itemKey="name"
             template={PlanetItem}
             list={this.state.list}
             onMoveEnd={newList => this._onListChange(newList)}
             container={()=>useContainer ? this.refs.container : document.body}
-            />
+          />
         </div>
       </div>
     );
