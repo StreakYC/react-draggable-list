@@ -1,3 +1,6 @@
+// flow-typed signature: 3b21869742281dd21ab4a75770bbdf69
+// flow-typed version: e3b0f30349/jest_v17.x.x/flow_>=v0.33.x
+
 type JestMockFn = {
   (...args: Array<any>): any;
   mock: {
@@ -5,6 +8,7 @@ type JestMockFn = {
     instances: mixed;
   };
   mockClear(): Function;
+  mockReset(): Function;
   mockImplementation(fn: Function): JestMockFn;
   mockImplementationOnce(fn: Function): JestMockFn;
   mockReturnThis(): void;
@@ -33,6 +37,13 @@ type JestClockType = {
   uninstall(): void;
 }
 
+type JestMatcherResult = {
+  message?: string | ()=>string;
+  pass: boolean;
+};
+
+type JestMatcher = (actual: any, expected: any) => JestMatcherResult;
+
 type JestExpectType = {
   not: JestExpectType;
   lastCalledWith(...args: Array<any>): void;
@@ -59,7 +70,7 @@ type JestExpectType = {
   toMatch(regexp: RegExp): void;
   toMatchSnapshot(): void;
   toThrow(message?: string | Error): void;
-  toThrowError(message?: string): void;
+  toThrowError(message?: string | Error | RegExp): void;
   toThrowErrorMatchingSnapshot(): void;
 }
 
@@ -84,7 +95,10 @@ declare var fdescribe: typeof describe;
 declare var xit: typeof it;
 declare var xtest: typeof it;
 
-declare function expect(value: any): JestExpectType;
+declare var expect: {
+  (value: any): JestExpectType;
+  extend(matchers: {[name:string]: JestMatcher}): void;
+};
 
 // TODO handle return type
 // http://jasmine.github.io/2.4/introduction.html#section-Spies
@@ -93,7 +107,7 @@ declare function spyOn(value: mixed, method: string): Object;
 declare var jest: {
   autoMockOff(): void;
   autoMockOn(): void;
-  clearAllMocks(): void;
+  resetAllMocks(): void;
   clearAllTimers(): void;
   currentTestPath(): void;
   disableAutomock(): void;
