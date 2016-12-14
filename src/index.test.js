@@ -559,7 +559,7 @@ test('list is shown with correct positions after being fully changed during anim
   const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
   renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
 
-  await delay(20);
+  await delay(100);
 
   root._handleMouseUp();
   await delay(1);
