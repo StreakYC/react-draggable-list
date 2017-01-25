@@ -136,7 +136,7 @@ export default class DraggableList extends React.Component {
   }
 
   _handleStartDrag(itemKey: string, pressY: ?number, pageY: number) {
-    document.documentElement.style.cursor = 'move';
+    if (document.documentElement) document.documentElement.style.cursor = 'move';
     window.addEventListener('mouseup', this._handleMouseUp);
     window.addEventListener('touchend', this._handleMouseUp);
     window.addEventListener('touchmove', this._handleTouchMove);
@@ -287,7 +287,7 @@ export default class DraggableList extends React.Component {
     window.removeEventListener('touchmove', this._handleTouchMove);
     window.removeEventListener('mousemove', this._handleMouseMove);
 
-    document.documentElement.style.cursor = '';
+    if (document.documentElement) document.documentElement.style.cursor = '';
     this._lastScrollDelta = 0;
 
     const {onMoveEnd} = this.props;
