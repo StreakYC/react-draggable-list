@@ -37,8 +37,10 @@ following props:
 * `itemKey` must be the name of a property of the list's objects to use as a
  key to identify the objects, or it must be a function that takes an object as
  an argument and returns a key.
-* `template` must be a React component used to render the list items. See the
- next section for a description of the props passed to the component.
+* `template` must be a React component used to render the list items. This must
+ not be a stateless-functional component. If possible, don't pass a new
+ class instance on every render. See the next section for more information
+ on the template including a description of the props passed to the component.
 * `onMoveEnd` may be a function which will be called when the user drags and
  drops an item to a new position in the list. The arguments to the function
  will be `(newList: Array<Object>, movedItem: Object, oldIndex: number,
