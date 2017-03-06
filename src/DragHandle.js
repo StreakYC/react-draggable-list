@@ -12,12 +12,14 @@ export default class DragHandle extends React.Component {
 
   componentDidMount() {
     const node = findDOMNode(this);
+    if (!node) throw new Error('DragHandle missing element');
     node.addEventListener('mousedown', this._onMouseDown);
     node.addEventListener('touchstart', this._onTouchStart);
   }
 
   componentWillUnmount() {
     const node = findDOMNode(this);
+    if (!node) throw new Error('DragHandle missing element');
     node.removeEventListener('mousedown', this._onMouseDown);
     node.removeEventListener('touchstart', this._onTouchStart);
   }

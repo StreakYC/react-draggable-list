@@ -3,10 +3,16 @@
 
 import delay from 'pdelay';
 import React from 'react';
-import ReactDOM, {findDOMNode} from 'react-dom';
+import ReactDOM, {findDOMNode as _findDOMNode} from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
 import DraggableList from '../src';
 import DragHandle from '../src/DragHandle';
+
+function findDOMNode(cmp) {
+  const el = _findDOMNode(cmp);
+  if (!(el instanceof HTMLElement)) throw new Error();
+  return el;
+}
 
 class TestTemplate extends React.Component {
   render() {
@@ -27,7 +33,11 @@ class TestTemplate extends React.Component {
   }
 
   componentDidMount() {
-    findDOMNode(this).offsetHeight = 115;
+    const el = findDOMNode(this);
+    if (!el) throw new Error();
+    (Object:any).defineProperty(el, 'offsetHeight', {
+      get: () => 115
+    });
   }
 }
 
@@ -564,7 +574,7 @@ test('list is shown with correct positions after being fully changed during anim
   root._handleMouseUp();
   await delay(1);
 
-  expect(findDOMNode(root.getItemInstance('caboose')).parentElement.style.position).toBe('absolute');
+  expect((findDOMNode(root.getItemInstance('caboose')).parentElement:any).style.position).toBe('absolute');
 
   ReactDOM.render(
     <DraggableList
@@ -580,5 +590,5 @@ test('list is shown with correct positions after being fully changed during anim
     div
   );
   await delay(200);
-  expect(findDOMNode(root.getItemInstance('lopez')).parentElement.style.position).toBe('relative');
+  expect((findDOMNode(root.getItemInstance('lopez')).parentElement:any).style.position).toBe('relative');
 });

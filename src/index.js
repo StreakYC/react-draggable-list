@@ -147,6 +147,7 @@ export default class DraggableList extends React.Component {
     // Stop that.
     {
       const listEl = findDOMNode(this);
+      if (!(listEl instanceof HTMLElement)) throw new Error('Should not happen');
       if (
         listEl.contains && document.activeElement &&
         listEl.contains(document.activeElement)
@@ -163,8 +164,9 @@ export default class DraggableList extends React.Component {
           const key = keyFn(item);
           const containerRef = this._itemRefs.get(key);
           const ref = containerRef ? containerRef.getTemplate() : null;
-          const natural = ref ?
-            findDOMNode(ref).offsetHeight : DEFAULT_HEIGHT.natural;
+          const refEl = ref ? findDOMNode(ref) : null;
+          const natural = (refEl instanceof HTMLElement) ?
+            refEl.offsetHeight : DEFAULT_HEIGHT.natural;
           const drag = ref && (typeof ref.getDragHeight === 'function') && ref.getDragHeight() || natural;
           return [key, {natural, drag}];
         })
