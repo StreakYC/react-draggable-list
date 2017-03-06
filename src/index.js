@@ -38,7 +38,7 @@ type Props = {
   unsetZIndex: boolean;
   autoScrollMaxSpeed: number;
   autoScrollRegionSize: number;
-  additionalProps: ?Object;
+  additionalProps?: ?Object;
 };
 type State = {
   list: Array<Object>;

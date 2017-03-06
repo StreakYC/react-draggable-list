@@ -8,7 +8,7 @@ type Props = {
   itemSelected: number;
   anySelected: number;
   dragHandle: Function;
-  additionalProps: Object;
+  additionalProps?: ?Object;
 };
 export default class TemplateContainer extends React.Component {
   props: Props;

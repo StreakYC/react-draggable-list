@@ -13,7 +13,7 @@ type Props = {
   height: Object;
   zIndex: number|string;
   makeDragHandle: Function;
-  additionalProps: Object;
+  additionalProps?: ?Object;
 };
 export default class MoveContainer extends React.Component {
   props: Props;
