@@ -38,6 +38,7 @@ type Props = {
   unsetZIndex: boolean;
   autoScrollMaxSpeed: number;
   autoScrollRegionSize: number;
+  commonProps?: ?Object;
 };
 type State = {
   list: Array<Object>;
@@ -68,7 +69,8 @@ export default class DraggableList extends React.Component {
     padding: PropTypes.number,
     unsetZIndex: PropTypes.bool,
     autoScrollMaxSpeed: PropTypes.number.isRequired,
-    autoScrollRegionSize: PropTypes.number.isRequired
+    autoScrollRegionSize: PropTypes.number.isRequired,
+    commonProps: PropTypes.object
   };
   static defaultProps: DefaultProps = {
     springConfig: {stiffness: 300, damping: 50},
@@ -386,7 +388,7 @@ export default class DraggableList extends React.Component {
   }
 
   render() {
-    const {springConfig, container, padding, template, unsetZIndex} = this.props;
+    const {springConfig, container, padding, template, unsetZIndex, commonProps} = this.props;
     const {list, dragging, lastDrag, useAbsolutePositioning} = this.state;
 
     const keyFn = this._getKeyFn();
@@ -435,6 +437,7 @@ export default class DraggableList extends React.Component {
                 (lastDrag && lastDrag.itemKey === key ? list.length : i)
               }
               makeDragHandle={makeDragHandle}
+              commonProps={commonProps}
             />
           }
         />
