@@ -65,6 +65,7 @@ test('drag works', async () => {
     {name: 'grif'},
     {name: 'donut'}
   ];
+  const commonProps = {a: 'foo'};
   const root: DraggableList = (TestUtils.renderIntoDocument(
     <DraggableList
       itemKey="name"
@@ -73,6 +74,7 @@ test('drag works', async () => {
       onMoveEnd={onMoveEnd}
       springConfig={springConfig}
       container={()=>containerEl}
+      commonProps={commonProps}
     />
   ): any);
 
@@ -82,9 +84,7 @@ test('drag works', async () => {
 
   expect(root.getItemInstance('grif').getName()).toBe('grif');
   expect(root.getItemInstance('grif').getDragHeight()).toBe(30);
-  expect(() => {
-    root.getItemInstance('grif').blah();
-  }).toThrowError();
+  expect(root.getItemInstance('grif').props.commonProps).toBe(commonProps);
 
   const renderedHandles = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
   expect(root.state.dragging).toBe(false);
