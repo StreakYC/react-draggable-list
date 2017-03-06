@@ -19,6 +19,11 @@ export default class TemplateContainer extends React.Component {
     dragHandle: PropTypes.func.isRequired
   };
 
+  _template: React.Component<any,any,any>;
+  _templateSetter = (cmp: *) => {
+    this._template = cmp;
+  };
+
   shouldComponentUpdate(nextProps: Props): boolean {
     return this.props.anySelected !== nextProps.anySelected ||
       this.props.itemSelected !== nextProps.itemSelected ||
@@ -27,7 +32,7 @@ export default class TemplateContainer extends React.Component {
   }
 
   getTemplate(): React.Component<any,any,any> {
-    return this.refs.template;
+    return this._template;
   }
 
   render() {
@@ -36,7 +41,7 @@ export default class TemplateContainer extends React.Component {
 
     return (
       <Template
-        ref="template"
+        ref={this._templateSetter}
         item={item}
         itemSelected={itemSelected}
         anySelected={anySelected}

@@ -31,8 +31,13 @@ export default class MoveContainer extends React.Component {
     makeDragHandle: PropTypes.func.isRequired
   };
 
+  _templateContainer: TemplateContainer;
+  _templateContainerSetter = (cmp: TemplateContainer) => {
+    this._templateContainer = cmp;
+  };
+
   getTemplate(): React.Component<any,any,any> {
-    return this.refs.templateContainer.getTemplate();
+    return this._templateContainer.getTemplate();
   }
 
   shouldComponentUpdate(nextProps: Props): boolean {
@@ -67,7 +72,7 @@ export default class MoveContainer extends React.Component {
         }}
       >
         <TemplateContainer
-          ref="templateContainer"
+          ref={this._templateContainerSetter}
           item={item}
           template={template}
           itemSelected={itemSelected}
