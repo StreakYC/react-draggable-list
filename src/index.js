@@ -11,15 +11,11 @@ import MoveContainer from './MoveContainer';
 
 const DEFAULT_HEIGHT = {natural: 200, drag: 30};
 
-const AUTOSCROLL_REGION_SIZE = 30;
-const AUTOSCROLL_MAX_SPEED = 15;
-
-function getScrollSpeed(distance) {
+function getScrollSpeed(distance, speed, size) {
   // If distance is zero, then the result is the max speed. Otherwise,
   // the result tapers toward zero as it gets closer to the opposite
   // edge of the region.
-  return Math.round(AUTOSCROLL_MAX_SPEED -
-    (AUTOSCROLL_MAX_SPEED/AUTOSCROLL_REGION_SIZE) * distance);
+  return Math.round(speed - (speed / size) * distance);
 }
 
 type Drag = {
@@ -40,6 +36,8 @@ type Props = {
   springConfig: Object;
   padding: number;
   unsetZIndex: boolean;
+  autoScrollMaxSpeed: number;
+  autoScrollRegionSize: number;
 };
 type State = {
   list: Array<Object>;
@@ -51,6 +49,8 @@ type DefaultProps = {
   springConfig: Object;
   padding: number;
   unsetZIndex: boolean;
+  autoScrollMaxSpeed: number;
+  autoScrollRegionSize: number;
 };
 export default class DraggableList extends React.Component {
   props: Props;
@@ -66,12 +66,16 @@ export default class DraggableList extends React.Component {
     container: PropTypes.func,
     springConfig: PropTypes.object,
     padding: PropTypes.number,
-    unsetZIndex: PropTypes.bool
+    unsetZIndex: PropTypes.bool,
+    autoScrollMaxSpeed: PropTypes.number.isRequired,
+    autoScrollRegionSize: PropTypes.number.isRequired
   };
   static defaultProps: DefaultProps = {
     springConfig: {stiffness: 300, damping: 50},
     padding: 10,
-    unsetZIndex: false
+    unsetZIndex: false,
+    autoScrollMaxSpeed: 15,
+    autoScrollRegionSize: 30
   };
   _itemRefs: Map<string, MoveContainer> = new Map();
   _heights: Map<string, {natural: number, drag: number}> = new Map();
@@ -206,7 +210,11 @@ export default class DraggableList extends React.Component {
   };
 
   _handleMouseMove: Function = ({pageY, clientY}) => {
-    const {padding} = this.props;
+    const {
+      padding,
+      autoScrollMaxSpeed,
+      autoScrollRegionSize
+    } = this.props;
     const {list, dragging, lastDrag} = this.state;
     if (!dragging || !lastDrag) return;
 
@@ -230,14 +238,14 @@ export default class DraggableList extends React.Component {
       const top = Math.max(0, containerRect.top);
 
       const distanceFromTop = clientY-top;
-      if (distanceFromTop > 0 && distanceFromTop < AUTOSCROLL_REGION_SIZE) {
-        scrollSpeed = -1 * getScrollSpeed(distanceFromTop);
+      if (distanceFromTop > 0 && distanceFromTop < autoScrollRegionSize) {
+        scrollSpeed = -1 * getScrollSpeed(distanceFromTop, autoScrollMaxSpeed, autoScrollRegionSize);
       } else {
         // Get the lowest of the screen bottom and the container bottom.
         const bottom = Math.min(window.innerHeight, containerRect.bottom);
         const distanceFromBottom = bottom-clientY;
-        if (distanceFromBottom > 0 && distanceFromBottom < AUTOSCROLL_REGION_SIZE) {
-          scrollSpeed = getScrollSpeed(distanceFromBottom);
+        if (distanceFromBottom > 0 && distanceFromBottom < autoScrollRegionSize) {
+          scrollSpeed = getScrollSpeed(distanceFromBottom, autoScrollMaxSpeed, autoScrollRegionSize);
         }
       }
 
