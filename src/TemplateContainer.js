@@ -27,7 +27,7 @@ export default class TemplateContainer extends React.Component {
   }
 
   getTemplate(): React.Component<any,any,any> {
-    return this.refs.template;
+    return this.template;
   }
 
   render() {
@@ -36,7 +36,7 @@ export default class TemplateContainer extends React.Component {
 
     return (
       <Template
-        ref="template"
+        ref={cmp => this.template = cmp}
         item={item}
         itemSelected={itemSelected}
         anySelected={anySelected}
