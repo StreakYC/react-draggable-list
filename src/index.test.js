@@ -592,3 +592,47 @@ test('list is shown with correct positions after being fully changed during anim
   await delay(200);
   expect((findDOMNode(root.getItemInstance('lopez')).parentElement:any).style.position).toBe('relative');
 });
+
+test('updating commonProps works', () => {
+  const onMoveEnd = jest.fn();
+
+  const list = [
+    {name: 'caboose'},
+    {name: 'donut'}
+  ];
+  const div = document.createElement('div');
+  const root: DraggableList = (ReactDOM.render(
+    <DraggableList
+      itemKey="name"
+      list={list}
+      template={TestTemplate}
+      onMoveEnd={onMoveEnd}
+      springConfig={springConfig}
+      commonProps={{a: 5}}
+    />,
+    div
+  ): any);
+
+  expect(
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
+  ).toEqual(list);
+  expect(
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.commonProps)
+  ).toEqual(list.map(() => ({a: 5})));
+
+  ReactDOM.render(
+    <DraggableList
+      itemKey="name"
+      list={list}
+      template={TestTemplate}
+      onMoveEnd={onMoveEnd}
+      springConfig={springConfig}
+      commonProps={{b: 6}}
+    />,
+    div
+  );
+
+  expect(
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.commonProps)
+  ).toEqual(list.map(() => ({b: 6})));
+});
