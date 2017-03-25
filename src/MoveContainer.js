@@ -49,7 +49,8 @@ export default class MoveContainer extends React.Component {
       this.props.template !== nextProps.template ||
       this.props.y !== nextProps.y ||
       this.props.height !== nextProps.height ||
-      this.props.zIndex !== nextProps.zIndex;
+      this.props.zIndex !== nextProps.zIndex ||
+      this.props.commonProps !== nextProps.commonProps;
   }
 
   _dragHandle: Function = (el) => this.props.makeDragHandle(el, ()=>this.props.y);

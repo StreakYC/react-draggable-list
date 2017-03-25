@@ -30,7 +30,8 @@ export default class TemplateContainer extends React.Component {
     return this.props.anySelected !== nextProps.anySelected ||
       this.props.itemSelected !== nextProps.itemSelected ||
       this.props.item !== nextProps.item ||
-      this.props.template !== nextProps.template;
+      this.props.template !== nextProps.template ||
+      this.props.commonProps !== nextProps.commonProps;
   }
 
   getTemplate(): React.Component<any,any,any> {
