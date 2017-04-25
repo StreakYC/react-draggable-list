@@ -60,11 +60,12 @@
   "dependencies": {
     "babel-runtime": "^6.23.0",
     "immutability-helper": "^2.1.2",
+    "prop-types": "^15.5.8",
     "react-motion": "^0.4.5",
     "react-save-refs": "^1.0.1"
   },
   "peerDependencies": {
-    "react": "^15.0.0",
-    "react-dom": "^15.0.0"
+    "react": "^15.3.0",
+    "react-dom": "^15.3.0"
   }
 }

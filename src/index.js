@@ -1,7 +1,8 @@
 /* @flow */
 
-import React, {PropTypes} from 'react';
+import React from 'react';
 import {findDOMNode} from 'react-dom';
+import PropTypes from 'prop-types';
 import {Motion, spring} from 'react-motion';
 import update from 'immutability-helper';
 import saveRefs from 'react-save-refs';

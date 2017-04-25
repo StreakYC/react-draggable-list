@@ -2,12 +2,13 @@
 
 import React from 'react';
 import {findDOMNode} from 'react-dom';
+import PropTypes from 'prop-types';
 
 export default class DragHandle extends React.Component {
   static propTypes = {
-    onMouseDown: React.PropTypes.func.isRequired,
-    onTouchStart: React.PropTypes.func.isRequired,
-    children: React.PropTypes.element.isRequired
+    onMouseDown: PropTypes.func.isRequired,
+    onTouchStart: PropTypes.func.isRequired,
+    children: PropTypes.element.isRequired
   };
 
   componentDidMount() {
