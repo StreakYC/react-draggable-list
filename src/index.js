@@ -3,7 +3,7 @@
 import React, {PropTypes} from 'react';
 import {findDOMNode} from 'react-dom';
 import {Motion, spring} from 'react-motion';
-import update from 'react-addons-update';
+import update from 'immutability-helper';
 import saveRefs from 'react-save-refs';
 import DragHandle from './DragHandle';
 import OnUpdate from './OnUpdate';

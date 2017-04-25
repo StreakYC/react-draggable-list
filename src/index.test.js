@@ -4,7 +4,7 @@
 import delay from 'pdelay';
 import React from 'react';
 import ReactDOM, {findDOMNode as _findDOMNode} from 'react-dom';
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
 import DraggableList from '../src';
 import DragHandle from '../src/DragHandle';
 
