@@ -4,7 +4,7 @@
   "description": "Make a list of draggable collapsible items.",
   "main": "js/index.js",
   "scripts": {
-    "prepare": "babel -s inline -d js/ src/ --ignore '*.test.*' && flow-copy-source -v src js --ignore '*.test.*'",
+    "prepare": "rimraf js && babel -s inline -d js/ src/ --ignore '*.test.*' && flow-copy-source -v src js --ignore '*.test.*'",
     "example-build": "cross-env NODE_ENV=development browserify -t babelify -do example/bundle.js example/main.js",
     "example-watch": "cross-env NODE_ENV=development-hmr watchify -v -p browserify-hmr -t babelify -do example/bundle.js example/main.js",
     "example-build-prod": "cross-env NODE_ENV=production browserify -t babelify -do example/bundle.js example/main.js",
@@ -56,6 +56,7 @@
     "pdelay": "^1.0.0",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
+    "rimraf": "^2.6.1",
     "watchify": "^3.9.0"
   },
   "dependencies": {
