@@ -210,9 +210,8 @@ test('two drags work', async () => {
 
   expect(
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate)
-      .map(e=>e.props.item),
-    reorderedList
-  );
+      .map(e=>e.props.item)
+  ).toEqual(reorderedList);
 
   expect(root.state.dragging).toBe(false);
   renderedHandles[0]._onMouseDown({pageY: 600, preventDefault() {}});

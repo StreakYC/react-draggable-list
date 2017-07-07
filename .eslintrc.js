@@ -15,9 +15,14 @@ module.exports = {
     "sourceType": "module"
   },
   "plugins": [
-    "react"
+    "react", "flowtype"
   ],
   "rules": {
+    "flowtype/define-flow-type": 1,
+    "flowtype/require-valid-file-annotation": ["error", "always"],
+
+    "react/no-children-prop": ["off"],
+
     "indent": ["error", 2],
     "react/jsx-indent": ["error", 2],
     "react/jsx-indent-props": ["error", 2],
@@ -31,6 +36,7 @@ module.exports = {
     "no-spaced-func": ["error"],
     "no-whitespace-before-property": ["error"],
     "space-before-blocks": ["error", "always"],
-    "keyword-spacing": ["error"]
+    "keyword-spacing": ["error"],
+    "no-unused-vars": ["error", {"argsIgnorePattern": "[iI]gnored"}],
   }
 };

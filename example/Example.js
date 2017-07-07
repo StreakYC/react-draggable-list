@@ -61,6 +61,8 @@ class PlanetItem extends React.Component {
 }
 
 export default class Example extends React.Component {
+  _container: HTMLElement;
+
   state: Object = {
     useContainer: false,
     list: [
@@ -117,7 +119,7 @@ export default class Example extends React.Component {
           </div>
         </div>
         <div
-          className="list" ref="container"
+          className="list" ref={el => this._container = el}
           style={{
             overflow: useContainer ? 'auto' : '',
             height: useContainer ? '200px' : '',
@@ -129,7 +131,7 @@ export default class Example extends React.Component {
             template={PlanetItem}
             list={this.state.list}
             onMoveEnd={newList => this._onListChange(newList)}
-            container={()=>useContainer ? this.refs.container : document.body}
+            container={()=>useContainer ? this._container : document.body}
           />
         </div>
       </div>

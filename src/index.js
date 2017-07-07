@@ -234,8 +234,8 @@ export default class DraggableList extends React.Component {
 
       const containerRect = containerEl && containerEl !== document.body &&
         containerEl.getBoundingClientRect ?
-          containerEl.getBoundingClientRect() :
-          {top: 0, bottom: Infinity};
+        containerEl.getBoundingClientRect() :
+        {top: 0, bottom: Infinity};
 
       // Get the lowest of the screen top and the container top.
       const top = Math.max(0, containerRect.top);
@@ -404,9 +404,9 @@ export default class DraggableList extends React.Component {
         }
         : {
           itemSelected: spring(0, springConfig),
-          y: (useAbsolutePositioning ? spring : x=>x)(dragging && lastDrag ?
-              this._getDistanceDuringDrag(lastDrag, i)
-              : this._getDistance(0, i, false), springConfig)
+          y: (useAbsolutePositioning ? spring : (x,ignored)=>x)(dragging && lastDrag ?
+            this._getDistanceDuringDrag(lastDrag, i)
+            : this._getDistance(0, i, false), springConfig)
         };
       const style = {
         anySelected,
@@ -416,7 +416,7 @@ export default class DraggableList extends React.Component {
         <DragHandle
           onMouseDown={e => this._handleMouseDown(key, getY(), e)}
           onTouchStart={e => this._handleTouchStart(key, getY(), e)}
-          >
+        >
           {el}
         </DragHandle>
       );
