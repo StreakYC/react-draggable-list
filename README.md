@@ -55,8 +55,7 @@ following props:
  object passed to
  React-Motion](https://github.com/chenglou/react-motion/tree/85ca75c6de9ed85937d1c95646b6044a66981eee#--spring-val-number-config-springhelperconfig--opaqueconfig)
  for animations. This prop defaults to `{stiffness: 300, damping: 50}`.
-* `padding` is an optional number of pixels to leave between items. Defaults to
- 10.
+* `padding` is an optional number of pixels to leave between items. Defaults to 10.
 * `unsetZIndex` is an optional property that defaults to false. If set to true,
  then the z-index of all of the list items will be set to "auto" when the list
  isn't animating. This may have a small performance cost when the list starts
