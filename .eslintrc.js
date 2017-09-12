@@ -38,5 +38,8 @@ module.exports = {
     "space-before-blocks": ["error", "always"],
     "keyword-spacing": ["error"],
     "no-unused-vars": ["error", {"argsIgnorePattern": "[iI]gnored"}],
+
+    // TODO remove?
+    "react/no-find-dom-node": ["off"],
   }
 };
