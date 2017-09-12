@@ -1,4 +1,5 @@
 /* @flow */
+/* eslint react/prop-types: "error" */
 
 import React from 'react';
 import {findDOMNode} from 'react-dom';
@@ -54,9 +55,7 @@ type DefaultProps = {
   autoScrollMaxSpeed: number;
   autoScrollRegionSize: number;
 };
-export default class DraggableList extends React.Component {
-  props: Props;
-  state: State;
+export default class DraggableList extends React.Component<Props, State> {
   static propTypes = {
     itemKey: PropTypes.oneOfType([
       PropTypes.string,

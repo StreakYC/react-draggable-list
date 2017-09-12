@@ -1,16 +1,15 @@
 /* @flow */
 
 import React from 'react';
+import type {Element as ReactElement} from 'react';
 import {findDOMNode} from 'react-dom';
-import PropTypes from 'prop-types';
 
-export default class DragHandle extends React.Component {
-  static propTypes = {
-    onMouseDown: PropTypes.func.isRequired,
-    onTouchStart: PropTypes.func.isRequired,
-    children: PropTypes.element.isRequired
-  };
-
+type Props = {
+  onMouseDown: Function;
+  onTouchStart: Function;
+  children: ReactElement<any>;
+};
+export default class DragHandle extends React.Component<Props> {
   componentDidMount() {
     const node = findDOMNode(this);
     if (!node) throw new Error('DragHandle missing element');

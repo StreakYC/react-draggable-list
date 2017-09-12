@@ -1,5 +1,4 @@
 /* @flow */
-/* eslint-disable no-console, react/prop-types */
 
 import delay from 'pdelay';
 import React from 'react';
@@ -14,7 +13,7 @@ function findDOMNode(cmp) {
   return el;
 }
 
-class TestTemplate extends React.Component {
+class TestTemplate extends React.Component<Object> {
   render() {
     const {item, dragHandle} = this.props;
     return dragHandle(<div className="item">{item.name}</div>);

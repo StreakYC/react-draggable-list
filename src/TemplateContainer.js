@@ -1,7 +1,6 @@
 /* @flow */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 
 type Props = {
   item: Object;
@@ -11,20 +10,10 @@ type Props = {
   dragHandle: Function;
   commonProps?: ?Object;
 };
-export default class TemplateContainer extends React.Component {
-  props: Props;
-  static propTypes = {
-    item: PropTypes.object.isRequired,
-    template: PropTypes.func.isRequired,
-    itemSelected: PropTypes.number.isRequired,
-    anySelected: PropTypes.number.isRequired,
-    dragHandle: PropTypes.func.isRequired,
-    commonProps: PropTypes.object
-  };
-
-  _template: React.Component<any,any,any>;
+export default class TemplateContainer extends React.Component<Props> {
+  _template: React.Component<any,any>;
   _templateSetter = (cmp: *) => {
-    this._template = cmp;
+    if (cmp) this._template = cmp;
   };
 
   shouldComponentUpdate(nextProps: Props): boolean {
@@ -35,7 +24,7 @@ export default class TemplateContainer extends React.Component {
       this.props.commonProps !== nextProps.commonProps;
   }
 
-  getTemplate(): React.Component<any,any,any> {
+  getTemplate(): React.Component<any,any> {
     return this._template;
   }
 

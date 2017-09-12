@@ -5,8 +5,16 @@ import React from 'react';
 import cx from 'classnames';
 import DraggableList from '../src';
 
-class PlanetItem extends React.Component {
-  state: Object = {
+type PlanetProps = {
+  item: Object;
+  itemSelected: number;
+  dragHandle: *;
+};
+type PlanetState = {
+  value: number;
+};
+class PlanetItem extends React.Component<PlanetProps, PlanetState> {
+  state = {
     value: 0
   };
 
@@ -60,10 +68,14 @@ class PlanetItem extends React.Component {
   }
 }
 
-export default class Example extends React.Component {
+type ExampleState = {
+  useContainer: boolean;
+  list: Array<{name: string, subtitle?: boolean}>;
+};
+export default class Example extends React.Component<{}, ExampleState> {
   _container: HTMLElement;
 
-  state: Object = {
+  state = {
     useContainer: false,
     list: [
       {name: 'Mercury'},
@@ -119,7 +131,9 @@ export default class Example extends React.Component {
           </div>
         </div>
         <div
-          className="list" ref={el => this._container = el}
+          className="list" ref={el => {
+            if (el) this._container = el;
+          }}
           style={{
             overflow: useContainer ? 'auto' : '',
             height: useContainer ? '200px' : '',

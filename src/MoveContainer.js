@@ -1,7 +1,6 @@
 /* @flow */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import TemplateContainer from './TemplateContainer';
 
 type Props = {
@@ -16,30 +15,13 @@ type Props = {
   makeDragHandle: Function;
   commonProps?: ?Object;
 };
-export default class MoveContainer extends React.Component {
-  props: Props;
-  static propTypes = {
-    item: PropTypes.object.isRequired,
-    template: PropTypes.func.isRequired,
-    padding: PropTypes.number.isRequired,
-    y: PropTypes.number,
-    itemSelected: PropTypes.number.isRequired,
-    anySelected: PropTypes.number.isRequired,
-    height: PropTypes.object.isRequired,
-    zIndex: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number
-    ]).isRequired,
-    makeDragHandle: PropTypes.func.isRequired,
-    commonProps: PropTypes.object
-  };
-
+export default class MoveContainer extends React.Component<Props> {
   _templateContainer: TemplateContainer;
-  _templateContainerSetter = (cmp: TemplateContainer) => {
-    this._templateContainer = cmp;
+  _templateContainerSetter = (cmp: ?TemplateContainer) => {
+    if (cmp) this._templateContainer = cmp;
   };
 
-  getTemplate(): React.Component<any,any,any> {
+  getTemplate(): React.Component<any,any> {
     return this._templateContainer.getTemplate();
   }
 

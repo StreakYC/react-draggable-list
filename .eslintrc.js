@@ -39,6 +39,9 @@ module.exports = {
     "keyword-spacing": ["error"],
     "no-unused-vars": ["error", {"argsIgnorePattern": "[iI]gnored"}],
 
+    // We use Flow for this
+    "react/prop-types": ["off"],
+
     // TODO remove?
     "react/no-find-dom-node": ["off"],
   }
