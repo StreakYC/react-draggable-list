@@ -100,6 +100,15 @@ number to set the height in pixels of the item while the user is dragging it.
 If the method returns null or is not present, then the drag height will be
 equal to the element's natural height.
 
+## Bundling Note
+
+To use this module in browsers, a CommonJS bundler such as Browserify or
+Webpack should be used.
+
+This project relies on Map and WeakMap being available globally. A global polyfill
+such as [Babel's polyfill](https://babeljs.io/docs/usage/polyfill/) is required to
+support older browsers that don't implement these.
+
 ## Types
 
 [Flow](https://flowtype.org/) type declarations for this module are included!
