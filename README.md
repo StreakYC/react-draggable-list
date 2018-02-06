@@ -85,6 +85,8 @@ The template component is passed the following props:
 * `dragHandle` is a function which should be used during rendering to wrap the
  element to be used as the drag handle. The whole item will be draggable by the
  wrapped element.
+* `order` is the index of the item in the list. Upon reorder, the order gives you
+the index of the item as it is ordered in the UI.
 * `commonProps` will be set to the same value passed as the `commonProps` prop
  to the DraggableList component.
 
