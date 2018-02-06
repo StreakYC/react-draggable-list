@@ -13,6 +13,7 @@ type Props = {
   height: Object;
   zIndex: number|string;
   makeDragHandle: Function;
+  order: number;
   commonProps?: ?Object;
 };
 export default class MoveContainer extends React.Component<Props> {
@@ -40,7 +41,8 @@ export default class MoveContainer extends React.Component<Props> {
 
   render() {
     const {
-      item, y, padding, itemSelected, anySelected, height, zIndex, template, commonProps
+      item, y, padding, itemSelected, anySelected, height, zIndex, template, commonProps,
+      order
     } = this.props;
 
     return (
@@ -60,6 +62,7 @@ export default class MoveContainer extends React.Component<Props> {
         <TemplateContainer
           ref={this._templateContainerSetter}
           item={item}
+          order={order}
           template={template}
           itemSelected={itemSelected}
           anySelected={anySelected}

@@ -8,6 +8,7 @@ type Props = {
   itemSelected: number;
   anySelected: number;
   dragHandle: Function;
+  order:number;
   commonProps?: ?Object;
 };
 export default class TemplateContainer extends React.Component<Props> {
@@ -29,13 +30,14 @@ export default class TemplateContainer extends React.Component<Props> {
   }
 
   render() {
-    const {item, itemSelected, anySelected, dragHandle, commonProps} = this.props;
+    const {item, itemSelected, anySelected, dragHandle, order, commonProps} = this.props;
     const Template = this.props.template;
 
     return (
       <Template
         ref={this._templateSetter}
         item={item}
+        order={order}
         itemSelected={itemSelected}
         anySelected={anySelected}
         dragHandle={dragHandle}

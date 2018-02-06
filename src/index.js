@@ -433,6 +433,7 @@ export default class DraggableList extends React.Component<Props, State> {
               itemSelected={itemSelected}
               anySelected={anySelected}
               height={height}
+              order={i}
               zIndex={unsetZIndex && !useAbsolutePositioning ? 'auto' :
                 (lastDrag && lastDrag.itemKey === key ? list.length : i)
               }
