@@ -139,9 +139,9 @@ export default class DraggableList<T, C=*> extends React.Component<Props<T,C>, S
     this._handleMouseUp();
   }
 
-  _handleTouchStart(itemKey: string, pressY: ?number, e: Object) {
+  _handleTouchStart(itemKey: string, pressY: ?number, event: Object) {
     event.stopPropagation();
-    this._handleStartDrag(itemKey, pressY, e.touches[0].pageY);
+    this._handleStartDrag(itemKey, pressY, event.touches[0].pageY);
   }
 
   _handleMouseDown(itemKey: string, pressY: ?number, event: Object) {
