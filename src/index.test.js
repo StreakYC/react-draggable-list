@@ -65,7 +65,7 @@ test('drag works', async () => {
     {name: 'donut'}
   ];
   const commonProps = {a: 'foo'};
-  const root: DraggableList = (TestUtils.renderIntoDocument(
+  const root: DraggableList<*> = (TestUtils.renderIntoDocument(
     <DraggableList
       itemKey="name"
       list={list}
@@ -161,7 +161,7 @@ test('two drags work', async () => {
     {name: 'grif'},
     {name: 'donut'}
   ];
-  const root: DraggableList = (TestUtils.renderIntoDocument(
+  const root: DraggableList<*> = (TestUtils.renderIntoDocument(
     <DraggableList
       itemKey="name"
       list={list}
@@ -263,7 +263,7 @@ test('props reordered during drag works', () => {
     {name: 'donut'}
   ];
   const div = document.createElement('div');
-  const root: DraggableList = (ReactDOM.render(
+  const root: DraggableList<*> = (ReactDOM.render(
     <DraggableList
       itemKey="name"
       list={list}
@@ -343,7 +343,7 @@ test('item removed during drag works', () => {
     {name: 'donut'}
   ];
   const div = document.createElement('div');
-  const root: DraggableList = (ReactDOM.render(
+  const root: DraggableList<*> = (ReactDOM.render(
     <DraggableList
       itemKey="name"
       list={list}
@@ -417,7 +417,7 @@ test('item removed before drag end works', async () => {
     {name: 'donut'}
   ];
   const div = document.createElement('div');
-  const root: DraggableList = (ReactDOM.render(
+  const root: DraggableList<*> = (ReactDOM.render(
     <DraggableList
       itemKey="name"
       list={list}
@@ -492,7 +492,7 @@ test('dragged item removed after drag during animation works', () => {
     {name: 'donut'}
   ];
   const div = document.createElement('div');
-  const root: DraggableList = (ReactDOM.render(
+  const root: DraggableList<*> = (ReactDOM.render(
     <DraggableList
       itemKey="name"
       list={list}
@@ -545,7 +545,7 @@ test('list is shown with correct positions after being fully changed during anim
   const onMoveEnd = jest.fn();
 
   const div = document.createElement('div');
-  const root: DraggableList = (ReactDOM.render(
+  const root: DraggableList<*> = (ReactDOM.render(
     <DraggableList
       itemKey="name"
       list={[
@@ -599,7 +599,7 @@ test('updating commonProps works', () => {
     {name: 'donut'}
   ];
   const div = document.createElement('div');
-  const root: DraggableList = (ReactDOM.render(
+  const root: DraggableList<*> = (ReactDOM.render(
     <DraggableList
       itemKey="name"
       list={list}
