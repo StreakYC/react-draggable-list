@@ -5,8 +5,13 @@ import React from 'react';
 import cx from 'classnames';
 import DraggableList from '../src';
 
+type PlanetListItem = {
+  name: string;
+  subtitle?: boolean;
+};
+
 type PlanetProps = {
-  item: Object;
+  item: PlanetListItem;
   itemSelected: number;
   dragHandle: *;
 };
@@ -70,7 +75,7 @@ class PlanetItem extends React.Component<PlanetProps, PlanetState> {
 
 type ExampleState = {
   useContainer: boolean;
-  list: Array<{name: string, subtitle?: boolean}>;
+  list: Array<PlanetListItem>;
 };
 export default class Example extends React.Component<{}, ExampleState> {
   _container: HTMLElement;
@@ -102,7 +107,7 @@ export default class Example extends React.Component<{}, ExampleState> {
     this.setState({useContainer: !this.state.useContainer});
   }
 
-  _onListChange(newList: Array<Object>) {
+  _onListChange(newList: Array<PlanetListItem>) {
     this.setState({list: newList});
   }
 
