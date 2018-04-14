@@ -29,19 +29,19 @@ type Drag = {
   mouseOffset: number;
 };
 
-type TemplateProps<T,C> = {
-  item: T;
+type TemplateProps<I,C> = {
+  item: I;
   itemSelected: number;
   anySelected: number;
   dragHandle: Function;
   commonProps: C;
 };
 
-type Props<T,C> = {
-  itemKey: string|(item: T)=>string;
-  template: Class<React.Component<$Supertype<TemplateProps<T,C>>,*>>;
-  list: Array<T>;
-  onMoveEnd?: ?(newList: Array<T>, movedItem: T, oldIndex: number, newIndex: number) => void;
+type Props<I,C> = {
+  itemKey: string|(item: I)=>string;
+  template: Class<React.Component<$Supertype<TemplateProps<I,C>>,*>>;
+  list: Array<I>;
+  onMoveEnd?: ?(newList: Array<I>, movedItem: I, oldIndex: number, newIndex: number) => void;
   container?: ?() => ?HTMLElement;
   springConfig: Object;
   padding: number;
@@ -50,8 +50,8 @@ type Props<T,C> = {
   autoScrollRegionSize: number;
   commonProps?: C;
 };
-type State<T> = {
-  list: Array<T>;
+type State<I> = {
+  list: Array<I>;
   useAbsolutePositioning: boolean;
   dragging: boolean;
   lastDrag: ?Drag;
@@ -63,7 +63,7 @@ type DefaultProps = {
   autoScrollMaxSpeed: number;
   autoScrollRegionSize: number;
 };
-export default class DraggableList<T, C=*> extends React.Component<Props<T,C>, State<T>> {
+export default class DraggableList<I,C=*> extends React.Component<Props<I,C>, State<I>> {
   static propTypes = {
     itemKey: PropTypes.oneOfType([
       PropTypes.string,
@@ -87,11 +87,11 @@ export default class DraggableList<T, C=*> extends React.Component<Props<T,C>, S
     autoScrollMaxSpeed: 15,
     autoScrollRegionSize: 30
   };
-  _itemRefs: Map<string, MoveContainer<T,C>> = new Map();
+  _itemRefs: Map<string, MoveContainer<I,C>> = new Map();
   _heights: Map<string, {natural: number, drag: number}> = new Map();
   _autoScrollerTimer: any;
 
-  constructor(props: Props<T,C>) {
+  constructor(props: Props<I,C>) {
     super(props);
     this.state = {
       list: props.list,
@@ -107,7 +107,7 @@ export default class DraggableList<T, C=*> extends React.Component<Props<T,C>, S
     return ref.getTemplate();
   }
 
-  componentWillReceiveProps(newProps: Props<T,C>) {
+  componentWillReceiveProps(newProps: Props<I,C>) {
     let {dragging, lastDrag} = this.state;
     let {list} = newProps;
 
@@ -338,7 +338,7 @@ export default class DraggableList<T, C=*> extends React.Component<Props<T,C>, S
     this._lastScrollDelta += frameDelta;
   }
 
-  _getDragIndex(list: ?Array<T>, lastDrag: ?Drag): number {
+  _getDragIndex(list: ?Array<I>, lastDrag: ?Drag): number {
     if (!list) list = this.state.list;
     if (!lastDrag) lastDrag = this.state.lastDrag;
     if (!lastDrag) {
@@ -390,7 +390,7 @@ export default class DraggableList<T, C=*> extends React.Component<Props<T,C>, S
     return container ? container() : null;
   }
 
-  _getKeyFn(): (item: T) => string {
+  _getKeyFn(): (item: I) => string {
     const {itemKey} = this.props;
     return typeof itemKey === 'function' ? itemKey : x => (x: any)[itemKey];
   }
