@@ -2,21 +2,21 @@
 
 import React from 'react';
 
-type Props<I,C> = {
+type Props<I,C,T> = {
   item: I;
-  template: Function;
+  template: Class<T>;
   itemSelected: number;
   anySelected: number;
   dragHandle: Function;
   commonProps: C;
 };
-export default class TemplateContainer<I,C> extends React.Component<Props<I,C>> {
-  _template: React.Component<any,any>;
-  _templateSetter = (cmp: *) => {
+export default class TemplateContainer<I,C,T:React.Component<any,any>> extends React.Component<Props<I,C,T>> {
+  _template: T;
+  _templateSetter = (cmp: any) => {
     if (cmp) this._template = cmp;
   };
 
-  shouldComponentUpdate(nextProps: Props<I,C>): boolean {
+  shouldComponentUpdate(nextProps: Props<I,C,T>): boolean {
     return this.props.anySelected !== nextProps.anySelected ||
       this.props.itemSelected !== nextProps.itemSelected ||
       this.props.item !== nextProps.item ||
@@ -24,7 +24,7 @@ export default class TemplateContainer<I,C> extends React.Component<Props<I,C>> 
       this.props.commonProps !== nextProps.commonProps;
   }
 
-  getTemplate(): React.Component<any,any> {
+  getTemplate(): T {
     return this._template;
   }
 

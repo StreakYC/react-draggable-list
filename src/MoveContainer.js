@@ -3,9 +3,9 @@
 import React from 'react';
 import TemplateContainer from './TemplateContainer';
 
-type Props<I,C> = {
+type Props<I,C,T> = {
   item: I;
-  template: Function;
+  template: Class<T>;
   padding: number;
   y: ?number;
   itemSelected: number;
@@ -15,17 +15,17 @@ type Props<I,C> = {
   makeDragHandle: Function;
   commonProps: C;
 };
-export default class MoveContainer<I,C> extends React.Component<Props<I,C>> {
-  _templateContainer: TemplateContainer<I,C>;
+export default class MoveContainer<I,C,T:React.Component<any,any>> extends React.Component<Props<I,C,T>> {
+  _templateContainer: TemplateContainer<I,C,T>;
   _templateContainerSetter = (cmp: ?Object) => {
     if (cmp) this._templateContainer = cmp;
   };
 
-  getTemplate(): React.Component<any,any> {
+  getTemplate(): T {
     return this._templateContainer.getTemplate();
   }
 
-  shouldComponentUpdate(nextProps: Props<I,C>): boolean {
+  shouldComponentUpdate(nextProps: Props<I,C,T>): boolean {
     return this.props.anySelected !== nextProps.anySelected ||
       this.props.itemSelected !== nextProps.itemSelected ||
       this.props.item !== nextProps.item ||
