@@ -181,7 +181,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Supertype<TemplatePr
           const refEl = ref ? findDOMNode(ref) : null;
           const natural = (refEl instanceof HTMLElement) ?
             refEl.offsetHeight : DEFAULT_HEIGHT.natural;
-          const drag = ref && (typeof ref.getDragHeight === 'function') && ref.getDragHeight() || natural;
+          const drag = ref && (typeof (ref: any).getDragHeight === 'function') && (ref: any).getDragHeight() || natural;
           return [key, {natural, drag}];
         })
       );
