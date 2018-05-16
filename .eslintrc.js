@@ -23,6 +23,8 @@ module.exports = {
 
     "react/no-children-prop": ["off"],
 
+    "react/no-deprecated": ["off"], // TODO remove when we target 16.3
+
     "indent": ["error", 2],
     "react/jsx-indent": ["error", 2],
     "react/jsx-indent-props": ["error", 2],
