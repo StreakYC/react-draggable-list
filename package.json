@@ -1,6 +1,6 @@
 {
   "name": "react-draggable-list",
-  "version": "3.5.2",
+  "version": "3.5.3",
   "description": "Make a list of draggable collapsible items.",
   "main": "js/index.js",
   "scripts": {
