@@ -279,7 +279,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Supertype<TemplatePr
     let mouseY = pageY - lastDrag.mouseOffset + containerScroll;
     if (this.props.constrainDrag) {
       mouseY = Math.max(mouseY, this._getDistanceDuringDrag(lastDrag, 0));
-      mouseY = Math.min(mouseY, this._getDistanceDuringDrag(lastDrag, this.props.list.length - 1))
+      mouseY = Math.min(mouseY, this._getDistanceDuringDrag(lastDrag, this.props.list.length - 1));
     }
     const movementFromNatural = mouseY-naturalPosition;
     // 1 down, -1 up, 0 neither
