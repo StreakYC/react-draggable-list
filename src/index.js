@@ -43,6 +43,7 @@ type Props<I,C,T> = {
   list: Array<I>;
   onMoveEnd?: ?(newList: Array<I>, movedItem: I, oldIndex: number, newIndex: number) => void;
   container?: ?() => ?HTMLElement;
+  constrainDrag: boolean;
   springConfig: Object;
   padding: number;
   unsetZIndex: boolean;
@@ -58,6 +59,7 @@ type State<I> = {
 };
 type DefaultProps = {
   springConfig: Object;
+  constrainDrag: boolean;
   padding: number;
   unsetZIndex: boolean;
   autoScrollMaxSpeed: number;
@@ -74,6 +76,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Supertype<TemplatePr
     onMoveEnd: PropTypes.func,
     container: PropTypes.func,
     springConfig: PropTypes.object,
+    constrainDrag: PropTypes.bool,
     padding: PropTypes.number,
     unsetZIndex: PropTypes.bool,
     autoScrollMaxSpeed: PropTypes.number.isRequired,
@@ -84,6 +87,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Supertype<TemplatePr
     springConfig: {stiffness: 300, damping: 50},
     padding: 10,
     unsetZIndex: false,
+    constrainDrag: false,
     autoScrollMaxSpeed: 15,
     autoScrollRegionSize: 30
   };
@@ -272,8 +276,11 @@ export default class DraggableList<I,C=*,T:React.Component<$Supertype<TemplatePr
 
     const containerScroll = !containerEl || containerEl === document.body ?
       0 : containerEl.scrollTop;
-    const mouseY = pageY - lastDrag.mouseOffset + containerScroll;
-
+    let mouseY = pageY - lastDrag.mouseOffset + containerScroll;
+    if (this.props.constrainDrag) {
+      mouseY = Math.max(mouseY, this._getDistanceDuringDrag(lastDrag, 0));
+      mouseY = Math.min(mouseY, this._getDistanceDuringDrag(lastDrag, this.props.list.length - 1))
+    }
     const movementFromNatural = mouseY-naturalPosition;
     // 1 down, -1 up, 0 neither
     const direction = movementFromNatural > 0 ? 1 :
@@ -296,7 +303,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Supertype<TemplatePr
         $splice: [[dragIndex, 1], [newIndex, 0, list[dragIndex]]]
       });
     }
-
+ 
     this.setState({lastDrag: {...lastDrag, mouseY}, list: newList});
   };
 
@@ -398,7 +405,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Supertype<TemplatePr
   render() {
     const {springConfig, container, padding, template, unsetZIndex, commonProps} = this.props;
     const {list, dragging, lastDrag, useAbsolutePositioning} = this.state;
-
+    
     const keyFn = this._getKeyFn();
     const anySelected = spring(dragging ? 1 : 0, springConfig);
 
