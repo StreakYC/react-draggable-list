@@ -61,6 +61,9 @@ following props:
  isn't animating. This may have a small performance cost when the list starts
  and stops animating. Use this if you need to avoid having the list item create
  a stacking context when it's not being animated.
+* `constrainDrag` in an optional property that defaults to false.  If it is set to
+ true, then the y-coordinate of a dragged item will be constrained vertically to 
+ always lie within the bounds of the list.
 * `autoScrollMaxSpeed` is an optional number that allows the scroll speed when
  the user drags to the top or bottom of the list to be overridden.
 * `autoScrollRegionSize` is an optional number that allows the height of the
