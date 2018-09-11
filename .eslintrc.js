@@ -46,5 +46,11 @@ module.exports = {
 
     // TODO remove?
     "react/no-find-dom-node": ["off"],
+  },
+  "settings": {
+    "react": {
+      "version": "16.0",
+      "flowVersion": "0.80"
+    }
   }
 };
