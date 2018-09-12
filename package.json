@@ -3,6 +3,7 @@
   "version": "3.6.0",
   "description": "Make a list of draggable collapsible items.",
   "main": "js/index.js",
+  "sideEffects": false,
   "scripts": {
     "prepare": "rimraf js && babel -s inline -d js/ src/ --ignore '*.test.*' && flow-copy-source -v src js --ignore '*.test.*'",
     "example-build": "cross-env NODE_ENV=development browserify -t babelify -do example/bundle.js example/main.js",
