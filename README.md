@@ -18,13 +18,7 @@ by running:
 ```
 yarn
 yarn example-build
-```
-
-You can build the example with live editing enabled (using
-[react-transform-hmr](https://github.com/gaearon/react-transform-hmr) and
-[browserify-hmr](https://github.com/AgentME/browserify-hmr)) by running:
-
-```
+# or use this to auto-rebuild on changes:
 yarn example-watch
 ```
 
