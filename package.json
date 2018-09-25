@@ -9,7 +9,7 @@
     "example-build": "cross-env NODE_ENV=development browserify -t babelify -do example/bundle.js example/main.js",
     "example-watch": "cross-env NODE_ENV=development watchify -v -t babelify -do example/bundle.js example/main.js",
     "example-build-prod": "cross-env NODE_ENV=production browserify -t babelify -do example/bundle.js example/main.js",
-    "test": "npm run lint && npm run flow_check && jest",
+    "test": "yarn run lint && yarn run flow_check && jest",
     "flow_check": "flow check",
     "lint": "eslint .",
     "lint-fix": "eslint . --fix"
