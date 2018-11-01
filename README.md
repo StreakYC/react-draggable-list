@@ -1,7 +1,6 @@
 # react-draggable-list
 
-[![Circle CI](https://circleci.com/gh/StreakYC/react-draggable-list.svg?style=shield)](https://circleci.com/gh/StreakYC/react-draggable-list)
-[![npm version](https://badge.fury.io/js/react-draggable-list.svg)](https://badge.fury.io/js/react-draggable-list)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/StreakYC/react-float-anchor/blob/master/LICENSE.txt) [![npm version](https://badge.fury.io/js/react-draggable-list.svg)](https://badge.fury.io/js/react-draggable-list) [![Circle CI](https://circleci.com/gh/StreakYC/react-draggable-list.svg?style=shield)](https://circleci.com/gh/StreakYC/react-draggable-list)
 
 This component lets you make a user re-orderable list that animates nicely so
 that the user can easily move large items:
@@ -56,7 +55,7 @@ following props:
  and stops animating. Use this if you need to avoid having the list item create
  a stacking context when it's not being animated.
 * `constrainDrag` is an option property that defaults to false.  If it is set to
-true, then the y-coordinate of a dragged item will be constrained vertically to 
+true, then the y-coordinate of a dragged item will be constrained vertically to
 the bounds of the list.
 * `autoScrollMaxSpeed` is an optional number that allows the scroll speed when
  the user drags to the top or bottom of the list to be overridden.
