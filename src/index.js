@@ -95,6 +95,11 @@ export default class DraggableList<I,C=*,T:React.Component<$Supertype<TemplatePr
   _heights: Map<string, {natural: number, drag: number}> = new Map();
   _autoScrollerTimer: any;
 
+  _listEl: HTMLElement;
+  _listElSetter = (el: ?HTMLElement) => {
+    if (el) this._listEl = el;
+  };
+
   constructor(props: Props<I,C,T>) {
     super(props);
     this.state = {
@@ -164,8 +169,8 @@ export default class DraggableList<I,C=*,T:React.Component<$Supertype<TemplatePr
     // try to scroll the parent element to keep the focused element in view.
     // Stop that.
     {
-      const listEl = findDOMNode(this);
-      if (!(listEl instanceof HTMLElement)) throw new Error('Should not happen');
+      const listEl = this._listEl;
+      if (!listEl) throw new Error('Should not happen');
       if (
         listEl.contains && document.activeElement &&
         listEl.contains(document.activeElement)
@@ -303,7 +308,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Supertype<TemplatePr
         $splice: [[dragIndex, 1], [newIndex, 0, list[dragIndex]]]
       });
     }
- 
+
     this.setState({lastDrag: {...lastDrag, mouseY}, list: newList});
   };
 
@@ -405,7 +410,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Supertype<TemplatePr
   render() {
     const {springConfig, container, padding, template, unsetZIndex, commonProps} = this.props;
     const {list, dragging, lastDrag, useAbsolutePositioning} = this.state;
-    
+
     const keyFn = this._getKeyFn();
     const anySelected = spring(dragging ? 1 : 0, springConfig);
 
@@ -471,7 +476,10 @@ export default class DraggableList<I,C=*,T:React.Component<$Supertype<TemplatePr
 
     const fullContainerHeight = `${this._getDistance(0, list.length, false)}px`;
     return (
-      <div style={{position: 'relative'}}>
+      <div
+        style={{position: 'relative'}}
+        ref={this._listElSetter}
+      >
         <Motion
           style={{adjustScroll, anySelected}}
           onRest={() => {
