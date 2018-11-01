@@ -50,7 +50,7 @@ module.exports = {
   "settings": {
     "react": {
       "version": "16.0",
-      "flowVersion": "0.80"
+      "flowVersion": "0.85"
     }
   }
 };
