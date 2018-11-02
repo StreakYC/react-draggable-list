@@ -5,7 +5,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Motion, spring} from 'react-motion';
 import update from 'immutability-helper';
-import saveRefs from 'react-save-refs';
+import MultiRef from 'react-multi-ref';
 import DragHandle from './DragHandle';
 import OnUpdate from './OnUpdate';
 import MoveContainer from './MoveContainer';
@@ -90,7 +90,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Supertype<TemplatePr
     autoScrollMaxSpeed: 15,
     autoScrollRegionSize: 30
   };
-  _itemRefs: Map<string, MoveContainer<I,C,T>> = new Map();
+  _itemRefs: MultiRef<string, MoveContainer<I,any,T>> = new MultiRef();
   _heights: Map<string, {natural: number, drag: number}> = new Map();
   _autoScrollerTimer: any;
 
@@ -110,7 +110,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Supertype<TemplatePr
   }
 
   getItemInstance(key: string): T {
-    const ref = this._itemRefs.get(key);
+    const ref = this._itemRefs.map.get(key);
     if (!ref) throw new Error('key not found');
     return ref.getTemplate();
   }
@@ -185,7 +185,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Supertype<TemplatePr
       this._heights = new Map(
         this.state.list.map(item => {
           const key = keyFn(item);
-          const containerRef = this._itemRefs.get(key);
+          const containerRef = this._itemRefs.map.get(key);
           const refEl = containerRef ? containerRef.getDOMNode().firstElementChild : null;
           const ref = containerRef ? containerRef.getTemplate() : null;
           const natural = (refEl instanceof HTMLElement) ?
@@ -445,7 +445,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Supertype<TemplatePr
           style={style} key={key}
           children={({itemSelected, anySelected, y}) =>
             <MoveContainer
-              ref={saveRefs(this._itemRefs, key)}
+              ref={this._itemRefs.ref(key)}
               y={useAbsolutePositioning ? y : null}
               template={template}
               padding={padding}
