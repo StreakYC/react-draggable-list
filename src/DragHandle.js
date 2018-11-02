@@ -33,6 +33,9 @@ export default class DragHandle extends React.Component<Props> {
   };
 
   render() {
+    // TODO In next major version remove the need for findDOMNode by using React.cloneElement here.
+    // Update documentation to require that the element given to dragHandle is either
+    // a native DOM element or forwards its props to one.
     return React.Children.only(this.props.children);
   }
 }
