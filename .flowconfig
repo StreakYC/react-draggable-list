@@ -1,5 +1,6 @@
 [ignore]
 .*/node_modules/.*/\(test\|lib\|example\|samplejson\)/.*\.json
+<PROJECT_ROOT>/js/
 
 [include]
 
