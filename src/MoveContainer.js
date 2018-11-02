@@ -20,6 +20,14 @@ export default class MoveContainer<I,C,T:React.Component<any,any>> extends React
   _templateContainerSetter = (cmp: ?Object) => {
     if (cmp) this._templateContainer = cmp;
   };
+  _el: HTMLElement;
+  _elSetter = (el: ?HTMLElement) => {
+    if (el) this._el = el;
+  };
+
+  getDOMNode(): HTMLElement {
+    return this._el;
+  }
 
   getTemplate(): T {
     return this._templateContainer.getTemplate();
@@ -45,6 +53,7 @@ export default class MoveContainer<I,C,T:React.Component<any,any>> extends React
 
     return (
       <div
+        ref={this._elSetter}
         style={{
           position: y == null ? 'relative' : 'absolute',
           boxSizing: 'border-box',

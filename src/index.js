@@ -2,7 +2,6 @@
 /* eslint react/prop-types: "error" */
 
 import React from 'react';
-import {findDOMNode} from 'react-dom';
 import PropTypes from 'prop-types';
 import {Motion, spring} from 'react-motion';
 import update from 'immutability-helper';
@@ -187,8 +186,8 @@ export default class DraggableList<I,C=*,T:React.Component<$Supertype<TemplatePr
         this.state.list.map(item => {
           const key = keyFn(item);
           const containerRef = this._itemRefs.get(key);
+          const refEl = containerRef ? containerRef.getDOMNode().firstElementChild : null;
           const ref = containerRef ? containerRef.getTemplate() : null;
-          const refEl = ref ? findDOMNode(ref) : null;
           const natural = (refEl instanceof HTMLElement) ?
             refEl.offsetHeight : DEFAULT_HEIGHT.natural;
           const drag = ref && (typeof (ref: any).getDragHeight === 'function') && (ref: any).getDragHeight() || natural;
