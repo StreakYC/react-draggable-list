@@ -116,6 +116,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Supertype<TemplatePr
     return ref.getTemplate();
   }
 
+  // TODO this React method is deprecated. Investigate and replace with componentDidUpdate.
   componentWillReceiveProps(newProps: Props<I,C,T>) {
     let {dragging, lastDrag} = this.state;
     let {list} = newProps;
