@@ -64,7 +64,7 @@ type DefaultProps = {
   autoScrollMaxSpeed: number;
   autoScrollRegionSize: number;
 };
-export default class DraggableList<I,C=*,T:React.Component<$Supertype<TemplateProps<I,C>>,*>=*> extends React.Component<Props<I,C,T>, State<I>> {
+export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<I,C>>,*>=*> extends React.Component<Props<I,C,T>, State<I>> {
   static propTypes = {
     itemKey: PropTypes.oneOfType([
       PropTypes.string,
