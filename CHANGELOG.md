@@ -1,3 +1,12 @@
+## 4.0.0 (Unreleased)
+
+### Breaking Changes
+* React v16.6+ is now required.
+* The element passed to `dragHandle` now must be a native HTML element or a React component that forwards its props onto a native HTML element.
+
+### Improvements
+* No longer uses any deprecated APIs (lifecycle methods and ReactDOM.findDOMNode).
+
 ## 3.7.0 (2018-11-05)
 
 * Added TypeScript type definitions.

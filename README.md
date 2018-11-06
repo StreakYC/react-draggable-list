@@ -80,7 +80,10 @@ The template component is passed the following props:
  to 1 when any item is picked up by the user.
 * `dragHandle` is a function which should be used during rendering to wrap the
  element to be used as the drag handle. The whole item will be draggable by the
- wrapped element.
+ wrapped element. The element passed to dragHandle must be a native HTML element
+ or a React component that forwards its props to a native HTML element. See the
+ [example](https://github.com/StreakYC/react-draggable-list/blob/master/example/Example.js)
+ to see how it should be used.
 * `commonProps` will be set to the same value passed as the `commonProps` prop
  to the DraggableList component.
 
@@ -101,9 +104,9 @@ equal to the element's natural height.
 To use this module in browsers, a CommonJS bundler such as Browserify or
 Webpack should be used.
 
-This project relies on Map and WeakMap being available globally. A global polyfill
-such as [Babel's polyfill](https://babeljs.io/docs/usage/polyfill/) is required to
-support older browsers that don't implement these.
+This project relies on the javascript Map object being available globally. A
+global polyfill such as [Babel's polyfill](https://babeljs.io/docs/usage/polyfill/)
+is required to support [older browsers that don't implement these](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map#Browser_compatibility).
 
 ## Types
 
