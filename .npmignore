@@ -7,5 +7,6 @@ npm-debug.log
 /flow-typed
 /test-types
 *.test.*
+/.circleci
 /yarn.lock
 .babelrc
