@@ -1,7 +1,7 @@
 /* @flow */
 /* eslint react/prop-types: "error" */
 
-import React from 'react';
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import {Motion, spring} from 'react-motion';
 import update from 'immutability-helper';
@@ -32,7 +32,7 @@ type TemplateProps<I,C> = {
   item: I;
   itemSelected: number;
   anySelected: number;
-  dragHandle: Function;
+  dragHandle: <E: React.Element<any>>(el: E) => E;
   commonProps: C;
 };
 
