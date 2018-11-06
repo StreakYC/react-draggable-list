@@ -1,3 +1,8 @@
+## 3.7.0 (2018-11-05)
+
+* Added TypeScript type definitions.
+* Changed Flow type definitions to use `$ReadOnlyArray` where applicable. Users may need to change the type annotations on the function they give to the `onMoveEnd` prop to keep Flow's type-check passing.
+
 ## 3.6.0 (2018-08-24)
 
 * Added `constrainDrag` prop. [#30](https://github.com/StreakYC/react-draggable-list/pull/30)
