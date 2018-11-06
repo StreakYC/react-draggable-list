@@ -28,7 +28,7 @@ type Drag = {
   mouseOffset: number;
 };
 
-type TemplateProps<I,C> = {
+export type TemplateProps<I,C> = {
   item: I;
   itemSelected: number;
   anySelected: number;
