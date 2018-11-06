@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "strict": true,
+    "jsx": "react",
+    "module": "commonjs",
+    "target": "ES2017",
+    "moduleResolution": "node"
+  }
+}

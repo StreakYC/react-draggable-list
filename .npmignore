@@ -5,6 +5,7 @@ npm-debug.log
 /src
 /example
 /flow-typed
+/test-types
 *.test.*
 /yarn.lock
 .babelrc
