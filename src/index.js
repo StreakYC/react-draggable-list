@@ -39,8 +39,8 @@ type TemplateProps<I,C> = {
 type Props<I,C,T> = {
   itemKey: string|(item: I)=>string;
   template: Class<T>;
-  list: Array<I>;
-  onMoveEnd?: ?(newList: Array<I>, movedItem: I, oldIndex: number, newIndex: number) => void;
+  list: $ReadOnlyArray<I>;
+  onMoveEnd?: ?(newList: $ReadOnlyArray<I>, movedItem: I, oldIndex: number, newIndex: number) => void;
   container?: ?() => ?HTMLElement;
   constrainDrag: boolean;
   springConfig: Object;
@@ -51,7 +51,7 @@ type Props<I,C,T> = {
   commonProps?: C;
 };
 type State<I> = {
-  list: Array<I>;
+  list: $ReadOnlyArray<I>;
   useAbsolutePositioning: boolean;
   dragging: boolean;
   lastDrag: ?Drag;
@@ -350,7 +350,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Supertype<TemplatePr
     this._lastScrollDelta += frameDelta;
   }
 
-  _getDragIndex(list: ?Array<I>, lastDrag: ?Drag): number {
+  _getDragIndex(list: ?$ReadOnlyArray<I>, lastDrag: ?Drag): number {
     if (!list) list = this.state.list;
     if (!lastDrag) lastDrag = this.state.lastDrag;
     if (!lastDrag) {

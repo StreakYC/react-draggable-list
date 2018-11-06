@@ -75,7 +75,7 @@ class PlanetItem extends React.Component<PlanetProps, PlanetState> {
 
 type ExampleState = {
   useContainer: boolean;
-  list: Array<PlanetListItem>;
+  list: $ReadOnlyArray<PlanetListItem>;
 };
 export default class Example extends React.Component<{}, ExampleState> {
   _container: HTMLElement;
@@ -107,7 +107,7 @@ export default class Example extends React.Component<{}, ExampleState> {
     this.setState({useContainer: !this.state.useContainer});
   }
 
-  _onListChange(newList: Array<PlanetListItem>) {
+  _onListChange(newList: $ReadOnlyArray<PlanetListItem>) {
     this.setState({list: newList});
   }
 
