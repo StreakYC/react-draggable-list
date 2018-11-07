@@ -115,23 +115,32 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     return ref.getTemplate();
   }
 
-  // TODO this React method is deprecated. Investigate and replace with componentDidUpdate.
-  componentWillReceiveProps(newProps: Props<I,C,T>) {
-    let {dragging, lastDrag} = this.state;
+  static TODO_getDerivedStateFromProps<I,C,T>(newProps: Props<I,C,T>, state: State<I>): $Shape<State<I>>|null {
     let {list} = newProps;
 
+    // TODO does this code rely on the props being changed synchronously within onMoveEnd?
+
+    // if (list === state.list) {
+    //   return null;
+    // }
+
+    let {dragging, lastDrag} = state;
+
     check: if (lastDrag) {
+      const keyFn = DraggableList._getKeyFn<I>(newProps.itemKey);
+
       let newDragIndex;
       try {
-        newDragIndex = this._getDragIndex(list);
+        newDragIndex = DraggableList._getDragIndex<I>(keyFn, list, lastDrag);
       } catch (err) {
+        // TODO Explain when we expect this to hit, and make sure there's a test for that.
         dragging = false;
         lastDrag = null;
         break check;
       }
 
       if (dragging) {
-        const currentDragIndex = this._getDragIndex();
+        const currentDragIndex = DraggableList._getDragIndex<I>(keyFn, state.list, lastDrag);
         if (currentDragIndex !== newDragIndex) {
           // Let's change the list so that the new drag index will be the same as
           // the current so that the dragged item doesn't jump on the screen.
@@ -141,7 +150,13 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
         }
       }
     }
-    this.setState({dragging, lastDrag, list});
+
+    return {dragging, lastDrag, list};
+  }
+
+  componentWillReceiveProps(newProps: Props<I,C,T>) {
+    const update = DraggableList.TODO_getDerivedStateFromProps(newProps, this.state);
+    if (update !== null) this.setState(update);
   }
 
   componentWillUnmount() {
@@ -350,13 +365,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     this._lastScrollDelta += frameDelta;
   }
 
-  _getDragIndex(list: ?$ReadOnlyArray<I>, lastDrag: ?Drag): number {
-    if (!list) list = this.state.list;
-    if (!lastDrag) lastDrag = this.state.lastDrag;
-    if (!lastDrag) {
-      throw new Error('No drag happened');
-    }
-    const keyFn = this._getKeyFn();
+  static _getDragIndex<I>(keyFn: (item: I) => string, list: $ReadOnlyArray<I>, lastDrag: Drag): number {
     const {itemKey} = lastDrag;
     for (let i=0, len=list.length; i < len; i++) {
       if (keyFn(list[i]) === itemKey) {
@@ -364,6 +373,15 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
       }
     }
     throw new Error('Failed to find drag index');
+  }
+
+  _getDragIndex(): number {
+    const {list, lastDrag} = this.state;
+    if (!lastDrag) {
+      throw new Error('No drag happened');
+    }
+    const keyFn = this._getKeyFn();
+    return DraggableList._getDragIndex(keyFn, list, lastDrag);
   }
 
   _getDistance(start: number, end: number, dragging: boolean): number {
@@ -402,9 +420,12 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     return container ? container() : null;
   }
 
-  _getKeyFn(): (item: I) => string {
-    const {itemKey} = this.props;
+  static _getKeyFn<I>(itemKey: string|(item: I)=>string): (item: I) => string {
     return typeof itemKey === 'function' ? itemKey : x => (x: any)[itemKey];
+  }
+
+  _getKeyFn(): (item: I) => string {
+    return DraggableList._getKeyFn<I>(this.props.itemKey);
   }
 
   render() {
