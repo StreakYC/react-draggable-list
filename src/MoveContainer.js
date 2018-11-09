@@ -12,7 +12,7 @@ type Props<I,C,T> = {
   anySelected: number;
   height: Object;
   zIndex: number|string;
-  makeDragHandle: Function;
+  makeDragHandleProps: (getY: () => ?number) => Object;
   commonProps: C;
 };
 export default class MoveContainer<I,C,T:React.Component<any,any>> extends React.Component<Props<I,C,T>> {
@@ -44,7 +44,7 @@ export default class MoveContainer<I,C,T:React.Component<any,any>> extends React
       this.props.commonProps !== nextProps.commonProps;
   }
 
-  _dragHandle: Function = (el) => this.props.makeDragHandle(el, ()=>this.props.y);
+  _dragHandleProps = this.props.makeDragHandleProps(()=>this.props.y);
 
   render() {
     const {
@@ -72,7 +72,7 @@ export default class MoveContainer<I,C,T:React.Component<any,any>> extends React
           template={template}
           itemSelected={itemSelected}
           anySelected={anySelected}
-          dragHandle={this._dragHandle}
+          dragHandleProps={this._dragHandleProps}
           commonProps={commonProps}
         />
       </div>

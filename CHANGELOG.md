@@ -2,7 +2,25 @@
 
 ### Breaking Changes
 * React v16.6+ is now required.
-* The element passed to `dragHandle` now must be a native HTML element or a React component that forwards its props onto a native HTML element.
+* The `dragHandle` function prop was removed. Now the Template component is instead given a prop `dragHandleProps` which is an object that must be spread as props on the HTML element to be used as the drag handle.
+
+ReactDraggableList v3:
+
+```js
+<div>
+  {this.props.dragHandle(<div>drag me</div>)}
+  <div>content</div>
+</div>
+```
+
+ReactDraggableList v4:
+
+```js
+<div>
+  <div {...this.props.dragHandleProps}>drag me</div>
+  <div>content</div>
+</div>
+```
 
 ### Improvements
 * No longer uses any deprecated APIs (lifecycle methods and ReactDOM.findDOMNode).

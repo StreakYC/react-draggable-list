@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import {Motion, spring} from 'react-motion';
 import update from 'immutability-helper';
 import MultiRef from 'react-multi-ref';
-import DragHandle from './DragHandle';
 import OnUpdate from './OnUpdate';
 import MoveContainer from './MoveContainer';
 
@@ -32,7 +31,7 @@ export type TemplateProps<I,C> = {
   item: I;
   itemSelected: number;
   anySelected: number;
-  dragHandle: <E: React.Element<any>>(el: E) => E;
+  dragHandleProps: Object;
   commonProps: C;
 };
 
@@ -118,7 +117,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
   static TODO_getDerivedStateFromProps<I,C,T>(newProps: Props<I,C,T>, state: State<I>): $Shape<State<I>>|null {
     let {list} = newProps;
 
-    // TODO does this code rely on the props being changed synchronously within onMoveEnd?
+    // TODO if user doesn't update list in onMoveEnd, then undo the drag.
 
     // if (list === state.list) {
     //   return null;
@@ -452,14 +451,10 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
         anySelected,
         ...selectedStyle
       };
-      const makeDragHandle = (el, getY: ()=>?number) => (
-        <DragHandle
-          onMouseDown={e => this._handleMouseDown(key, getY(), e)}
-          onTouchStart={e => this._handleTouchStart(key, getY(), e)}
-        >
-          {el}
-        </DragHandle>
-      );
+      const makeDragHandleProps = (getY: ()=>?number): Object => ({
+        onMouseDown: e => this._handleMouseDown(key, getY(), e),
+        onTouchStart: e => this._handleTouchStart(key, getY(), e)
+      });
       const height = this._heights.get(key) || DEFAULT_HEIGHT;
       return (
         <Motion
@@ -477,7 +472,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
               zIndex={unsetZIndex && !useAbsolutePositioning ? 'auto' :
                 (lastDrag && lastDrag.itemKey === key ? list.length : i)
               }
-              makeDragHandle={makeDragHandle}
+              makeDragHandleProps={makeDragHandleProps}
               commonProps={commonProps}
             />
           }

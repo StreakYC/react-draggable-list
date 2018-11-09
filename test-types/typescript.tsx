@@ -12,14 +12,14 @@ interface MyTempProps {
   item: Item;
   itemSelected: number;
   // purposefully omit anySelected here
-  dragHandle: TemplateProps<any,any>['dragHandle'];
+  dragHandleProps: object;
 }
 interface MyTempState {
   foo: number;
 }
 class MyTemp extends React.Component<MyTempProps, MyTempState> {
   render() {
-    return this.props.dragHandle(<div />);
+    return <div {...this.props.dragHandleProps} />;
   }
 }
 

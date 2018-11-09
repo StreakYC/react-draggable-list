@@ -5,14 +5,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 import DraggableList from '../src';
-import DragHandle from '../src/DragHandle';
 
 class TestTemplate extends React.Component<Object> {
   _elRef = React.createRef();
 
   render() {
-    const {item, dragHandle} = this.props;
-    return dragHandle(<div ref={this._elRef} className="item">{item.name}</div>);
+    const {item, dragHandleProps} = this.props;
+    return <div ref={this._elRef} className="item" {...dragHandleProps}>{item.name}</div>;
   }
 
   getName() {
@@ -86,9 +85,9 @@ test('drag works', async () => {
   expect(root.getItemInstance('grif').getDragHeight()).toBe(30);
   expect(root.getItemInstance('grif').props.commonProps).toBe(commonProps);
 
-  const renderedHandles: Array<Object> = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
+  const renderedHandles: Array<TestTemplate> = (TestUtils.scryRenderedComponentsWithType(root, TestTemplate): any);
   expect(root.state.dragging).toBe(false);
-  renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
+  renderedHandles[0].props.dragHandleProps.onMouseDown({pageY: 500, preventDefault() {}});
   expect(root.state.dragging).toBe(true);
 
   root._handleMouseMove({pageY: 600});
@@ -177,9 +176,9 @@ test('two drags work', async () => {
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
   ).toEqual(list);
 
-  const renderedHandles: Array<Object> = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
+  const renderedHandles: Array<TestTemplate> = (TestUtils.scryRenderedComponentsWithType(root, TestTemplate): any);
   expect(root.state.dragging).toBe(false);
-  renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
+  renderedHandles[0].props.dragHandleProps.onMouseDown({pageY: 500, preventDefault() {}});
   expect(root.state.dragging).toBe(true);
 
   root._handleMouseMove({pageY: 600});
@@ -214,7 +213,7 @@ test('two drags work', async () => {
   ).toEqual(reorderedList);
 
   expect(root.state.dragging).toBe(false);
-  renderedHandles[0]._onMouseDown({pageY: 600, preventDefault() {}});
+  renderedHandles[0].props.dragHandleProps.onMouseDown({pageY: 600, preventDefault() {}});
   expect(root.state.dragging).toBe(true);
 
   root._handleMouseMove({pageY: 650});
@@ -279,8 +278,8 @@ test('props reordered during drag works', () => {
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
   ).toEqual(list);
 
-  const renderedHandles: Array<Object> = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
-  renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
+  const renderedHandles: Array<TestTemplate> = (TestUtils.scryRenderedComponentsWithType(root, TestTemplate): any);
+  renderedHandles[0].props.dragHandleProps.onMouseDown({pageY: 500, preventDefault() {}});
 
   const propReorderedList = [
     {name: 'tucker'},
@@ -359,8 +358,8 @@ test('item removed during drag works', () => {
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
   ).toEqual(list);
 
-  const renderedHandles: Array<Object> = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
-  renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
+  const renderedHandles: Array<TestTemplate> = (TestUtils.scryRenderedComponentsWithType(root, TestTemplate): any);
+  renderedHandles[0].props.dragHandleProps.onMouseDown({pageY: 500, preventDefault() {}});
 
   const propReorderedList = [
     {name: 'tucker'},
@@ -433,8 +432,8 @@ test('item removed before drag end works', async () => {
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
   ).toEqual(list);
 
-  const renderedHandles: Array<Object> = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
-  renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
+  const renderedHandles: Array<TestTemplate> = (TestUtils.scryRenderedComponentsWithType(root, TestTemplate): any);
+  renderedHandles[0].props.dragHandleProps.onMouseDown({pageY: 500, preventDefault() {}});
   root._handleMouseMove({pageY: 650});
   await delay(100);
 
@@ -508,8 +507,8 @@ test('dragged item removed after drag during animation works', () => {
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
   ).toEqual(list);
 
-  const renderedHandles: Array<Object> = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
-  renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
+  const renderedHandles: Array<TestTemplate> = (TestUtils.scryRenderedComponentsWithType(root, TestTemplate): any);
+  renderedHandles[0].props.dragHandleProps.onMouseDown({pageY: 500, preventDefault() {}});
   root._handleMouseMove({pageY: 650});
 
   expect(root.state.dragging).toBe(true);
@@ -565,8 +564,8 @@ test('list is shown with correct positions after being fully changed during anim
     div
   ): any);
 
-  const renderedHandles: Array<Object> = TestUtils.scryRenderedComponentsWithType(root, DragHandle);
-  renderedHandles[0]._onMouseDown({pageY: 500, preventDefault() {}});
+  const renderedHandles: Array<TestTemplate> = (TestUtils.scryRenderedComponentsWithType(root, TestTemplate): any);
+  renderedHandles[0].props.dragHandleProps.onMouseDown({pageY: 500, preventDefault() {}});
 
   await delay(100);
 

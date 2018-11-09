@@ -78,10 +78,9 @@ The template component is passed the following props:
  item when the user picks it up or drops it.
 * `anySelected` is a number from 0 to 1. It starts at 0, and quickly increases
  to 1 when any item is picked up by the user.
-* `dragHandle` is a function which should be used during rendering to wrap the
+* `dragHandleProps` is an object which should be spread as props on the HTML
  element to be used as the drag handle. The whole item will be draggable by the
- wrapped element. The element passed to dragHandle must be a native HTML element
- or a React component that forwards its props to a native HTML element. See the
+ wrapped element. See the
  [example](https://github.com/StreakYC/react-draggable-list/blob/master/example/Example.js)
  to see how it should be used.
 * `commonProps` will be set to the same value passed as the `commonProps` prop

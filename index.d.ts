@@ -4,7 +4,7 @@ export interface TemplateProps<I,C> {
   item: I;
   itemSelected: number;
   anySelected: number;
-  dragHandle: <E extends React.ReactElement<any>>(el: E) => E;
+  dragHandleProps: object;
   commonProps: C;
 }
 
