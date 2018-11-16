@@ -217,19 +217,19 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
       newHeights = _newHeights;
     }
 
-    const itemIndex = this.state.list.map(keyFn).indexOf(itemKey);
-
-    const startY = pressY == null ?
-      this._getDistance(0, itemIndex, false) : pressY;
-
-    const containerEl = this._getContainer();
-    const containerScroll = !containerEl || containerEl === document.body ?
-      0 : containerEl.scrollTop;
-
     // Need to re-render once before we start dragging so that the `y` values
     // are set using the correct state.heights and then can animate from there.
 
     const afterHeights = () => {
+      const itemIndex = this.state.list.map(keyFn).indexOf(itemKey);
+
+      const startY = pressY == null ?
+        this._getDistance(0, itemIndex, false) : pressY;
+
+      const containerEl = this._getContainer();
+      const containerScroll = !containerEl || containerEl === document.body ?
+        0 : containerEl.scrollTop;
+
       this.setState({
         useAbsolutePositioning: true,
         dragging: true,
