@@ -9,7 +9,12 @@ import MultiRef from 'react-multi-ref';
 import OnUpdate from './OnUpdate';
 import MoveContainer from './MoveContainer';
 
-const DEFAULT_HEIGHT = {natural: 200, drag: 30};
+type HeightData = {|
+  natural: number;
+  drag: number;
+|};
+
+const DEFAULT_HEIGHT: HeightData = {natural: 200, drag: 30};
 
 function getScrollSpeed(distance, speed, size) {
   // If distance is zero, then the result is the max speed. Otherwise,
@@ -54,6 +59,7 @@ type State<I> = {
   useAbsolutePositioning: boolean;
   dragging: boolean;
   lastDrag: ?Drag;
+  heights: ?{[key: string]: HeightData};
 };
 type DefaultProps = {
   springConfig: Object;
@@ -90,7 +96,6 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     autoScrollRegionSize: 30
   };
   _itemRefs: MultiRef<string, MoveContainer<I,any,T>> = new MultiRef();
-  _heights: Map<string, {natural: number, drag: number}> = new Map();
   _autoScrollerTimer: any;
 
   _listRef = React.createRef();
@@ -101,7 +106,8 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
       list: props.list,
       useAbsolutePositioning: false,
       dragging: false,
-      lastDrag: null
+      lastDrag: null,
+      heights: null
     };
   }
 
@@ -192,19 +198,23 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
 
     const keyFn = this._getKeyFn();
 
-    if (this._heights.size === 0) {
-      this._heights = new Map(
-        this.state.list.map(item => {
-          const key = keyFn(item);
-          const containerRef = this._itemRefs.map.get(key);
-          const refEl = containerRef ? containerRef.getDOMNode().firstElementChild : null;
-          const ref = containerRef ? containerRef.getTemplate() : null;
-          const natural = (refEl instanceof HTMLElement) ?
-            refEl.offsetHeight : DEFAULT_HEIGHT.natural;
-          const drag = ref && (typeof (ref: any).getDragHeight === 'function') && (ref: any).getDragHeight() || natural;
-          return [key, {natural, drag}];
-        })
-      );
+    let newHeights = null;
+    if (this.state.heights == null) {
+      const _newHeights: {[key: string]: HeightData} = (Object.create(null): any);
+
+      this.state.list.forEach(item => {
+        const key = keyFn(item);
+        const containerRef = this._itemRefs.map.get(key);
+        const refEl = containerRef ? containerRef.getDOMNode().firstElementChild : null;
+        const ref = containerRef ? containerRef.getTemplate() : null;
+        const natural = (refEl instanceof HTMLElement) ?
+          refEl.offsetHeight : DEFAULT_HEIGHT.natural;
+        const drag = ref && (typeof (ref: any).getDragHeight === 'function') && (ref: any).getDragHeight() || natural;
+
+        _newHeights[key] = {natural, drag};
+      });
+
+      newHeights = _newHeights;
     }
 
     const itemIndex = this.state.list.map(keyFn).indexOf(itemKey);
@@ -217,8 +227,9 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
       0 : containerEl.scrollTop;
 
     // Need to re-render once before we start dragging so that the `y` values
-    // are set using the correct _heights and then can animate from there.
-    this.forceUpdate(() => {
+    // are set using the correct state.heights and then can animate from there.
+
+    const afterHeights = () => {
       this.setState({
         useAbsolutePositioning: true,
         dragging: true,
@@ -231,7 +242,13 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
           mouseOffset: pageY - startY + containerScroll
         }
       });
-    });
+    };
+
+    if (newHeights) {
+      this.setState({heights: newHeights}, afterHeights);
+    } else {
+      afterHeights();
+    }
   }
 
   _handleTouchMove: Function = (e) => {
@@ -306,7 +323,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
       const keyFn = this._getKeyFn();
       let reach = Math.abs(movementFromNatural);
       for (let i=dragIndex+direction; i < list.length && i >= 0; i += direction) {
-        const iDragHeight = (this._heights.get(keyFn(list[i])) || DEFAULT_HEIGHT).drag;
+        const iDragHeight = this._getItemHeight(keyFn(list[i])).drag;
         if (reach < iDragHeight/2 + padding) break;
         reach -= iDragHeight + padding;
         newIndex = i;
@@ -380,6 +397,11 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     return DraggableList._getDragIndex(keyFn, list, lastDrag);
   }
 
+  _getItemHeight(key: string): HeightData {
+    return this.state.heights != null && key in this.state.heights ?
+      this.state.heights[key] : DEFAULT_HEIGHT;
+  }
+
   _getDistance(start: number, end: number, dragging: boolean): number {
     if (end < start) {
       return -this._getDistance(end, start, dragging);
@@ -390,7 +412,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     const keyFn = this._getKeyFn();
     let distance = 0;
     for (let i=start; i < end; i++) {
-      const height = this._heights.get(keyFn(list[i])) || DEFAULT_HEIGHT;
+      const height = this._getItemHeight(keyFn(list[i]));
       distance += (dragging ? height.drag : height.natural) + padding;
     }
     return distance;
@@ -402,9 +424,9 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
 
     let offset = 0;
     if (this._getDragIndex() < lastDrag.startIndex) {
-      const dragItemHeight = this._heights.get(lastDrag.itemKey) || DEFAULT_HEIGHT;
+      const dragItemHeight = this._getItemHeight(lastDrag.itemKey);
       const newCenterHeight =
-        this._heights.get(keyFn(list[lastDrag.startIndex])) || DEFAULT_HEIGHT;
+        this._getItemHeight(keyFn(list[lastDrag.startIndex]));
       offset = dragItemHeight.drag - newCenterHeight.drag;
     }
     return lastDrag.startY + offset +
@@ -452,7 +474,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
         onMouseDown: e => this._handleMouseDown(key, getY(), e),
         onTouchStart: e => this._handleTouchStart(key, getY(), e)
       });
-      const height = this._heights.get(key) || DEFAULT_HEIGHT;
+      const height = this._getItemHeight(key);
       return (
         <Motion
           style={style} key={key}
@@ -497,8 +519,10 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
           style={{adjustScroll, anySelected}}
           onRest={() => {
             if (!dragging) {
-              this._heights.clear();
-              this.setState({useAbsolutePositioning: false});
+              this.setState({
+                heights: null,
+                useAbsolutePositioning: false
+              });
             }
           }}
           children={({adjustScroll}) =>
