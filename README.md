@@ -37,7 +37,9 @@ following props:
 * `onMoveEnd` may be a function which will be called when the user drags and
  drops an item to a new position in the list. The arguments to the function
  will be `(newList: Array<Object>, movedItem: Object, oldIndex: number,
- newIndex: number)`.
+ newIndex: number)`. A component using DraggableList should immediately store
+ the newList into its state and then pass the new list (or an equivalent list)
+ as the `list` prop to DraggableList.
 * `container`: If the DraggableList is inside a scrollable element, then this
  property should be set to a function which returns a reference to it. When the
  user moves an item in the list, the container will be scrolled to keep the
@@ -100,7 +102,7 @@ equal to the element's natural height.
 
 ## Bundling Note
 
-To use this module in browsers, a CommonJS bundler such as Browserify or
+To use this module in browsers, a CommonJS bundler such as Parcel, Browserify, or
 Webpack should be used.
 
 This project relies on the javascript Map object being available globally. A
