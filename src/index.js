@@ -93,10 +93,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
   _heights: Map<string, {natural: number, drag: number}> = new Map();
   _autoScrollerTimer: any;
 
-  _listEl: HTMLElement;
-  _listElSetter = (el: ?HTMLElement) => {
-    if (el) this._listEl = el;
-  };
+  _listRef = React.createRef();
 
   constructor(props: Props<I,C,T>) {
     super(props);
@@ -183,7 +180,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     // try to scroll the parent element to keep the focused element in view.
     // Stop that.
     {
-      const listEl = this._listEl;
+      const listEl = this._listRef.current;
       if (!listEl) throw new Error('Should not happen');
       if (
         listEl.contains && document.activeElement &&
@@ -494,7 +491,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     return (
       <div
         style={{position: 'relative'}}
-        ref={this._listElSetter}
+        ref={this._listRef}
       >
         <Motion
           style={{adjustScroll, anySelected}}
