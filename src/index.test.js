@@ -42,9 +42,8 @@ class TestTemplate extends React.Component<Object> {
 
 const springConfig = {stiffness: 1500, damping: 50};
 
-test('drag works', async () => {
-  const onMoveEnd = jest.fn();
-
+// TODO remove .only
+test.only('drag works', async () => {
   let _scrollTop = 0;
   const containerEl: Object = {
     get scrollTop() {
@@ -55,7 +54,7 @@ test('drag works', async () => {
     }
   };
 
-  const list = [
+  let list = [
     {name: 'caboose'},
     {name: 'tucker'},
     {name: 'church'},
@@ -65,17 +64,30 @@ test('drag works', async () => {
     {name: 'donut'}
   ];
   const commonProps = {a: 'foo'};
-  const root: DraggableList<*> = (TestUtils.renderIntoDocument(
-    <DraggableList
-      itemKey="name"
-      list={list}
-      template={TestTemplate}
-      onMoveEnd={onMoveEnd}
-      springConfig={springConfig}
-      container={()=>containerEl}
-      commonProps={commonProps}
-    />
-  ): any);
+
+  const div = document.createElement('div');
+
+  const onMoveEnd = jest.fn((newList) => {
+    list = newList;
+    render();
+  });
+
+  function render(): DraggableList<*> {
+    return (ReactDOM.render(
+      <DraggableList
+        itemKey="name"
+        list={list}
+        template={TestTemplate}
+        onMoveEnd={onMoveEnd}
+        springConfig={springConfig}
+        container={()=>containerEl}
+        commonProps={commonProps}
+      />,
+      div
+    ): any);
+  }
+
+  const root = render();
 
   expect(
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
@@ -91,34 +103,9 @@ test('drag works', async () => {
   expect(root.state.dragging).toBe(true);
 
   root._handleMouseMove({pageY: 600});
-  const reorderedList = [
-    {name: 'tucker'},
-    {name: 'church'},
-    {name: 'caboose'},
-    {name: 'simmons'},
-    {name: 'sarge'},
-    {name: 'grif'},
-    {name: 'donut'}
-  ];
-  expect(
-    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
-  ).toEqual(reorderedList);
-
   await delay(30);
 
   root._handleMouseMove({pageY: 650});
-  const reorderedList2 = [
-    {name: 'tucker'},
-    {name: 'church'},
-    {name: 'simmons'},
-    {name: 'sarge'},
-    {name: 'caboose'},
-    {name: 'grif'},
-    {name: 'donut'}
-  ];
-  expect(
-    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
-  ).toEqual(reorderedList2);
 
   expect(root.state.dragging).toBe(true);
   expect(onMoveEnd).toHaveBeenCalledTimes(0);
@@ -126,13 +113,23 @@ test('drag works', async () => {
   expect(root.state.dragging).toBe(false);
   expect(onMoveEnd).toHaveBeenCalledTimes(1);
 
+  const reorderedList = [
+    {name: 'tucker'},
+    {name: 'church'},
+    {name: 'simmons'},
+    {name: 'sarge'},
+    {name: 'caboose'},
+    {name: 'grif'},
+    {name: 'donut'}
+  ];
+
   expect(onMoveEnd.mock.calls[0]).toEqual(
-    [reorderedList2, {name: 'caboose'}, 0, 4]
+    [reorderedList, {name: 'caboose'}, 0, 4]
   );
 
   expect(
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
-  ).toEqual(reorderedList2);
+  ).toEqual(reorderedList);
 
   expect(_scrollTop).toBe(0);
   await delay(30);
