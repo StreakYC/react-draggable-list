@@ -114,7 +114,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     return ref.getTemplate();
   }
 
-  static TODO_getDerivedStateFromProps<I,C,T>(newProps: Props<I,C,T>, state: State): $Shape<State>|null {
+  static getDerivedStateFromProps<I,C,T>(newProps: Props<I,C,T>, state: State): $Shape<State>|null {
     const {list} = newProps;
     const {lastDrag} = state;
 
@@ -131,12 +131,6 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     }
 
     return null;
-  }
-
-  componentWillReceiveProps(newProps: Props<I,C,T>) {
-    // console.log('inside componentWillReceiveProps');
-    const update = DraggableList.TODO_getDerivedStateFromProps(newProps, this.state);
-    if (update !== null) this.setState(update);
   }
 
   componentWillUnmount() {
