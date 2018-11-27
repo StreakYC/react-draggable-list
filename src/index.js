@@ -343,8 +343,8 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
 
         onMoveEnd(newList, list[dragIndex], dragIndex, newIndex);
       }
+      this.setState({dragging: false});
     }
-    this.setState({dragging: false});
   };
 
   _scrollContainer(delta: number) {
