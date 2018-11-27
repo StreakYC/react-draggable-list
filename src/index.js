@@ -239,13 +239,13 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     // TODO list re-order?
 
     const containerEl = this._getContainer();
-    const dragIndex = this._getDragListIndex();
+    const dragListIndex = this._getDragListIndex();
 
     clearInterval(this._autoScrollerTimer);
 
     // If the user has the mouse near the top or bottom of the container and
     // not at the end of the list, then autoscroll.
-    if (dragIndex !== 0 && dragIndex !== list.length-1) {
+    if (dragListIndex !== 0 && dragListIndex !== list.length-1) {
       let scrollSpeed = 0;
 
       const containerRect = containerEl && containerEl !== document.body &&
@@ -283,8 +283,13 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
       0 : containerEl.scrollTop;
     let mouseY = pageY - lastDrag.mouseOffset + containerScroll;
     if (this.props.constrainDrag) {
-      mouseY = Math.max(mouseY, this._getDistanceFromTopDuringDrag(lastDrag, 0, this.props.list));
-      mouseY = Math.min(mouseY, this._getDistanceFromTopDuringDrag(lastDrag, this.props.list.length - 1, this.props.list));
+      const dragVisualIndex = this._getDragVisualIndex();
+      const visualList = update(list, {
+        $splice: [[dragListIndex, 1], [dragVisualIndex, 0, list[dragListIndex]]]
+      });
+
+      mouseY = Math.max(mouseY, this._getDistanceFromTopDuringDrag(lastDrag, 0, visualList));
+      mouseY = Math.min(mouseY, this._getDistanceFromTopDuringDrag(lastDrag, this.props.list.length - 1, visualList));
     }
 
     this.setState({lastDrag: {...lastDrag, mouseY}});
@@ -295,8 +300,8 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     const {dragging, lastDrag} = this.state;
     if (!dragging || !lastDrag) throw new Error('Should not happen');
 
-    const dragIndex = this._getDragListIndex();
-    const naturalPosition = this._getDistanceFromTopDuringDrag(lastDrag, dragIndex, this.props.list);
+    const dragListIndex = this._getDragListIndex();
+    const naturalPosition = this._getDistanceFromTopDuringDrag(lastDrag, dragListIndex, this.props.list);
 
     const {mouseY} = lastDrag;
 
@@ -304,11 +309,11 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     // 1 down, -1 up, 0 neither
     const direction = movementFromNatural > 0 ? 1 :
       movementFromNatural < 0 ? -1 : 0;
-    let newIndex = dragIndex;
+    let newIndex = dragListIndex;
     if (direction !== 0) {
       const keyFn = this._getKeyFn();
       let reach = Math.abs(movementFromNatural);
-      for (let i=dragIndex+direction; i < list.length && i >= 0; i += direction) {
+      for (let i=dragListIndex+direction; i < list.length && i >= 0; i += direction) {
         const iDragHeight = this._getItemHeight(keyFn(list[i])).drag;
         if (reach < iDragHeight/2 + padding) break;
         reach -= iDragHeight + padding;
