@@ -24,6 +24,7 @@ ReactDraggableList v4:
 
 ### Improvements
 * No longer uses any deprecated APIs (lifecycle methods and ReactDOM.findDOMNode).
+* Fixed bug where the `oldIndex` parameter passed to `onMoveEnd` was incorrect if the `list` prop was updated while the user was dragging an item.
 
 ## 3.7.0 (2018-11-05)
 
