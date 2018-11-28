@@ -195,6 +195,10 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     const afterHeights = () => {
       const itemIndex = this.props.list.map(keyFn).indexOf(itemKey);
 
+      // pressY will be non-null if the list is currently animating (because the
+      // clicked item has its `y` prop set). pressY will be null if the list is
+      // not currently animating (because the clicked item will be at its
+      // natural position, which is calculatable using _getDistance).
       const startY = pressY == null ?
         this._getDistance(0, itemIndex, false) : pressY;
 
