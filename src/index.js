@@ -252,14 +252,14 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     if (!dragging || !lastDrag) return;
 
     const containerEl = this._getContainer();
-    const dragListIndex = this._getDragListIndex();
+    const dragVisualIndex = this._getDragVisualIndex();
     const keyFn = this._getKeyFn();
 
     clearInterval(this._autoScrollerTimer);
 
     // If the user has the mouse near the top or bottom of the container and
     // not at the end of the list, then autoscroll.
-    if (dragListIndex !== 0 && dragListIndex !== list.length-1) {
+    if (dragVisualIndex !== 0 && dragVisualIndex !== list.length-1) {
       let scrollSpeed = 0;
 
       const containerRect = containerEl && containerEl !== document.body &&
