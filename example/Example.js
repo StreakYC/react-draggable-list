@@ -13,7 +13,7 @@ type PlanetListItem = {
 type PlanetProps = {
   item: PlanetListItem;
   itemSelected: number;
-  dragHandle: *;
+  dragHandleProps: Object;
 };
 type PlanetState = {
   value: number;
@@ -34,7 +34,7 @@ class PlanetItem extends React.Component<PlanetProps, PlanetState> {
   }
 
   render() {
-    const {item, itemSelected, dragHandle} = this.props;
+    const {item, itemSelected, dragHandleProps} = this.props;
     const {value} = this.state;
     const scale = itemSelected * 0.05 + 1;
     const shadow = itemSelected * 15 + 1;
@@ -48,7 +48,7 @@ class PlanetItem extends React.Component<PlanetProps, PlanetState> {
           boxShadow: `rgba(0, 0, 0, 0.3) 0px ${shadow}px ${2 * shadow}px 0px`
         }}
       >
-        {dragHandle(<div className="dragHandle" />)}
+        <div className="dragHandle" {...dragHandleProps} />
         <h2>{ item.name }</h2>
         {item.subtitle &&
           <div className="subtitle">This item has a subtitle visible while dragging</div>

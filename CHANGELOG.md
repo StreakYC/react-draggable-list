@@ -1,3 +1,31 @@
+## 4.0.0 (Unreleased)
+
+### Breaking Changes
+* React v16.6+ is now required.
+* The `dragHandle` function prop was removed. Now the Template component is instead given a prop `dragHandleProps` which is an object that must be spread as props on the HTML element to be used as the drag handle.
+
+ReactDraggableList v3:
+
+```js
+<div>
+  {this.props.dragHandle(<div>drag me</div>)}
+  <div>content</div>
+</div>
+```
+
+ReactDraggableList v4:
+
+```js
+<div>
+  <div {...this.props.dragHandleProps}>drag me</div>
+  <div>content</div>
+</div>
+```
+
+### Improvements
+* No longer uses any deprecated APIs (lifecycle methods and ReactDOM.findDOMNode).
+* Fixed bug where the `oldIndex` parameter passed to `onMoveEnd` was incorrect if the `list` prop was updated while the user was dragging an item.
+
 ## 3.7.0 (2018-11-05)
 
 * Added TypeScript type definitions.

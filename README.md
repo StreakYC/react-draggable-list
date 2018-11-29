@@ -37,7 +37,9 @@ following props:
 * `onMoveEnd` may be a function which will be called when the user drags and
  drops an item to a new position in the list. The arguments to the function
  will be `(newList: Array<Object>, movedItem: Object, oldIndex: number,
- newIndex: number)`.
+ newIndex: number)`. A component using DraggableList should immediately store
+ the newList into its state and then pass the new list (or an equivalent list)
+ as the `list` prop to DraggableList.
 * `container`: If the DraggableList is inside a scrollable element, then this
  property should be set to a function which returns a reference to it. When the
  user moves an item in the list, the container will be scrolled to keep the
@@ -78,9 +80,11 @@ The template component is passed the following props:
  item when the user picks it up or drops it.
 * `anySelected` is a number from 0 to 1. It starts at 0, and quickly increases
  to 1 when any item is picked up by the user.
-* `dragHandle` is a function which should be used during rendering to wrap the
+* `dragHandleProps` is an object which should be spread as props on the HTML
  element to be used as the drag handle. The whole item will be draggable by the
- wrapped element.
+ wrapped element. See the
+ [example](https://github.com/StreakYC/react-draggable-list/blob/master/example/Example.js)
+ to see how it should be used.
 * `commonProps` will be set to the same value passed as the `commonProps` prop
  to the DraggableList component.
 
@@ -98,12 +102,12 @@ equal to the element's natural height.
 
 ## Bundling Note
 
-To use this module in browsers, a CommonJS bundler such as Browserify or
+To use this module in browsers, a CommonJS bundler such as Parcel, Browserify, or
 Webpack should be used.
 
-This project relies on Map and WeakMap being available globally. A global polyfill
-such as [Babel's polyfill](https://babeljs.io/docs/usage/polyfill/) is required to
-support older browsers that don't implement these.
+This project relies on the javascript Map object being available globally. A
+global polyfill such as [Babel's polyfill](https://babeljs.io/docs/usage/polyfill/)
+is required to support [older browsers that don't implement these](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map#Browser_compatibility).
 
 ## Types
 

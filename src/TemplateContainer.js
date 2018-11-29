@@ -7,7 +7,7 @@ type Props<I,C,T> = {
   template: Class<T>;
   itemSelected: number;
   anySelected: number;
-  dragHandle: Function;
+  dragHandleProps: Object;
   commonProps: C;
 };
 export default class TemplateContainer<I,C,T:React.Component<any,any>> extends React.Component<Props<I,C,T>> {
@@ -29,7 +29,7 @@ export default class TemplateContainer<I,C,T:React.Component<any,any>> extends R
   }
 
   render() {
-    const {item, itemSelected, anySelected, dragHandle, commonProps} = this.props;
+    const {item, itemSelected, anySelected, dragHandleProps, commonProps} = this.props;
     const Template = this.props.template;
 
     return (
@@ -38,7 +38,7 @@ export default class TemplateContainer<I,C,T:React.Component<any,any>> extends R
         item={item}
         itemSelected={itemSelected}
         anySelected={anySelected}
-        dragHandle={dragHandle}
+        dragHandleProps={dragHandleProps}
         commonProps={commonProps}
       />
     );

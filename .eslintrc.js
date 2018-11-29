@@ -23,8 +23,6 @@ module.exports = {
 
     "react/no-children-prop": ["off"],
 
-    "react/no-deprecated": ["off"], // TODO remove when we target 16.3
-
     "indent": ["error", 2],
     "react/jsx-indent": ["error", 2],
     "react/jsx-indent-props": ["error", 2],
@@ -49,7 +47,7 @@ module.exports = {
   },
   "settings": {
     "react": {
-      "version": "16.0",
+      "version": "16.6",
       "flowVersion": "0.85"
     }
   }
