@@ -10,3 +10,4 @@ npm-debug.log
 /.circleci
 /yarn.lock
 .babelrc
+.cache
