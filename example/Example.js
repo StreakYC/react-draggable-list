@@ -5,8 +5,21 @@ import React from 'react';
 import cx from 'classnames';
 import DraggableList from '../src';
 
-class PlanetItem extends React.Component {
-  state: Object = {
+type PlanetListItem = {
+  name: string;
+  subtitle?: boolean;
+};
+
+type PlanetProps = {
+  item: PlanetListItem;
+  itemSelected: number;
+  dragHandleProps: Object;
+};
+type PlanetState = {
+  value: number;
+};
+class PlanetItem extends React.Component<PlanetProps, PlanetState> {
+  state = {
     value: 0
   };
 
@@ -21,7 +34,7 @@ class PlanetItem extends React.Component {
   }
 
   render() {
-    const {item, itemSelected, dragHandle} = this.props;
+    const {item, itemSelected, dragHandleProps} = this.props;
     const {value} = this.state;
     const scale = itemSelected * 0.05 + 1;
     const shadow = itemSelected * 15 + 1;
@@ -33,8 +46,9 @@ class PlanetItem extends React.Component {
         style={{
           transform: `scale(${scale})`,
           boxShadow: `rgba(0, 0, 0, 0.3) 0px ${shadow}px ${2 * shadow}px 0px`
-        }}>
-        {dragHandle(<div className="dragHandle" />)}
+        }}
+      >
+        <div className="dragHandle" {...dragHandleProps} />
         <h2>{ item.name }</h2>
         {item.subtitle &&
           <div className="subtitle">This item has a subtitle visible while dragging</div>
@@ -59,8 +73,14 @@ class PlanetItem extends React.Component {
   }
 }
 
-export default class Example extends React.Component {
-  state: Object = {
+type ExampleState = {
+  useContainer: boolean;
+  list: $ReadOnlyArray<PlanetListItem>;
+};
+export default class Example extends React.Component<{}, ExampleState> {
+  _container: HTMLElement;
+
+  state = {
     useContainer: false,
     list: [
       {name: 'Mercury'},
@@ -87,7 +107,7 @@ export default class Example extends React.Component {
     this.setState({useContainer: !this.state.useContainer});
   }
 
-  _onListChange(newList: Array<Object>) {
+  _onListChange(newList: $ReadOnlyArray<PlanetListItem>) {
     this.setState({list: newList});
   }
 
@@ -116,20 +136,22 @@ export default class Example extends React.Component {
           </div>
         </div>
         <div
-          className="list" ref="container"
+          className="list" ref={el => {
+            if (el) this._container = el;
+          }}
           style={{
             overflow: useContainer ? 'auto' : '',
             height: useContainer ? '200px' : '',
             border: useContainer ? '1px solid gray' : ''
           }}
-          >
+        >
           <DraggableList
             itemKey="name"
             template={PlanetItem}
             list={this.state.list}
             onMoveEnd={newList => this._onListChange(newList)}
-            container={()=>useContainer ? this.refs.container : document.body}
-            />
+            container={()=>useContainer ? this._container : document.body}
+          />
         </div>
       </div>
     );
