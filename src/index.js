@@ -134,7 +134,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
       const keyFn = DraggableList._getKeyFn<I>(newProps.itemKey);
 
       try {
-        DraggableList._getDragListIndex<I>(keyFn, list, lastDrag);
+        DraggableList._getIndexOfItemWithKey<I>(keyFn, list, lastDrag.itemKey);
       } catch (err) {
         // If the dragged item was removed from the list, this block will get hit.
         // Cancel the drag.
@@ -251,8 +251,6 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     const {dragging, lastDrag} = this.state;
     if (!dragging || !lastDrag) return;
 
-    // TODO list re-order?
-
     const containerEl = this._getContainer();
     const dragListIndex = this._getDragListIndex();
     const keyFn = this._getKeyFn();
@@ -351,8 +349,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     this._lastScrollDelta += frameDelta;
   }
 
-  static _getDragListIndex<I>(keyFn: (item: I) => string, list: $ReadOnlyArray<I>, lastDrag: Drag): number {
-    const {itemKey} = lastDrag;
+  static _getIndexOfItemWithKey<I>(keyFn: (item: I) => string, list: $ReadOnlyArray<I>, itemKey: string): number {
     for (let i=0, len=list.length; i < len; i++) {
       if (keyFn(list[i]) === itemKey) {
         return i;
@@ -363,13 +360,12 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
 
   _getDragListIndex(): number {
     const {list} = this.props;
-    // TODO list re-order?
     const {lastDrag} = this.state;
     if (!lastDrag) {
       throw new Error('No drag happened');
     }
     const keyFn = this._getKeyFn();
-    return DraggableList._getDragListIndex(keyFn, list, lastDrag);
+    return DraggableList._getIndexOfItemWithKey(keyFn, list, lastDrag.itemKey);
   }
 
   _getDragVisualIndex(): number {
@@ -438,9 +434,9 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
 
   _getDistanceFromTopDuringDrag(lastDrag: Drag, itemKey: string, visualList: $ReadOnlyArray<I>): number {
     const keyFn = this._getKeyFn();
-    const index = visualList.map(keyFn).indexOf(itemKey);
+    const index = DraggableList._getIndexOfItemWithKey(keyFn, visualList, itemKey);
     const dragListIndex = this._getDragListIndex();
-    const dragVisualIndex = visualList.map(keyFn).indexOf(lastDrag.itemKey);
+    const dragVisualIndex = DraggableList._getIndexOfItemWithKey(keyFn, visualList, lastDrag.itemKey);
 
     let offset = 0;
     if (dragVisualIndex < dragListIndex) {
