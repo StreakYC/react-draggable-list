@@ -108,7 +108,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
   _itemRefs: MultiRef<string, MoveContainer<I,any,T>> = new MultiRef();
   _autoScrollerTimer: any;
 
-  _listRef = React.createRef();
+  _listRef = React.createRef<HTMLDivElement>();
 
   constructor(props: Props<I,C,T>) {
     super(props);
