@@ -295,7 +295,7 @@ test('props reordered during drag works', () => {
   ];
   render();
 
-  root._handleMouseMove({pageY: 650});
+  root._handleMouseMove({pageY: 450});
   expect(root.state.dragging).toBe(true);
   expect(onMoveEnd).toHaveBeenCalledTimes(0);
   root._handleMouseUp();
