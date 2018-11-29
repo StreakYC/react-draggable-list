@@ -3,4 +3,5 @@
 /node_modules
 npm-debug.log
 /js
-/example/bundle.js
+/example/dist
+/.cache
