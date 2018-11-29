@@ -25,9 +25,25 @@ function getScrollSpeed(distance, speed, size) {
 
 type Drag = {
   itemKey: string;
-  startIndex: number; // TODO this should be unnecessary now. All code using is probably wrong or unnecessary.
+
+  // TODO this should be unnecessary now. All code using it is probably wrong
+  // or unnecessary.
+  startIndex: number;
+
+  // The y position of the dragged item when the drag started. This will be
+  // equal to the initial mouseY value. The items not being dragged will be
+  // positioned so that the dragged item's original position lines up with
+  // startY.
   startY: number;
+
+  // The y-position that corresponds to the mouse's current location. The
+  // dragged item will be rendered with this as its y-position.
   mouseY: number;
+
+  // This is the difference between the raw mouse y value and startY. For
+  // example, if a user clicks the drag handle at a point 5 px below the item's
+  // top, then mouseOffset will be set to 5. As the user moves their mouse, we
+  // update mouseY to be the raw mouse y value minus mouseOffset.
   mouseOffset: number;
 };
 
