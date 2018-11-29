@@ -1,4 +1,4 @@
-## 4.0.0 (Unreleased)
+## 4.0.0 (2018-11-28)
 
 ### Breaking Changes
 * React v16.6+ is now required.
