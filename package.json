@@ -26,6 +26,10 @@
     "drag-and-drop",
     "draggable"
   ],
+  "files": [
+    "js",
+    "index.d.ts"
+  ],
   "author": "Chris Cowan <agentme49@gmail.com>",
   "license": "MIT",
   "bugs": {
