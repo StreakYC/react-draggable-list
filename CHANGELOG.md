@@ -1,3 +1,7 @@
+## 4.0.2 (2019-04-05)
+
+* Fixed issue where the DraggableList could have an incorrect height during drag depending on the styling of its parents.
+
 ## 4.0.0 (2018-11-28)
 
 ### Breaking Changes
