@@ -569,7 +569,7 @@ test('list is shown with correct positions after being fully changed during anim
     {name: "o'malley"}
   ];
   render();
-  await delay(200);
+  await delay(400);
   expect((root.getItemInstance('lopez').getDOMNode().parentElement:any).style.position).toBe('relative');
 });
 

@@ -528,9 +528,14 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
       );
     }
 
-    const fullContainerHeight = useAbsolutePositioning ?
-      `${this._getDistance(0, list.length, false)}px` :
-      '0px';
+    let heightReserverHeight = 0;
+    let heightReserverMarginBottom = 0;
+    if (list.length) {
+      heightReserverMarginBottom = padding;
+      if (useAbsolutePositioning) {
+        heightReserverHeight = this._getDistance(0, list.length, false) - padding;
+      }
+    }
     return (
       <div
         style={{position: 'relative'}}
@@ -550,7 +555,8 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
             <div
               style={{
                 display: useAbsolutePositioning ? 'block' : 'none',
-                height: fullContainerHeight
+                height: `${heightReserverHeight}px`,
+                marginBottom: `${heightReserverMarginBottom}px`
               }}
             >
               {container && <OnUpdate cb={() => {

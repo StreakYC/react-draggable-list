@@ -153,6 +153,9 @@ export default class Example extends React.Component<{}, ExampleState> {
             container={()=>useContainer ? this._container : document.body}
           />
         </div>
+        <footer>
+          Footer here.
+        </footer>
       </div>
     );
   }
