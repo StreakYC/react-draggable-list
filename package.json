@@ -54,7 +54,7 @@
     "eslint": "^5.5.0",
     "eslint-plugin-flowtype": "^3.2.0",
     "eslint-plugin-react": "^7.4.0",
-    "flow-bin": "^0.87.0",
+    "flow-bin": "^0.98.0",
     "flow-copy-source": "^2.0.2",
     "jest": "^23.6.0",
     "parcel-bundler": "^1.10.3",
