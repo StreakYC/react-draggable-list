@@ -1,6 +1,6 @@
 # react-draggable-list
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/StreakYC/react-float-anchor/blob/master/LICENSE.txt) [![npm version](https://badge.fury.io/js/react-draggable-list.svg)](https://badge.fury.io/js/react-draggable-list) [![Circle CI](https://circleci.com/gh/StreakYC/react-draggable-list.svg?style=shield)](https://circleci.com/gh/StreakYC/react-draggable-list)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/StreakYC/react-draggable-list/blob/master/LICENSE.txt) [![npm version](https://badge.fury.io/js/react-draggable-list.svg)](https://badge.fury.io/js/react-draggable-list) [![Circle CI](https://circleci.com/gh/StreakYC/react-draggable-list.svg?style=shield)](https://circleci.com/gh/StreakYC/react-draggable-list)
 
 This component lets you make a user re-orderable list that animates nicely so
 that the user can easily move large items:
