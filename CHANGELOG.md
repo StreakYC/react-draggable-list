@@ -1,3 +1,7 @@
+## 4.0.3 (2019-06-05)
+
+* Updated to use immutability-helper 3.0.
+
 ## 4.0.2 (2019-04-05)
 
 * Fixed issue where the DraggableList could have an incorrect height during drag depending on the styling of its parents.
