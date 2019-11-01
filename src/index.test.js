@@ -595,7 +595,9 @@ test('list is shown with correct positions after being fully changed during anim
     {name: "o'malley"}
   ];
   render();
-  await delay(400);
+  while ((root.getItemInstance('lopez').getDOMNode().parentElement:any).style.position === 'absolute') {
+    await delay(10);
+  }
   expect((root.getItemInstance('lopez').getDOMNode().parentElement:any).style.position).toBe('relative');
 });
 
