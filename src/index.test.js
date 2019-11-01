@@ -71,9 +71,11 @@ test('drag works', async () => {
     render();
   });
 
-  function render(): DraggableList<*> {
-    return (ReactDOM.render(
+  const rootRef = React.createRef<DraggableList<any>>();
+  function render() {
+    ReactDOM.render(
       <DraggableList
+        ref={rootRef}
         itemKey="name"
         list={list}
         template={TestTemplate}
@@ -83,10 +85,11 @@ test('drag works', async () => {
         commonProps={commonProps}
       />,
       div
-    ): any);
+    );
   }
-
-  const root = render();
+  render();
+  const root = rootRef.current;
+  if (!root) throw new Error();
 
   expect(
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
@@ -163,9 +166,11 @@ test('two drags work', async () => {
     render();
   });
 
-  function render(): DraggableList<*> {
-    return (ReactDOM.render(
+  const rootRef = React.createRef<DraggableList<any>>();
+  function render() {
+    ReactDOM.render(
       <DraggableList
+        ref={rootRef}
         itemKey="name"
         list={list}
         onMoveEnd={onMoveEnd}
@@ -174,9 +179,11 @@ test('two drags work', async () => {
         container={()=>containerEl}
       />,
       div
-    ): any);
+    );
   }
-  const root = render();
+  render();
+  const root = rootRef.current;
+  if (!root) throw new Error();
 
   expect(
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
@@ -262,9 +269,11 @@ test('props reordered during drag works', () => {
     render();
   });
 
-  function render(): DraggableList<*> {
-    return (ReactDOM.render(
+  const rootRef = React.createRef<DraggableList<any>>();
+  function render() {
+    ReactDOM.render(
       <DraggableList
+        ref={rootRef}
         itemKey="name"
         list={list}
         template={TestTemplate}
@@ -272,10 +281,11 @@ test('props reordered during drag works', () => {
         springConfig={springConfig}
       />,
       div
-    ): any);
+    );
   }
-
-  const root = render();
+  render();
+  const root = rootRef.current;
+  if (!root) throw new Error();
 
   expect(
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
@@ -337,9 +347,11 @@ test('item removed during drag works', () => {
     render();
   });
 
-  function render(): DraggableList<*> {
-    return (ReactDOM.render(
+  const rootRef = React.createRef<DraggableList<any>>();
+  function render() {
+    ReactDOM.render(
       <DraggableList
+        ref={rootRef}
         itemKey="name"
         list={list}
         template={TestTemplate}
@@ -347,9 +359,11 @@ test('item removed during drag works', () => {
         springConfig={springConfig}
       />,
       div
-    ): any);
+    );
   }
-  const root = render();
+  render();
+  const root = rootRef.current;
+  if (!root) throw new Error();
 
   expect(
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
@@ -409,9 +423,11 @@ test('item removed before drag end works', async () => {
     render();
   });
 
-  function render(): DraggableList<*> {
-    return (ReactDOM.render(
+  const rootRef = React.createRef<DraggableList<any>>();
+  function render() {
+    ReactDOM.render(
       <DraggableList
+        ref={rootRef}
         itemKey="name"
         list={list}
         template={TestTemplate}
@@ -419,10 +435,11 @@ test('item removed before drag end works', async () => {
         springConfig={springConfig}
       />,
       div
-    ): any);
+    );
   }
-
-  const root = render();
+  render();
+  const root = rootRef.current;
+  if (!root) throw new Error();
 
   expect(
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
@@ -433,6 +450,7 @@ test('item removed before drag end works', async () => {
   root._handleMouseMove({pageY: 650});
   await delay(100);
 
+  // eslint-disable-next-line require-atomic-updates
   list = [
     {name: 'caboose', extra: 3},
     {name: 'tucker'},
@@ -478,9 +496,11 @@ test('dragged item removed after drag during animation works', () => {
     render();
   });
 
-  function render(): DraggableList<*> {
-    return (ReactDOM.render(
+  const rootRef = React.createRef<DraggableList<any>>();
+  function render() {
+    ReactDOM.render(
       <DraggableList
+        ref={rootRef}
         itemKey="name"
         list={list}
         template={TestTemplate}
@@ -488,9 +508,11 @@ test('dragged item removed after drag during animation works', () => {
         springConfig={springConfig}
       />,
       div
-    ): any);
+    );
   }
-  const root = render();
+  render();
+  const root = rootRef.current;
+  if (!root) throw new Error();
 
   expect(
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
@@ -540,9 +562,11 @@ test('list is shown with correct positions after being fully changed during anim
     render();
   });
 
-  function render(): DraggableList<*> {
-    return (ReactDOM.render(
+  const rootRef = React.createRef<DraggableList<any>>();
+  function render() {
+    ReactDOM.render(
       <DraggableList
+        ref={rootRef}
         itemKey="name"
         list={list}
         template={TestTemplate}
@@ -550,9 +574,11 @@ test('list is shown with correct positions after being fully changed during anim
         springConfig={springConfig}
       />,
       div
-    ): any);
+    );
   }
-  const root = render();
+  render();
+  const root = rootRef.current;
+  if (!root) throw new Error();
 
   const renderedHandles: Array<TestTemplate> = (TestUtils.scryRenderedComponentsWithType(root, TestTemplate): any);
   renderedHandles[0].props.dragHandleProps.onMouseDown({pageY: 500, preventDefault() {}});
@@ -586,9 +612,11 @@ test('updating commonProps works', () => {
     render();
   });
 
-  function render(): DraggableList<*> {
-    return (ReactDOM.render(
+  const rootRef = React.createRef<DraggableList<any>>();
+  function render() {
+    ReactDOM.render(
       <DraggableList
+        ref={rootRef}
         itemKey="name"
         list={list}
         template={TestTemplate}
@@ -597,9 +625,11 @@ test('updating commonProps works', () => {
         commonProps={commonProps}
       />,
       div
-    ): any);
+    );
   }
-  const root = render();
+  render();
+  const root = rootRef.current;
+  if (!root) throw new Error();
 
   expect(
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
