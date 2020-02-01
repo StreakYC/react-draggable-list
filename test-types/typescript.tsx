@@ -31,7 +31,9 @@ const x = (
     itemKey="foo"
     list={list}
     template={MyTemp}
-    onMoveEnd={ignoredNewList => {}}
+    onMoveEnd={ignoredNewList => {
+      // ignore
+    }}
   />
 );
 x;
