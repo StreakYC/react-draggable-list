@@ -1,29 +1,23 @@
-/* @flow */
 /* eslint react/prop-types: "error" */
 
 import * as React from 'react';
-import PropTypes from 'prop-types';
-import {Motion, spring} from 'react-motion';
+import * as PropTypes from 'prop-types';
+import {Motion, spring, OpaqueConfig} from 'react-motion';
 import update from 'immutability-helper';
 import MultiRef from 'react-multi-ref';
 import OnUpdate from './OnUpdate';
-import MoveContainer from './MoveContainer';
-
-type HeightData = {|
-  natural: number;
-  drag: number;
-|};
+import MoveContainer, { HeightData } from './MoveContainer';
 
 const DEFAULT_HEIGHT: HeightData = {natural: 200, drag: 30};
 
-function getScrollSpeed(distance, speed, size) {
+function getScrollSpeed(distance: number, speed: number, size: number): number {
   // If distance is zero, then the result is the max speed. Otherwise,
   // the result tapers toward zero as it gets closer to the opposite
   // edge of the region.
   return Math.round(speed - (speed / size) * distance);
 }
 
-type Drag = {
+interface Drag {
   itemKey: string;
 
   // The y position of the dragged item when the drag started. This will be
@@ -41,46 +35,38 @@ type Drag = {
   // top, then mouseOffset will be set to 5. As the user moves their mouse, we
   // update mouseY to be the raw mouse y value minus mouseOffset.
   mouseOffset: number;
-};
+}
 
-export type TemplateProps<I,C> = {
+export interface TemplateProps<I,C> {
   item: I;
   itemSelected: number;
   anySelected: number;
-  dragHandleProps: Object;
+  dragHandleProps: object;
   commonProps: C;
-};
+}
 
-type Props<I,C,T> = {
-  itemKey: string|(item: I)=>string;
-  template: Class<T>;
-  list: $ReadOnlyArray<I>;
-  onMoveEnd?: ?(newList: $ReadOnlyArray<I>, movedItem: I, oldIndex: number, newIndex: number) => void;
-  container?: ?() => ?HTMLElement;
-  constrainDrag: boolean;
-  springConfig: Object;
-  padding: number;
-  unsetZIndex: boolean;
-  autoScrollMaxSpeed: number;
-  autoScrollRegionSize: number;
+export interface Props<I,C,T> {
+  itemKey: string|((item: I) => string);
+  template: (new (props: any, context?: any) => T);
+  list: ReadonlyArray<I>;
+  onMoveEnd?: (newList: ReadonlyArray<I>, movedItem: I, oldIndex: number, newIndex: number) => void;
+  container?: () => HTMLElement | null | undefined;
+  constrainDrag?: boolean;
+  springConfig?: object;
+  padding?: number;
+  unsetZIndex?: boolean;
+  autoScrollMaxSpeed?: number;
+  autoScrollRegionSize?: number;
   commonProps?: C;
-};
-type State = {
+}
+interface State {
   useAbsolutePositioning: boolean;
   dragging: boolean;
-  lastDrag: ?Drag;
-  heights: ?{[key: string]: HeightData};
-};
-type DefaultProps = {
-  springConfig: Object;
-  constrainDrag: boolean;
-  padding: number;
-  unsetZIndex: boolean;
-  autoScrollMaxSpeed: number;
-  autoScrollRegionSize: number;
-};
-export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<I,C>>,*>=*> extends React.Component<Props<I,C,T>, State> {
-  static propTypes = {
+  lastDrag: Drag | null;
+  heights: {[key: string]: HeightData} | null;
+}
+export default class DraggableList<I,C,T extends React.Component<Partial<TemplateProps<I,C>>>> extends React.Component<Props<I,C,T>, State> {
+  public static propTypes = {
     itemKey: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.func
@@ -97,7 +83,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     autoScrollRegionSize: PropTypes.number.isRequired,
     commonProps: PropTypes.object
   };
-  static defaultProps: DefaultProps = {
+  public static defaultProps: Partial<Props<any,any,any>> = {
     springConfig: {stiffness: 300, damping: 50},
     padding: 10,
     unsetZIndex: false,
@@ -105,28 +91,25 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     autoScrollMaxSpeed: 15,
     autoScrollRegionSize: 30
   };
-  _itemRefs: MultiRef<string, MoveContainer<I,any,T>> = new MultiRef();
-  _autoScrollerTimer: any;
+  private readonly _itemRefs: MultiRef<string, MoveContainer<I,any,T>> = new MultiRef();
+  private _autoScrollerTimer: any;
 
-  _listRef = React.createRef<HTMLDivElement>();
+  private _listRef = React.createRef<HTMLDivElement>();
 
-  constructor(props: Props<I,C,T>) {
-    super(props);
-    this.state = {
-      useAbsolutePositioning: false,
-      dragging: false,
-      lastDrag: null,
-      heights: null
-    };
-  }
+  public state: State = {
+    useAbsolutePositioning: false,
+    dragging: false,
+    lastDrag: null,
+    heights: null
+  };
 
-  getItemInstance(key: string): T {
+  public getItemInstance(key: string): T {
     const ref = this._itemRefs.map.get(key);
     if (!ref) throw new Error('key not found');
     return ref.getTemplate();
   }
 
-  static getDerivedStateFromProps<I,C,T>(newProps: Props<I,C,T>, state: State): $Shape<State>|null {
+  public static getDerivedStateFromProps<I,C,T>(newProps: Props<I,C,T>, state: State): Partial<State>|null {
     const {list} = newProps;
     const {lastDrag} = state;
 
@@ -145,21 +128,21 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     return null;
   }
 
-  componentWillUnmount() {
+  public componentWillUnmount() {
     this._handleMouseUp();
   }
 
-  _handleTouchStart(itemKey: string, pressY: ?number, event: Object) {
+  private _handleTouchStart(itemKey: string, pressY: number | undefined, event: TouchEvent | React.TouchEvent) {
     event.stopPropagation();
     this._handleStartDrag(itemKey, pressY, event.touches[0].pageY);
   }
 
-  _handleMouseDown(itemKey: string, pressY: ?number, event: Object) {
+  private _handleMouseDown(itemKey: string, pressY: number | undefined, event: MouseEvent | React.MouseEvent) {
     event.preventDefault();
     this._handleStartDrag(itemKey, pressY, event.pageY);
   }
 
-  _handleStartDrag(itemKey: string, pressY: ?number, pageY: number) {
+  private _handleStartDrag(itemKey: string, pressY: number | undefined, pageY: number) {
     if (document.documentElement) document.documentElement.style.cursor = 'move';
     window.addEventListener('mouseup', this._handleMouseUp);
     window.addEventListener('touchend', this._handleMouseUp);
@@ -174,7 +157,8 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
       if (!listEl) throw new Error('Should not happen');
       if (
         listEl.contains && document.activeElement &&
-        listEl.contains(document.activeElement)
+        listEl.contains(document.activeElement) &&
+        document.activeElement instanceof HTMLElement
       ) {
         document.activeElement.blur();
       }
@@ -184,7 +168,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
 
     let newHeights = null;
     if (this.state.heights == null) {
-      const _newHeights: {[key: string]: HeightData} = (Object.create(null): any);
+      const _newHeights: {[key: string]: HeightData} = Object.create(null);
 
       this.props.list.forEach(item => {
         const key = keyFn(item);
@@ -193,7 +177,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
         const ref = containerRef ? containerRef.getTemplate() : null;
         const natural = (refEl instanceof HTMLElement) ?
           refEl.offsetHeight : DEFAULT_HEIGHT.natural;
-        const drag = ref && (typeof (ref: any).getDragHeight === 'function') && (ref: any).getDragHeight() || natural;
+        const drag = ref && (typeof (ref as any).getDragHeight === 'function') && (ref as any).getDragHeight() || natural;
 
         _newHeights[key] = {natural, drag};
       });
@@ -237,17 +221,15 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     }
   }
 
-  _handleTouchMove: Function = (e) => {
+  private _handleTouchMove = (e: TouchEvent) => {
     e.preventDefault();
     this._handleMouseMove(e.touches[0]);
   };
 
-  _handleMouseMove: Function = ({pageY, clientY}) => {
-    const {
-      list,
-      autoScrollMaxSpeed,
-      autoScrollRegionSize
-    } = this.props;
+  private _handleMouseMove = ({pageY, clientY}: MouseEvent | Touch | {pageY: number; clientY: number}) => {
+    const {list} = this.props;
+    const autoScrollMaxSpeed = this.props.autoScrollMaxSpeed!;
+    const autoScrollRegionSize = this.props.autoScrollRegionSize!;
     const {dragging, lastDrag} = this.state;
     if (!dragging || !lastDrag) return;
 
@@ -306,7 +288,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     this.setState({lastDrag: {...lastDrag, mouseY}});
   };
 
-  _handleMouseUp: Function = () => {
+  _handleMouseUp = () => {
     clearInterval(this._autoScrollerTimer);
     window.removeEventListener('mouseup', this._handleMouseUp);
     window.removeEventListener('touchend', this._handleMouseUp);
@@ -342,14 +324,14 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     }
   }
 
-  _lastScrollDelta: number = 0;
+  private _lastScrollDelta = 0;
   _adjustScrollAtEnd(delta: number) {
     const frameDelta = Math.round(delta - this._lastScrollDelta);
     this._scrollContainer(frameDelta);
     this._lastScrollDelta += frameDelta;
   }
 
-  static _getIndexOfItemWithKey<I>(keyFn: (item: I) => string, list: $ReadOnlyArray<I>, itemKey: string): number {
+  static _getIndexOfItemWithKey<I>(keyFn: (item: I) => string, list: ReadonlyArray<I>, itemKey: string): number {
     for (let i=0, len=list.length; i < len; i++) {
       if (keyFn(list[i]) === itemKey) {
         return i;
@@ -369,7 +351,8 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
   }
 
   _getDragVisualIndex(): number {
-    const {list, padding} = this.props;
+    const {list} = this.props;
+    const padding = this.props.padding!;
     const {dragging, lastDrag} = this.state;
     if (!dragging || !lastDrag) throw new Error('Should not happen');
 
@@ -396,7 +379,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     return newIndex;
   }
 
-  _getVisualListDuringDrag(): $ReadOnlyArray<I> {
+  _getVisualListDuringDrag(): ReadonlyArray<I> {
     const {list} = this.props;
     const {dragging, lastDrag} = this.state;
     if (!dragging || !lastDrag) throw new Error('Should not happen: _getVisualListDuringDrag called outside of drag');
@@ -417,12 +400,12 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
   // Get the distance between the tops of two items in the list.
   // Does not consider how the dragged item may be rendered in a different position
   // unless you pass in the re-ordered list as a parameter.
-  _getDistance(start: number, end: number, dragging: boolean, list: $ReadOnlyArray<I> = this.props.list): number {
+  _getDistance(start: number, end: number, dragging: boolean, list: ReadonlyArray<I> = this.props.list): number {
     if (end < start) {
       return -this._getDistance(end, start, dragging, list);
     }
 
-    const {padding} = this.props;
+    const padding = this.props.padding!;
     const keyFn = this._getKeyFn();
     let distance = 0;
     for (let i=start; i < end; i++) {
@@ -432,7 +415,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
     return distance;
   }
 
-  _getDistanceFromTopDuringDrag(lastDrag: Drag, itemKey: string, visualList: $ReadOnlyArray<I>): number {
+  _getDistanceFromTopDuringDrag(lastDrag: Drag, itemKey: string, visualList: ReadonlyArray<I>): number {
     const keyFn = this._getKeyFn();
     const index = DraggableList._getIndexOfItemWithKey(keyFn, visualList, itemKey);
     const dragListIndex = this._getDragListIndex();
@@ -450,21 +433,22 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
       this._getDistance(dragListIndex, index, true, visualList);
   }
 
-  _getContainer(): ?HTMLElement {
+  private _getContainer(): HTMLElement | null | undefined {
     const {container} = this.props;
     return container ? container() : null;
   }
 
-  static _getKeyFn<I>(itemKey: string|(item: I)=>string): (item: I) => string {
-    return typeof itemKey === 'function' ? itemKey : x => (x: any)[itemKey];
+  private static _getKeyFn<I>(itemKey: string|((item: I) => string)): (item: I) => string {
+    return typeof itemKey === 'function' ? itemKey : x => (x as any)[itemKey];
   }
 
-  _getKeyFn(): (item: I) => string {
+  private _getKeyFn(): (item: I) => string {
     return DraggableList._getKeyFn<I>(this.props.itemKey);
   }
 
   render() {
-    const {list, springConfig, container, padding, template, unsetZIndex, commonProps} = this.props;
+    const padding = this.props.padding!;
+    const {list, springConfig, container, template, unsetZIndex, commonProps} = this.props;
     const {dragging, lastDrag, useAbsolutePositioning} = this.state;
 
     const keyFn = this._getKeyFn();
@@ -481,7 +465,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
         }
         : {
           itemSelected: spring(0, springConfig),
-          y: (useAbsolutePositioning ? spring : (x,ignored)=>x)(dragging && lastDrag ?
+          y: (useAbsolutePositioning ? spring : (x: number)=>x)(dragging && lastDrag ?
             this._getDistanceFromTopDuringDrag(lastDrag, key, visualList)
             : this._getDistance(0, i, false), springConfig)
         };
@@ -489,9 +473,9 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
         anySelected,
         ...selectedStyle
       };
-      const makeDragHandleProps = (getY: ()=>?number): Object => ({
-        onMouseDown: e => this._handleMouseDown(key, getY(), e),
-        onTouchStart: e => this._handleTouchStart(key, getY(), e)
+      const makeDragHandleProps = (getY: () => number | undefined): object => ({
+        onMouseDown: (e: React.MouseEvent) => this._handleMouseDown(key, getY(), e),
+        onTouchStart: (e: React.TouchEvent) => this._handleTouchStart(key, getY(), e)
       });
       const height = this._getItemHeight(key);
       return (
@@ -500,7 +484,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
           children={({itemSelected, anySelected, y}) =>
             <MoveContainer
               ref={this._itemRefs.ref(key)}
-              y={useAbsolutePositioning ? y : null}
+              y={useAbsolutePositioning ? y : undefined}
               template={template}
               padding={padding}
               item={item}
@@ -518,7 +502,7 @@ export default class DraggableList<I,C=*,T:React.Component<$Shape<TemplateProps<
       );
     });
 
-    let adjustScroll = 0;
+    let adjustScroll: number|OpaqueConfig = 0;
     if (!dragging && lastDrag && useAbsolutePositioning) {
       const dragListIndex = this._getDragListIndex();
       adjustScroll = spring(

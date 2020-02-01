@@ -1,13 +1,24 @@
-/* @flow */
+/* eslint-disable @typescript-eslint/no-use-before-define, @typescript-eslint/no-empty-function */
 
 import delay from 'pdelay';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import * as TestUtils from 'react-dom/test-utils';
 import DraggableList from '../src';
 
-class TestTemplate extends React.Component<Object> {
-  _elRef = React.createRef();
+interface Item {
+  name: string;
+  extra?: number;
+}
+
+interface TestTemplateProps {
+  item: Item;
+  dragHandleProps: any;
+  commonProps: any;
+}
+
+class TestTemplate extends React.Component<TestTemplateProps> {
+  private readonly _elRef = React.createRef<HTMLDivElement>();
 
   render() {
     const {item, dragHandleProps} = this.props;
@@ -22,19 +33,17 @@ class TestTemplate extends React.Component<Object> {
     return 30;
   }
 
-  getDOMNode(): HTMLElement {
-    if (!this._elRef.current) throw new Error();
-    return this._elRef.current;
+  getDOMNode(): HTMLDivElement {
+    return this._elRef.current!;
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps: TestTemplateProps) {
     return this.props.item !== nextProps.item;
   }
 
   componentDidMount() {
-    const el = this._elRef.current;
-    if (!el) throw new Error();
-    (Object:any).defineProperty(el, 'offsetHeight', {
+    const el = this._elRef.current!;
+    Object.defineProperty(el, 'offsetHeight', {
       get: () => 115
     });
   }
@@ -44,7 +53,7 @@ const springConfig = {stiffness: 1500, damping: 50};
 
 test('drag works', async () => {
   let _scrollTop = 0;
-  const containerEl: Object = {
+  const containerEl: any = {
     get scrollTop() {
       return _scrollTop;
     },
@@ -53,7 +62,7 @@ test('drag works', async () => {
     }
   };
 
-  let list = [
+  let list: Item[] = [
     {name: 'caboose'},
     {name: 'tucker'},
     {name: 'church'},
@@ -71,7 +80,7 @@ test('drag works', async () => {
     render();
   });
 
-  const rootRef = React.createRef<DraggableList<any>>();
+  const rootRef = React.createRef<DraggableList<Item, any, TestTemplate>>();
   function render() {
     ReactDOM.render(
       <DraggableList
@@ -88,8 +97,7 @@ test('drag works', async () => {
     );
   }
   render();
-  const root = rootRef.current;
-  if (!root) throw new Error();
+  const root = rootRef.current!;
 
   expect(
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
@@ -99,15 +107,15 @@ test('drag works', async () => {
   expect(root.getItemInstance('grif').getDragHeight()).toBe(30);
   expect(root.getItemInstance('grif').props.commonProps).toBe(commonProps);
 
-  const renderedHandles: Array<TestTemplate> = (TestUtils.scryRenderedComponentsWithType(root, TestTemplate): any);
+  const renderedHandles: Array<TestTemplate> = (TestUtils.scryRenderedComponentsWithType(root, TestTemplate) as any);
   expect(root.state.dragging).toBe(false);
   renderedHandles[0].props.dragHandleProps.onMouseDown({pageY: 500, preventDefault() {}});
   expect(root.state.dragging).toBe(true);
 
-  root._handleMouseMove({pageY: 600});
+  (root as any)._handleMouseMove({pageY: 600});
   await delay(30);
 
-  root._handleMouseMove({pageY: 650});
+  (root as any)._handleMouseMove({pageY: 650});
 
   expect(root.state.dragging).toBe(true);
   expect(onMoveEnd).toHaveBeenCalledTimes(0);
@@ -140,7 +148,7 @@ test('drag works', async () => {
 
 test('two drags work', async () => {
   let _scrollTop = 0;
-  const containerEl: Object = {
+  const containerEl: any = {
     get scrollTop() {
       return _scrollTop;
     },
@@ -149,7 +157,7 @@ test('two drags work', async () => {
     }
   };
 
-  let list = [
+  let list: Item[] = [
     {name: 'caboose'},
     {name: 'tucker'},
     {name: 'church'},
@@ -166,7 +174,7 @@ test('two drags work', async () => {
     render();
   });
 
-  const rootRef = React.createRef<DraggableList<any>>();
+  const rootRef = React.createRef<DraggableList<Item, any, TestTemplate>>();
   function render() {
     ReactDOM.render(
       <DraggableList
@@ -182,19 +190,18 @@ test('two drags work', async () => {
     );
   }
   render();
-  const root = rootRef.current;
-  if (!root) throw new Error();
+  const root = rootRef.current!;
 
   expect(
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
   ).toEqual(list);
 
-  const renderedHandles: Array<TestTemplate> = (TestUtils.scryRenderedComponentsWithType(root, TestTemplate): any);
+  const renderedHandles: Array<TestTemplate> = (TestUtils.scryRenderedComponentsWithType(root, TestTemplate) as any);
   expect(root.state.dragging).toBe(false);
   renderedHandles[0].props.dragHandleProps.onMouseDown({pageY: 500, preventDefault() {}});
   expect(root.state.dragging).toBe(true);
 
-  root._handleMouseMove({pageY: 600});
+  (root as any)._handleMouseMove({pageY: 600});
   await delay(30);
   expect(root.state.dragging).toBe(true);
   expect(onMoveEnd).toHaveBeenCalledTimes(0);
@@ -223,7 +230,7 @@ test('two drags work', async () => {
   expect(root.state.dragging).toBe(false);
   renderedHandles[0].props.dragHandleProps.onMouseDown({pageY: 600, preventDefault() {}});
   expect(root.state.dragging).toBe(true);
-  root._handleMouseMove({pageY: 650});
+  (root as any)._handleMouseMove({pageY: 650});
   expect(root.state.dragging).toBe(true);
   expect(onMoveEnd).toHaveBeenCalledTimes(1);
   root._handleMouseUp();
@@ -253,7 +260,7 @@ test('two drags work', async () => {
 });
 
 test('props reordered during drag works', () => {
-  let list = [
+  let list: Item[] = [
     {name: 'caboose'},
     {name: 'tucker'},
     {name: 'church'},
@@ -269,7 +276,7 @@ test('props reordered during drag works', () => {
     render();
   });
 
-  const rootRef = React.createRef<DraggableList<any>>();
+  const rootRef = React.createRef<DraggableList<Item, any, TestTemplate>>();
   function render() {
     ReactDOM.render(
       <DraggableList
@@ -284,14 +291,13 @@ test('props reordered during drag works', () => {
     );
   }
   render();
-  const root = rootRef.current;
-  if (!root) throw new Error();
+  const root = rootRef.current!;
 
   expect(
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
   ).toEqual(list);
 
-  const renderedHandles: Array<TestTemplate> = (TestUtils.scryRenderedComponentsWithType(root, TestTemplate): any);
+  const renderedHandles: Array<TestTemplate> = (TestUtils.scryRenderedComponentsWithType(root, TestTemplate) as any);
   renderedHandles[0].props.dragHandleProps.onMouseDown({pageY: 500, preventDefault() {}});
 
   list = [
@@ -305,7 +311,7 @@ test('props reordered during drag works', () => {
   ];
   render();
 
-  root._handleMouseMove({pageY: 450});
+  (root as any)._handleMouseMove({pageY: 450});
   expect(root.state.dragging).toBe(true);
   expect(onMoveEnd).toHaveBeenCalledTimes(0);
   root._handleMouseUp();
@@ -331,7 +337,7 @@ test('props reordered during drag works', () => {
 });
 
 test('item removed during drag works', () => {
-  let list = [
+  let list: Item[] = [
     {name: 'caboose'},
     {name: 'tucker'},
     {name: 'church'},
@@ -347,7 +353,7 @@ test('item removed during drag works', () => {
     render();
   });
 
-  const rootRef = React.createRef<DraggableList<any>>();
+  const rootRef = React.createRef<DraggableList<Item, any, TestTemplate>>();
   function render() {
     ReactDOM.render(
       <DraggableList
@@ -362,14 +368,13 @@ test('item removed during drag works', () => {
     );
   }
   render();
-  const root = rootRef.current;
-  if (!root) throw new Error();
+  const root = rootRef.current!;
 
   expect(
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
   ).toEqual(list);
 
-  const renderedHandles: Array<TestTemplate> = (TestUtils.scryRenderedComponentsWithType(root, TestTemplate): any);
+  const renderedHandles: Array<TestTemplate> = (TestUtils.scryRenderedComponentsWithType(root, TestTemplate) as any);
   renderedHandles[0].props.dragHandleProps.onMouseDown({pageY: 500, preventDefault() {}});
 
   list = [
@@ -382,7 +387,7 @@ test('item removed during drag works', () => {
   ];
   render();
 
-  root._handleMouseMove({pageY: 650});
+  (root as any)._handleMouseMove({pageY: 650});
   const reorderedList = [
     {name: 'tucker'},
     {name: 'church'},
@@ -407,7 +412,7 @@ test('item removed during drag works', () => {
 });
 
 test('item removed before drag end works', async () => {
-  let list = [
+  let list: Item[] = [
     {name: 'caboose'},
     {name: 'tucker'},
     {name: 'church'},
@@ -423,7 +428,7 @@ test('item removed before drag end works', async () => {
     render();
   });
 
-  const rootRef = React.createRef<DraggableList<any>>();
+  const rootRef = React.createRef<DraggableList<Item, any, TestTemplate>>();
   function render() {
     ReactDOM.render(
       <DraggableList
@@ -438,16 +443,15 @@ test('item removed before drag end works', async () => {
     );
   }
   render();
-  const root = rootRef.current;
-  if (!root) throw new Error();
+  const root = rootRef.current!;
 
   expect(
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
   ).toEqual(list);
 
-  const renderedHandles: Array<TestTemplate> = (TestUtils.scryRenderedComponentsWithType(root, TestTemplate): any);
+  const renderedHandles: Array<TestTemplate> = (TestUtils.scryRenderedComponentsWithType(root, TestTemplate) as any);
   renderedHandles[0].props.dragHandleProps.onMouseDown({pageY: 500, preventDefault() {}});
-  root._handleMouseMove({pageY: 650});
+  (root as any)._handleMouseMove({pageY: 650});
   await delay(100);
 
   // eslint-disable-next-line require-atomic-updates
@@ -480,7 +484,7 @@ test('item removed before drag end works', async () => {
 });
 
 test('dragged item removed after drag during animation works', () => {
-  let list = [
+  let list: Item[] = [
     {name: 'caboose'},
     {name: 'tucker'},
     {name: 'church'},
@@ -496,7 +500,7 @@ test('dragged item removed after drag during animation works', () => {
     render();
   });
 
-  const rootRef = React.createRef<DraggableList<any>>();
+  const rootRef = React.createRef<DraggableList<Item, any, TestTemplate>>();
   function render() {
     ReactDOM.render(
       <DraggableList
@@ -511,16 +515,15 @@ test('dragged item removed after drag during animation works', () => {
     );
   }
   render();
-  const root = rootRef.current;
-  if (!root) throw new Error();
+  const root = rootRef.current!;
 
   expect(
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)
   ).toEqual(list);
 
-  const renderedHandles: Array<TestTemplate> = (TestUtils.scryRenderedComponentsWithType(root, TestTemplate): any);
+  const renderedHandles: Array<TestTemplate> = (TestUtils.scryRenderedComponentsWithType(root, TestTemplate) as any);
   renderedHandles[0].props.dragHandleProps.onMouseDown({pageY: 500, preventDefault() {}});
-  root._handleMouseMove({pageY: 650});
+  (root as any)._handleMouseMove({pageY: 650});
 
   expect(root.state.dragging).toBe(true);
   expect(onMoveEnd).toHaveBeenCalledTimes(0);
@@ -545,7 +548,7 @@ test('dragged item removed after drag during animation works', () => {
 });
 
 test('list is shown with correct positions after being fully changed during animation', async () => {
-  let list = [
+  let list: Item[] = [
     {name: 'caboose'},
     {name: 'tucker'},
     {name: 'church'},
@@ -562,7 +565,7 @@ test('list is shown with correct positions after being fully changed during anim
     render();
   });
 
-  const rootRef = React.createRef<DraggableList<any>>();
+  const rootRef = React.createRef<DraggableList<Item, any, TestTemplate>>();
   function render() {
     ReactDOM.render(
       <DraggableList
@@ -577,10 +580,9 @@ test('list is shown with correct positions after being fully changed during anim
     );
   }
   render();
-  const root = rootRef.current;
-  if (!root) throw new Error();
+  const root = rootRef.current!;
 
-  const renderedHandles: Array<TestTemplate> = (TestUtils.scryRenderedComponentsWithType(root, TestTemplate): any);
+  const renderedHandles: Array<TestTemplate> = (TestUtils.scryRenderedComponentsWithType(root, TestTemplate) as any);
   renderedHandles[0].props.dragHandleProps.onMouseDown({pageY: 500, preventDefault() {}});
 
   await delay(100);
@@ -588,25 +590,25 @@ test('list is shown with correct positions after being fully changed during anim
   root._handleMouseUp();
   await delay(1);
 
-  expect((root.getItemInstance('caboose').getDOMNode().parentElement:any).style.position).toBe('absolute');
+  expect(root.getItemInstance('caboose').getDOMNode().parentElement!.style.position).toBe('absolute');
 
   list = [
     {name: 'lopez'},
     {name: "o'malley"}
   ];
   render();
-  while ((root.getItemInstance('lopez').getDOMNode().parentElement:any).style.position === 'absolute') {
+  while (root.getItemInstance('lopez').getDOMNode().parentElement!.style.position === 'absolute') {
     await delay(10);
   }
-  expect((root.getItemInstance('lopez').getDOMNode().parentElement:any).style.position).toBe('relative');
+  expect(root.getItemInstance('lopez').getDOMNode().parentElement!.style.position).toBe('relative');
 });
 
 test('updating commonProps works', () => {
-  let list = [
+  let list: Item[] = [
     {name: 'caboose'},
     {name: 'donut'}
   ];
-  let commonProps = {a: 5};
+  let commonProps: any = {a: 5};
   const div = document.createElement('div');
 
   const onMoveEnd = jest.fn(newList => {
@@ -614,7 +616,7 @@ test('updating commonProps works', () => {
     render();
   });
 
-  const rootRef = React.createRef<DraggableList<any>>();
+  const rootRef = React.createRef<DraggableList<Item, any, TestTemplate>>();
   function render() {
     ReactDOM.render(
       <DraggableList
@@ -630,8 +632,7 @@ test('updating commonProps works', () => {
     );
   }
   render();
-  const root = rootRef.current;
-  if (!root) throw new Error();
+  const root = rootRef.current!;
 
   expect(
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(e=>e.props.item)

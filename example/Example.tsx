@@ -1,23 +1,22 @@
-/* @flow */
-/* eslint-disable no-console, react/prop-types */
+/* eslint-disable no-console */
 
-import React from 'react';
+import * as React from 'react';
 import cx from 'classnames';
 import DraggableList from '../src';
 
-type PlanetListItem = {
+interface PlanetListItem {
   name: string;
   subtitle?: boolean;
-};
+}
 
-type PlanetProps = {
+interface PlanetProps {
   item: PlanetListItem;
   itemSelected: number;
-  dragHandleProps: Object;
-};
-type PlanetState = {
+  dragHandleProps: object;
+}
+interface PlanetState {
   value: number;
-};
+}
 class PlanetItem extends React.Component<PlanetProps, PlanetState> {
   state = {
     value: 0
@@ -75,10 +74,10 @@ class PlanetItem extends React.Component<PlanetProps, PlanetState> {
 
 type ExampleState = {
   useContainer: boolean;
-  list: $ReadOnlyArray<PlanetListItem>;
+  list: ReadonlyArray<PlanetListItem>;
 };
 export default class Example extends React.Component<{}, ExampleState> {
-  _container: HTMLElement;
+  _container = React.createRef<HTMLDivElement>();
 
   state = {
     useContainer: false,
@@ -107,7 +106,7 @@ export default class Example extends React.Component<{}, ExampleState> {
     this.setState({useContainer: !this.state.useContainer});
   }
 
-  _onListChange(newList: $ReadOnlyArray<PlanetListItem>) {
+  _onListChange(newList: ReadonlyArray<PlanetListItem>) {
     this.setState({list: newList});
   }
 
@@ -136,21 +135,19 @@ export default class Example extends React.Component<{}, ExampleState> {
           </div>
         </div>
         <div
-          className="list" ref={el => {
-            if (el) this._container = el;
-          }}
+          className="list" ref={this._container}
           style={{
             overflow: useContainer ? 'auto' : '',
             height: useContainer ? '200px' : '',
             border: useContainer ? '1px solid gray' : ''
           }}
         >
-          <DraggableList
+          <DraggableList<PlanetListItem, void, PlanetItem>
             itemKey="name"
             template={PlanetItem}
             list={this.state.list}
             onMoveEnd={newList => this._onListChange(newList)}
-            container={()=>useContainer ? this._container : document.body}
+            container={()=>useContainer ? this._container.current! : document.body}
           />
         </div>
         <footer>
