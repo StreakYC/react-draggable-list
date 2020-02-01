@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
-    "noEmit": true,
+    "emitDeclarationOnly": true,
+    "outDir": "dist",
+    "rootDir": ".",
+    "declaration": true,
     "strict": true,
     "jsx": "react",
     "module": "commonjs",

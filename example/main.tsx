@@ -1,7 +1,5 @@
-/* @flow */
-
-import React from 'react';
-import ReactDOM from 'react-dom';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import Example from './Example';
 
 const onReady = new Promise((resolve) => {
@@ -13,12 +11,12 @@ const onReady = new Promise((resolve) => {
   }
 });
 
-onReady.then(main).catch(e => {
-  console.error(e, e.stack); // eslint-disable-line no-console
-});
-
 function main() {
   const mainDiv = document.getElementById('main');
   if (!mainDiv) throw new Error();
   ReactDOM.render(<Example />, mainDiv);
 }
+
+onReady.then(main).catch(e => {
+  console.error(e, e.stack); // eslint-disable-line no-console
+});

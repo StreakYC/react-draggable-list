@@ -1,5 +1,5 @@
 import * as React from 'react';
-import DraggableList, {TemplateProps} from '..';
+import DraggableList from '../src';
 
 // This file isn't meant to be executed. It's just a test for the type definitions.
 
@@ -27,12 +27,14 @@ const list: Array<Item> = [
   {a: 123, b: 'xyz'}
 ];
 const x = (
-  <DraggableList
+  <DraggableList<Item, void, MyTemp>
     itemKey="foo"
     list={list}
     template={MyTemp}
+    onMoveEnd={ignoredNewList => {}}
   />
 );
+x;
 const renderedDL: DraggableList<Item, void, MyTemp> = null as any;
 const renderedItem = renderedDL.getItemInstance('foo');
 (renderedItem as MyTemp);

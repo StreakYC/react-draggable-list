@@ -1,36 +1,34 @@
-/* @flow */
-
-import React from 'react';
+import * as React from 'react';
 import TemplateContainer from './TemplateContainer';
 
-type Props<I,C,T> = {
+export interface HeightData {
+  natural: number;
+  drag: number;
+}
+
+interface Props<I,C,T> {
   item: I;
-  template: Class<T>;
+  template: (new (props: any, context?: any) => T);
   padding: number;
-  y: ?number;
+  y: number | undefined;
   itemSelected: number;
   anySelected: number;
-  height: Object;
-  zIndex: number|string;
-  makeDragHandleProps: (getY: () => ?number) => Object;
+  height: HeightData;
+  zIndex: React.CSSProperties['zIndex'];
+  makeDragHandleProps: (getY: () => number | undefined) => object;
   commonProps: C;
-};
-export default class MoveContainer<I,C,T:React.Component<any,any>> extends React.Component<Props<I,C,T>> {
-  _templateContainer: TemplateContainer<I,C,T>;
-  _templateContainerSetter = (cmp: ?Object) => {
-    if (cmp) this._templateContainer = cmp;
-  };
-  _el: HTMLElement;
-  _elSetter = (el: ?HTMLElement) => {
-    if (el) this._el = el;
-  };
+}
+
+export default class MoveContainer<I,C,T extends React.Component<any,any>> extends React.Component<Props<I,C,T>> {
+  private readonly _templateContainer = React.createRef<TemplateContainer<I,C,T>>();
+  private readonly _el = React.createRef<HTMLDivElement>();
 
   getDOMNode(): HTMLElement {
-    return this._el;
+    return this._el.current!;
   }
 
   getTemplate(): T {
-    return this._templateContainer.getTemplate();
+    return this._templateContainer.current!.getTemplate();
   }
 
   shouldComponentUpdate(nextProps: Props<I,C,T>): boolean {
@@ -53,10 +51,10 @@ export default class MoveContainer<I,C,T:React.Component<any,any>> extends React
 
     return (
       <div
-        ref={this._elSetter}
+        ref={this._el}
         style={{
-          position: y == null ? 'relative' : 'absolute',
-          boxSizing: 'border-box',
+          position: y == null ? 'relative' as const : 'absolute' as const,
+          boxSizing: 'border-box' as const,
           left: '0px',
           right: '0px',
           top: y == null ? '0px' : `${y}px`,
@@ -67,7 +65,7 @@ export default class MoveContainer<I,C,T:React.Component<any,any>> extends React
         }}
       >
         <TemplateContainer
-          ref={this._templateContainerSetter}
+          ref={this._templateContainer}
           item={item}
           template={template}
           itemSelected={itemSelected}

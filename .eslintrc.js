@@ -1,27 +1,33 @@
 module.exports = {
-  "parser": "babel-eslint",
+  "parser": "@typescript-eslint/parser",
   "env": {
     "browser": true,
     "jest": true,
     "node": true,
     "es6": true
   },
-  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended"
+  ],
   "parserOptions": {
     "ecmaFeatures": {
-      "experimentalObjectRestSpread": true,
       "jsx": true
     },
     "sourceType": "module"
   },
   "plugins": [
-    "react", "flowtype"
+    "@typescript-eslint", "react"
   ],
   "rules": {
-    "flowtype/define-flow-type": 1,
-    "flowtype/require-valid-file-annotation": ["error", "always"],
-
     "react/no-children-prop": ["off"],
+
+    "@typescript-eslint/no-non-null-assertion": ["off"],
+    "@typescript-eslint/no-explicit-any": ["off"],
+    "@typescript-eslint/explicit-function-return-type": ["off"],
+    "@typescript-eslint/no-unused-vars": ["error", {"argsIgnorePattern": "[iI]gnored"}],
 
     "indent": ["error", 2],
     "react/jsx-indent": ["error", 2],
@@ -37,18 +43,13 @@ module.exports = {
     "no-whitespace-before-property": ["error"],
     "space-before-blocks": ["error", "always"],
     "keyword-spacing": ["error"],
-    "no-unused-vars": ["error", {"argsIgnorePattern": "[iI]gnored"}],
 
-    // We use Flow for this
+    // We use Typescript for this
     "react/prop-types": ["off"],
-
-    // TODO remove?
-    "react/no-find-dom-node": ["off"],
   },
   "settings": {
     "react": {
-      "version": "16.6",
-      "flowVersion": "0.85"
+      "version": "16.6"
     }
   }
 };
