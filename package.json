@@ -8,7 +8,7 @@
     "prepare": "rimraf dist && babel -s true -d dist/src/ src/ -x .ts,.tsx --ignore '**/*.test.tsx' && tsc",
     "example-build": "parcel build example/main.tsx -d example/dist --public-url .",
     "example-watch": "parcel watch example/main.tsx -d example/dist --no-hmr --public-url .",
-    "test": "yarn run lint && yarn run flow check && jest && tsc tsc --noEmit --emitDeclarationOnly false",
+    "test": "yarn run lint && yarn run flow check && jest && tsc --noEmit --emitDeclarationOnly false",
     "lint": "eslint . --ext ts,tsx",
     "lint-fix": "eslint . --ext ts,tsx --fix"
   },
