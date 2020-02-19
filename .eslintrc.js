@@ -1,5 +1,4 @@
 module.exports = {
-  "parser": "@typescript-eslint/parser",
   "env": {
     "browser": true,
     "jest": true,
@@ -11,15 +10,6 @@ module.exports = {
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended"
-  ],
-  "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true
-    },
-    "sourceType": "module"
-  },
-  "plugins": [
-    "@typescript-eslint", "react"
   ],
   "rules": {
     "react/no-children-prop": ["off"],
