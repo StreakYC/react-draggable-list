@@ -42,7 +42,7 @@ export default class MoveContainer<I,C,T extends React.Component<any,any>> exten
       this.props.commonProps !== nextProps.commonProps;
   }
 
-  _dragHandleProps = this.props.makeDragHandleProps(()=>this.props.y);
+  private _dragHandleProps = this.props.makeDragHandleProps(()=>this.props.y);
 
   render() {
     const {

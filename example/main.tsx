@@ -4,7 +4,7 @@ import Example from './Example';
 
 const onReady = new Promise((resolve) => {
   if (document.readyState === 'complete') {
-    resolve();
+    resolve(undefined);
   } else {
     document.addEventListener('DOMContentLoaded', resolve, false);
     window.addEventListener('load', resolve, false);

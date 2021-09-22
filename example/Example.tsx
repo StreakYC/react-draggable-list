@@ -77,7 +77,7 @@ type ExampleState = {
   list: ReadonlyArray<PlanetListItem>;
 };
 export default class Example extends React.Component<{}, ExampleState> {
-  _container = React.createRef<HTMLDivElement>();
+  private _container = React.createRef<HTMLDivElement>();
 
   state = {
     useContainer: false,
@@ -93,7 +93,7 @@ export default class Example extends React.Component<{}, ExampleState> {
     ]
   };
 
-  _togglePluto() {
+  private _togglePluto() {
     const noPluto = this.state.list.filter(item => item.name !== 'Pluto');
     if (noPluto.length !== this.state.list.length) {
       this.setState({list: noPluto});
@@ -102,11 +102,11 @@ export default class Example extends React.Component<{}, ExampleState> {
     }
   }
 
-  _toggleContainer() {
+  private _toggleContainer() {
     this.setState({useContainer: !this.state.useContainer});
   }
 
-  _onListChange(newList: ReadonlyArray<PlanetListItem>) {
+  private _onListChange(newList: ReadonlyArray<PlanetListItem>) {
     this.setState({list: newList});
   }
 
