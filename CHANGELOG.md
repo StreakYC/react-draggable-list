@@ -1,3 +1,7 @@
+## 4.0.4 (2021-09-22)
+
+- Updated peerDependencies list to mark compatibility with React 17.
+
 ## 4.0.3 (2019-06-05)
 
 - Updated to use immutability-helper 3.0.
