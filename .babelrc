@@ -7,8 +7,11 @@
   "plugins": [
     "@babel/plugin-proposal-class-properties",
     "@babel/plugin-transform-runtime",
-    ["add-module-exports", {
-      "addDefaultProperty": true
-    }]
+    [
+      "add-module-exports",
+      {
+        "addDefaultProperty": true
+      }
+    ]
   ]
 }

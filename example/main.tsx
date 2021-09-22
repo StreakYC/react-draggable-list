@@ -17,6 +17,6 @@ function main() {
   ReactDOM.render(<Example />, mainDiv);
 }
 
-onReady.then(main).catch(e => {
+onReady.then(main).catch((e) => {
   console.error(e, e.stack); // eslint-disable-line no-console
 });

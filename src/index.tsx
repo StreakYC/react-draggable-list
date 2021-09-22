@@ -2,13 +2,13 @@
 
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import {Motion, spring, OpaqueConfig} from 'react-motion';
+import { Motion, spring, OpaqueConfig } from 'react-motion';
 import update from 'immutability-helper';
 import MultiRef from 'react-multi-ref';
 import OnUpdate from './OnUpdate';
 import MoveContainer, { HeightData } from './MoveContainer';
 
-const DEFAULT_HEIGHT: HeightData = {natural: 200, drag: 30};
+const DEFAULT_HEIGHT: HeightData = { natural: 200, drag: 30 };
 
 function getScrollSpeed(distance: number, speed: number, size: number): number {
   // If distance is zero, then the result is the max speed. Otherwise,
@@ -37,7 +37,7 @@ interface Drag {
   mouseOffset: number;
 }
 
-export interface TemplateProps<I,C> {
+export interface TemplateProps<I, C> {
   item: I;
   itemSelected: number;
   anySelected: number;
@@ -45,11 +45,16 @@ export interface TemplateProps<I,C> {
   commonProps: C;
 }
 
-export interface Props<I,C,T> {
-  itemKey: string|((item: I) => string);
-  template: (new (props: any, context?: any) => T);
+export interface Props<I, C, T> {
+  itemKey: string | ((item: I) => string);
+  template: new (props: any, context?: any) => T;
   list: ReadonlyArray<I>;
-  onMoveEnd?: (newList: ReadonlyArray<I>, movedItem: I, oldIndex: number, newIndex: number) => void;
+  onMoveEnd?: (
+    newList: ReadonlyArray<I>,
+    movedItem: I,
+    oldIndex: number,
+    newIndex: number
+  ) => void;
   container?: () => HTMLElement | null | undefined;
   constrainDrag?: boolean;
   springConfig?: object;
@@ -63,14 +68,15 @@ interface State {
   useAbsolutePositioning: boolean;
   dragging: boolean;
   lastDrag: Drag | null;
-  heights: {[key: string]: HeightData} | null;
+  heights: { [key: string]: HeightData } | null;
 }
-export default class DraggableList<I,C,T extends React.Component<Partial<TemplateProps<I,C>>>> extends React.Component<Props<I,C,T>, State> {
+export default class DraggableList<
+  I,
+  C,
+  T extends React.Component<Partial<TemplateProps<I, C>>>
+> extends React.Component<Props<I, C, T>, State> {
   public static propTypes = {
-    itemKey: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.func
-    ]).isRequired,
+    itemKey: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
     template: PropTypes.func,
     list: PropTypes.array.isRequired,
     onMoveEnd: PropTypes.func,
@@ -81,17 +87,18 @@ export default class DraggableList<I,C,T extends React.Component<Partial<Templat
     unsetZIndex: PropTypes.bool,
     autoScrollMaxSpeed: PropTypes.number.isRequired,
     autoScrollRegionSize: PropTypes.number.isRequired,
-    commonProps: PropTypes.object
+    commonProps: PropTypes.object,
   };
-  public static defaultProps: Partial<Props<any,any,any>> = {
-    springConfig: {stiffness: 300, damping: 50},
+  public static defaultProps: Partial<Props<any, any, any>> = {
+    springConfig: { stiffness: 300, damping: 50 },
     padding: 10,
     unsetZIndex: false,
     constrainDrag: false,
     autoScrollMaxSpeed: 15,
-    autoScrollRegionSize: 30
+    autoScrollRegionSize: 30,
   };
-  private readonly _itemRefs: MultiRef<string, MoveContainer<I,any,T>> = new MultiRef();
+  private readonly _itemRefs: MultiRef<string, MoveContainer<I, any, T>> =
+    new MultiRef();
   private _autoScrollerTimer: any;
 
   private _listRef = React.createRef<HTMLDivElement>();
@@ -100,7 +107,7 @@ export default class DraggableList<I,C,T extends React.Component<Partial<Templat
     useAbsolutePositioning: false,
     dragging: false,
     lastDrag: null,
-    heights: null
+    heights: null,
   };
 
   public getItemInstance(key: string): T {
@@ -109,9 +116,12 @@ export default class DraggableList<I,C,T extends React.Component<Partial<Templat
     return ref.getTemplate();
   }
 
-  public static getDerivedStateFromProps<I,C,T>(newProps: Props<I,C,T>, state: State): Partial<State>|null {
-    const {list} = newProps;
-    const {lastDrag} = state;
+  public static getDerivedStateFromProps<I, C, T>(
+    newProps: Props<I, C, T>,
+    state: State
+  ): Partial<State> | null {
+    const { list } = newProps;
+    const { lastDrag } = state;
 
     if (lastDrag) {
       const keyFn = DraggableList._getKeyFn<I>(newProps.itemKey);
@@ -121,7 +131,7 @@ export default class DraggableList<I,C,T extends React.Component<Partial<Templat
       } catch (err) {
         // If the dragged item was removed from the list, this block will get hit.
         // Cancel the drag.
-        return {dragging: false, lastDrag: null};
+        return { dragging: false, lastDrag: null };
       }
     }
 
@@ -132,18 +142,31 @@ export default class DraggableList<I,C,T extends React.Component<Partial<Templat
     this._handleMouseUp();
   }
 
-  private _handleTouchStart(itemKey: string, pressY: number | undefined, event: TouchEvent | React.TouchEvent) {
+  private _handleTouchStart(
+    itemKey: string,
+    pressY: number | undefined,
+    event: TouchEvent | React.TouchEvent
+  ) {
     event.stopPropagation();
     this._handleStartDrag(itemKey, pressY, event.touches[0].pageY);
   }
 
-  private _handleMouseDown(itemKey: string, pressY: number | undefined, event: MouseEvent | React.MouseEvent) {
+  private _handleMouseDown(
+    itemKey: string,
+    pressY: number | undefined,
+    event: MouseEvent | React.MouseEvent
+  ) {
     event.preventDefault();
     this._handleStartDrag(itemKey, pressY, event.pageY);
   }
 
-  private _handleStartDrag(itemKey: string, pressY: number | undefined, pageY: number) {
-    if (document.documentElement) document.documentElement.style.cursor = 'move';
+  private _handleStartDrag(
+    itemKey: string,
+    pressY: number | undefined,
+    pageY: number
+  ) {
+    if (document.documentElement)
+      document.documentElement.style.cursor = 'move';
     window.addEventListener('mouseup', this._handleMouseUp);
     window.addEventListener('touchend', this._handleMouseUp);
     window.addEventListener('touchmove', this._handleTouchMove);
@@ -156,7 +179,8 @@ export default class DraggableList<I,C,T extends React.Component<Partial<Templat
       const listEl = this._listRef.current;
       if (!listEl) throw new Error('Should not happen');
       if (
-        listEl.contains && document.activeElement &&
+        listEl.contains &&
+        document.activeElement &&
         listEl.contains(document.activeElement) &&
         document.activeElement instanceof HTMLElement
       ) {
@@ -168,18 +192,26 @@ export default class DraggableList<I,C,T extends React.Component<Partial<Templat
 
     let newHeights = null;
     if (this.state.heights == null) {
-      const _newHeights: {[key: string]: HeightData} = Object.create(null);
+      const _newHeights: { [key: string]: HeightData } = Object.create(null);
 
-      this.props.list.forEach(item => {
+      this.props.list.forEach((item) => {
         const key = keyFn(item);
         const containerRef = this._itemRefs.map.get(key);
-        const refEl = containerRef ? containerRef.getDOMNode().firstElementChild : null;
+        const refEl = containerRef
+          ? containerRef.getDOMNode().firstElementChild
+          : null;
         const ref = containerRef ? containerRef.getTemplate() : null;
-        const natural = (refEl instanceof HTMLElement) ?
-          refEl.offsetHeight : DEFAULT_HEIGHT.natural;
-        const drag = ref && (typeof (ref as any).getDragHeight === 'function') && (ref as any).getDragHeight() || natural;
+        const natural =
+          refEl instanceof HTMLElement
+            ? refEl.offsetHeight
+            : DEFAULT_HEIGHT.natural;
+        const drag =
+          (ref &&
+            typeof (ref as any).getDragHeight === 'function' &&
+            (ref as any).getDragHeight()) ||
+          natural;
 
-        _newHeights[key] = {natural, drag};
+        _newHeights[key] = { natural, drag };
       });
 
       newHeights = _newHeights;
@@ -195,12 +227,14 @@ export default class DraggableList<I,C,T extends React.Component<Partial<Templat
       // clicked item has its `y` prop set). pressY will be null if the list is
       // not currently animating (because the clicked item will be at its
       // natural position, which is calculatable using _getDistance).
-      const startY = pressY == null ?
-        this._getDistance(0, itemIndex, false) : pressY;
+      const startY =
+        pressY == null ? this._getDistance(0, itemIndex, false) : pressY;
 
       const containerEl = this._getContainer();
-      const containerScroll = !containerEl || containerEl === document.body ?
-        0 : containerEl.scrollTop;
+      const containerScroll =
+        !containerEl || containerEl === document.body
+          ? 0
+          : containerEl.scrollTop;
 
       this.setState({
         useAbsolutePositioning: true,
@@ -209,13 +243,13 @@ export default class DraggableList<I,C,T extends React.Component<Partial<Templat
           itemKey: itemKey,
           startY,
           mouseY: startY,
-          mouseOffset: pageY - startY + containerScroll
-        }
+          mouseOffset: pageY - startY + containerScroll,
+        },
       });
     };
 
     if (newHeights) {
-      this.setState({heights: newHeights}, afterHeights);
+      this.setState({ heights: newHeights }, afterHeights);
     } else {
       afterHeights();
     }
@@ -226,11 +260,14 @@ export default class DraggableList<I,C,T extends React.Component<Partial<Templat
     this._handleMouseMove(e.touches[0]);
   };
 
-  private _handleMouseMove = ({pageY, clientY}: MouseEvent | Touch | {pageY: number; clientY: number}) => {
-    const {list} = this.props;
+  private _handleMouseMove = ({
+    pageY,
+    clientY,
+  }: MouseEvent | Touch | { pageY: number; clientY: number }) => {
+    const { list } = this.props;
     const autoScrollMaxSpeed = this.props.autoScrollMaxSpeed!;
     const autoScrollRegionSize = this.props.autoScrollRegionSize!;
-    const {dragging, lastDrag} = this.state;
+    const { dragging, lastDrag } = this.state;
     if (!dragging || !lastDrag) return;
 
     const containerEl = this._getContainer();
@@ -241,26 +278,41 @@ export default class DraggableList<I,C,T extends React.Component<Partial<Templat
 
     // If the user has the mouse near the top or bottom of the container and
     // not at the end of the list, then autoscroll.
-    if (dragVisualIndex !== 0 && dragVisualIndex !== list.length-1) {
+    if (dragVisualIndex !== 0 && dragVisualIndex !== list.length - 1) {
       let scrollSpeed = 0;
 
-      const containerRect = containerEl && containerEl !== document.body &&
-        containerEl.getBoundingClientRect ?
-        containerEl.getBoundingClientRect() :
-        {top: 0, bottom: Infinity};
+      const containerRect =
+        containerEl &&
+        containerEl !== document.body &&
+        containerEl.getBoundingClientRect
+          ? containerEl.getBoundingClientRect()
+          : { top: 0, bottom: Infinity };
 
       // Get the lowest of the screen top and the container top.
       const top = Math.max(0, containerRect.top);
 
-      const distanceFromTop = clientY-top;
+      const distanceFromTop = clientY - top;
       if (distanceFromTop > 0 && distanceFromTop < autoScrollRegionSize) {
-        scrollSpeed = -1 * getScrollSpeed(distanceFromTop, autoScrollMaxSpeed, autoScrollRegionSize);
+        scrollSpeed =
+          -1 *
+          getScrollSpeed(
+            distanceFromTop,
+            autoScrollMaxSpeed,
+            autoScrollRegionSize
+          );
       } else {
         // Get the lowest of the screen bottom and the container bottom.
         const bottom = Math.min(window.innerHeight, containerRect.bottom);
-        const distanceFromBottom = bottom-clientY;
-        if (distanceFromBottom > 0 && distanceFromBottom < autoScrollRegionSize) {
-          scrollSpeed = getScrollSpeed(distanceFromBottom, autoScrollMaxSpeed, autoScrollRegionSize);
+        const distanceFromBottom = bottom - clientY;
+        if (
+          distanceFromBottom > 0 &&
+          distanceFromBottom < autoScrollRegionSize
+        ) {
+          scrollSpeed = getScrollSpeed(
+            distanceFromBottom,
+            autoScrollMaxSpeed,
+            autoScrollRegionSize
+          );
         }
       }
 
@@ -268,24 +320,38 @@ export default class DraggableList<I,C,T extends React.Component<Partial<Templat
         this._scrollContainer(scrollSpeed);
         this._autoScrollerTimer = setTimeout(() => {
           this._handleMouseMove({
-            pageY: pageY + (containerEl===document.body?scrollSpeed:0),
-            clientY
+            pageY: pageY + (containerEl === document.body ? scrollSpeed : 0),
+            clientY,
           });
         }, 16);
       }
     }
 
-    const containerScroll = !containerEl || containerEl === document.body ?
-      0 : containerEl.scrollTop;
+    const containerScroll =
+      !containerEl || containerEl === document.body ? 0 : containerEl.scrollTop;
     let mouseY = pageY - lastDrag.mouseOffset + containerScroll;
     if (this.props.constrainDrag) {
       const visualList = this._getVisualListDuringDrag();
 
-      mouseY = Math.max(mouseY, this._getDistanceFromTopDuringDrag(lastDrag, keyFn(visualList[0]), visualList));
-      mouseY = Math.min(mouseY, this._getDistanceFromTopDuringDrag(lastDrag, keyFn(visualList[visualList.length - 1]), visualList));
+      mouseY = Math.max(
+        mouseY,
+        this._getDistanceFromTopDuringDrag(
+          lastDrag,
+          keyFn(visualList[0]),
+          visualList
+        )
+      );
+      mouseY = Math.min(
+        mouseY,
+        this._getDistanceFromTopDuringDrag(
+          lastDrag,
+          keyFn(visualList[visualList.length - 1]),
+          visualList
+        )
+      );
     }
 
-    this.setState({lastDrag: {...lastDrag, mouseY}});
+    this.setState({ lastDrag: { ...lastDrag, mouseY } });
   };
 
   _handleMouseUp = () => {
@@ -298,8 +364,8 @@ export default class DraggableList<I,C,T extends React.Component<Partial<Templat
     if (document.documentElement) document.documentElement.style.cursor = '';
     this._lastScrollDelta = 0;
 
-    const {list, onMoveEnd} = this.props;
-    const {dragging, lastDrag} = this.state;
+    const { list, onMoveEnd } = this.props;
+    const { dragging, lastDrag } = this.state;
 
     if (dragging && lastDrag && onMoveEnd) {
       const dragIndex = this._getDragListIndex();
@@ -310,7 +376,7 @@ export default class DraggableList<I,C,T extends React.Component<Partial<Templat
 
         onMoveEnd(newList, list[dragIndex], dragIndex, newIndex);
       }
-      this.setState({dragging: false});
+      this.setState({ dragging: false });
     }
   };
 
@@ -331,8 +397,12 @@ export default class DraggableList<I,C,T extends React.Component<Partial<Templat
     this._lastScrollDelta += frameDelta;
   }
 
-  static _getIndexOfItemWithKey<I>(keyFn: (item: I) => string, list: ReadonlyArray<I>, itemKey: string): number {
-    for (let i=0, len=list.length; i < len; i++) {
+  static _getIndexOfItemWithKey<I>(
+    keyFn: (item: I) => string,
+    list: ReadonlyArray<I>,
+    itemKey: string
+  ): number {
+    for (let i = 0, len = list.length; i < len; i++) {
       if (keyFn(list[i]) === itemKey) {
         return i;
       }
@@ -341,8 +411,8 @@ export default class DraggableList<I,C,T extends React.Component<Partial<Templat
   }
 
   _getDragListIndex(): number {
-    const {list} = this.props;
-    const {lastDrag} = this.state;
+    const { list } = this.props;
+    const { lastDrag } = this.state;
     if (!lastDrag) {
       throw new Error('No drag happened');
     }
@@ -351,26 +421,30 @@ export default class DraggableList<I,C,T extends React.Component<Partial<Templat
   }
 
   _getDragVisualIndex(): number {
-    const {list} = this.props;
+    const { list } = this.props;
     const padding = this.props.padding!;
-    const {dragging, lastDrag} = this.state;
+    const { dragging, lastDrag } = this.state;
     if (!dragging || !lastDrag) throw new Error('Should not happen');
 
     const dragListIndex = this._getDragListIndex();
 
-    const {mouseY, startY} = lastDrag;
+    const { mouseY, startY } = lastDrag;
 
-    const movementFromNatural = mouseY-startY;
+    const movementFromNatural = mouseY - startY;
     // 1 down, -1 up, 0 neither
-    const direction = movementFromNatural > 0 ? 1 :
-      movementFromNatural < 0 ? -1 : 0;
+    const direction =
+      movementFromNatural > 0 ? 1 : movementFromNatural < 0 ? -1 : 0;
     let newIndex = dragListIndex;
     if (direction !== 0) {
       const keyFn = this._getKeyFn();
       let reach = Math.abs(movementFromNatural);
-      for (let i=dragListIndex+direction; i < list.length && i >= 0; i += direction) {
+      for (
+        let i = dragListIndex + direction;
+        i < list.length && i >= 0;
+        i += direction
+      ) {
         const iDragHeight = this._getItemHeight(keyFn(list[i])).drag;
-        if (reach < iDragHeight/2 + padding) break;
+        if (reach < iDragHeight / 2 + padding) break;
         reach -= iDragHeight + padding;
         newIndex = i;
       }
@@ -380,27 +454,39 @@ export default class DraggableList<I,C,T extends React.Component<Partial<Templat
   }
 
   _getVisualListDuringDrag(): ReadonlyArray<I> {
-    const {list} = this.props;
-    const {dragging, lastDrag} = this.state;
-    if (!dragging || !lastDrag) throw new Error('Should not happen: _getVisualListDuringDrag called outside of drag');
+    const { list } = this.props;
+    const { dragging, lastDrag } = this.state;
+    if (!dragging || !lastDrag)
+      throw new Error(
+        'Should not happen: _getVisualListDuringDrag called outside of drag'
+      );
 
     const dragListIndex = this._getDragListIndex();
     const dragVisualIndex = this._getDragVisualIndex();
 
     return update(list, {
-      $splice: [[dragListIndex, 1], [dragVisualIndex, 0, list[dragListIndex]]]
+      $splice: [
+        [dragListIndex, 1],
+        [dragVisualIndex, 0, list[dragListIndex]],
+      ],
     });
   }
 
   _getItemHeight(key: string): HeightData {
-    return this.state.heights != null && key in this.state.heights ?
-      this.state.heights[key] : DEFAULT_HEIGHT;
+    return this.state.heights != null && key in this.state.heights
+      ? this.state.heights[key]
+      : DEFAULT_HEIGHT;
   }
 
   // Get the distance between the tops of two items in the list.
   // Does not consider how the dragged item may be rendered in a different position
   // unless you pass in the re-ordered list as a parameter.
-  _getDistance(start: number, end: number, dragging: boolean, list: ReadonlyArray<I> = this.props.list): number {
+  _getDistance(
+    start: number,
+    end: number,
+    dragging: boolean,
+    list: ReadonlyArray<I> = this.props.list
+  ): number {
     if (end < start) {
       return -this._getDistance(end, start, dragging, list);
     }
@@ -408,38 +494,56 @@ export default class DraggableList<I,C,T extends React.Component<Partial<Templat
     const padding = this.props.padding!;
     const keyFn = this._getKeyFn();
     let distance = 0;
-    for (let i=start; i < end; i++) {
+    for (let i = start; i < end; i++) {
       const height = this._getItemHeight(keyFn(list[i]));
       distance += (dragging ? height.drag : height.natural) + padding;
     }
     return distance;
   }
 
-  _getDistanceFromTopDuringDrag(lastDrag: Drag, itemKey: string, visualList: ReadonlyArray<I>): number {
+  _getDistanceFromTopDuringDrag(
+    lastDrag: Drag,
+    itemKey: string,
+    visualList: ReadonlyArray<I>
+  ): number {
     const keyFn = this._getKeyFn();
-    const index = DraggableList._getIndexOfItemWithKey(keyFn, visualList, itemKey);
+    const index = DraggableList._getIndexOfItemWithKey(
+      keyFn,
+      visualList,
+      itemKey
+    );
     const dragListIndex = this._getDragListIndex();
-    const dragVisualIndex = DraggableList._getIndexOfItemWithKey(keyFn, visualList, lastDrag.itemKey);
+    const dragVisualIndex = DraggableList._getIndexOfItemWithKey(
+      keyFn,
+      visualList,
+      lastDrag.itemKey
+    );
 
     let offset = 0;
     if (dragVisualIndex < dragListIndex) {
       const dragItemHeight = this._getItemHeight(lastDrag.itemKey);
-      const newCenterHeight =
-        this._getItemHeight(keyFn(visualList[dragListIndex]));
+      const newCenterHeight = this._getItemHeight(
+        keyFn(visualList[dragListIndex])
+      );
       offset = dragItemHeight.drag - newCenterHeight.drag;
     }
 
-    return lastDrag.startY + offset +
-      this._getDistance(dragListIndex, index, true, visualList);
+    return (
+      lastDrag.startY +
+      offset +
+      this._getDistance(dragListIndex, index, true, visualList)
+    );
   }
 
   private _getContainer(): HTMLElement | null | undefined {
-    const {container} = this.props;
+    const { container } = this.props;
     return container ? container() : null;
   }
 
-  private static _getKeyFn<I>(itemKey: string|((item: I) => string)): (item: I) => string {
-    return typeof itemKey === 'function' ? itemKey : x => (x as any)[itemKey];
+  private static _getKeyFn<I>(
+    itemKey: string | ((item: I) => string)
+  ): (item: I) => string {
+    return typeof itemKey === 'function' ? itemKey : (x) => (x as any)[itemKey];
   }
 
   private _getKeyFn(): (item: I) => string {
@@ -448,8 +552,15 @@ export default class DraggableList<I,C,T extends React.Component<Partial<Templat
 
   render() {
     const padding = this.props.padding!;
-    const {list, springConfig, container, template, unsetZIndex, commonProps} = this.props;
-    const {dragging, lastDrag, useAbsolutePositioning} = this.state;
+    const {
+      list,
+      springConfig,
+      container,
+      template,
+      unsetZIndex,
+      commonProps,
+    } = this.props;
+    const { dragging, lastDrag, useAbsolutePositioning } = this.state;
 
     const keyFn = this._getKeyFn();
     const anySelected = spring(dragging ? 1 : 0, springConfig);
@@ -458,30 +569,41 @@ export default class DraggableList<I,C,T extends React.Component<Partial<Templat
 
     const children = list.map((item, i) => {
       const key = keyFn(item);
-      const selectedStyle = dragging && lastDrag && lastDrag.itemKey === key
-        ? {
-          itemSelected: spring(1, springConfig),
-          y: lastDrag.mouseY
-        }
-        : {
-          itemSelected: spring(0, springConfig),
-          y: (useAbsolutePositioning ? spring : (x: number)=>x)(dragging && lastDrag ?
-            this._getDistanceFromTopDuringDrag(lastDrag, key, visualList)
-            : this._getDistance(0, i, false), springConfig)
-        };
+      const selectedStyle =
+        dragging && lastDrag && lastDrag.itemKey === key
+          ? {
+              itemSelected: spring(1, springConfig),
+              y: lastDrag.mouseY,
+            }
+          : {
+              itemSelected: spring(0, springConfig),
+              y: (useAbsolutePositioning ? spring : (x: number) => x)(
+                dragging && lastDrag
+                  ? this._getDistanceFromTopDuringDrag(
+                      lastDrag,
+                      key,
+                      visualList
+                    )
+                  : this._getDistance(0, i, false),
+                springConfig
+              ),
+            };
       const style = {
         anySelected,
-        ...selectedStyle
+        ...selectedStyle,
       };
       const makeDragHandleProps = (getY: () => number | undefined): object => ({
-        onMouseDown: (e: React.MouseEvent) => this._handleMouseDown(key, getY(), e),
-        onTouchStart: (e: React.TouchEvent) => this._handleTouchStart(key, getY(), e)
+        onMouseDown: (e: React.MouseEvent) =>
+          this._handleMouseDown(key, getY(), e),
+        onTouchStart: (e: React.TouchEvent) =>
+          this._handleTouchStart(key, getY(), e),
       });
       const height = this._getItemHeight(key);
       return (
         <Motion
-          style={style} key={key}
-          children={({itemSelected, anySelected, y}) =>
+          style={style}
+          key={key}
+          children={({ itemSelected, anySelected, y }) => (
             <MoveContainer
               ref={this._itemRefs.ref(key)}
               y={useAbsolutePositioning ? y : undefined}
@@ -491,23 +613,26 @@ export default class DraggableList<I,C,T extends React.Component<Partial<Templat
               itemSelected={itemSelected}
               anySelected={anySelected}
               height={height}
-              zIndex={unsetZIndex && !useAbsolutePositioning ? 'auto' :
-                (lastDrag && lastDrag.itemKey === key ? list.length : i)
+              zIndex={
+                unsetZIndex && !useAbsolutePositioning
+                  ? 'auto'
+                  : lastDrag && lastDrag.itemKey === key
+                  ? list.length
+                  : i
               }
               makeDragHandleProps={makeDragHandleProps}
               commonProps={commonProps}
             />
-          }
+          )}
         />
       );
     });
 
-    let adjustScroll: number|OpaqueConfig = 0;
+    let adjustScroll: number | OpaqueConfig = 0;
     if (!dragging && lastDrag && useAbsolutePositioning) {
       const dragListIndex = this._getDragListIndex();
       adjustScroll = spring(
-        this._getDistance(0, dragListIndex, false)
-        - lastDrag.mouseY,
+        this._getDistance(0, dragListIndex, false) - lastDrag.mouseY,
         springConfig
       );
     }
@@ -517,39 +642,41 @@ export default class DraggableList<I,C,T extends React.Component<Partial<Templat
     if (list.length) {
       heightReserverMarginBottom = padding;
       if (useAbsolutePositioning) {
-        heightReserverHeight = this._getDistance(0, list.length, false) - padding;
+        heightReserverHeight =
+          this._getDistance(0, list.length, false) - padding;
       }
     }
     return (
-      <div
-        style={{position: 'relative'}}
-        ref={this._listRef}
-      >
+      <div style={{ position: 'relative' }} ref={this._listRef}>
         <Motion
-          style={{adjustScroll, anySelected}}
+          style={{ adjustScroll, anySelected }}
           onRest={() => {
             if (!dragging) {
               this.setState({
                 heights: null,
-                useAbsolutePositioning: false
+                useAbsolutePositioning: false,
               });
             }
           }}
-          children={({adjustScroll}) =>
+          children={({ adjustScroll }) => (
             <div
               style={{
                 display: useAbsolutePositioning ? 'block' : 'none',
                 height: `${heightReserverHeight}px`,
-                marginBottom: `${heightReserverMarginBottom}px`
+                marginBottom: `${heightReserverMarginBottom}px`,
               }}
             >
-              {container && <OnUpdate cb={() => {
-                if (!dragging && lastDrag && useAbsolutePositioning) {
-                  this._adjustScrollAtEnd(adjustScroll);
-                }
-              }} />}
+              {container && (
+                <OnUpdate
+                  cb={() => {
+                    if (!dragging && lastDrag && useAbsolutePositioning) {
+                      this._adjustScrollAtEnd(adjustScroll);
+                    }
+                  }}
+                />
+              )}
             </div>
-          }
+          )}
         />
         {children}
       </div>

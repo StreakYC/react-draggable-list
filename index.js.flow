@@ -7,7 +7,7 @@ export type TemplateProps<I, C> = {
   itemSelected: number,
   anySelected: number,
   dragHandleProps: Object,
-  commonProps: C
+  commonProps: C,
 };
 
 export type Props<I, C, T> = {
@@ -27,13 +27,15 @@ export type Props<I, C, T> = {
   unsetZIndex: boolean,
   autoScrollMaxSpeed: number,
   autoScrollRegionSize: number,
-  commonProps?: C
+  commonProps?: C,
 };
 
 declare export default class DraggableList<
-  I,
-  C = *,
-  T: React.Component<$Shape<TemplateProps<I, C>>, *> = *
-> extends React.Component<Props<I, C, T>> {
+    I,
+    C = *,
+    T: React.Component<$Shape<TemplateProps<I, C>>, *> = *
+  >
+  extends React.Component<Props<I, C, T>>
+{
   getItemInstance(key: string): T;
 }

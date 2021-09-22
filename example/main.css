@@ -1,4 +1,5 @@
-.intro, footer {
+.intro,
+footer {
   width: 400px;
   margin: auto;
 }
@@ -26,7 +27,8 @@
   height: 16px;
   background: url('grippy.png') 30% 50% no-repeat no-repeat;
 }
-.item:hover .dragHandle, .item.dragged .dragHandle {
+.item:hover .dragHandle,
+.item.dragged .dragHandle {
   visibility: visible;
 }
 .item h2 {
@@ -42,6 +44,6 @@
 }
 ::-webkit-scrollbar-thumb {
   border-radius: 4px;
-  background-color: rgba(0, 0, 0, .5);
-  -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+  background-color: rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
 }

@@ -23,15 +23,13 @@ class MyTemp extends React.Component<MyTempProps, MyTempState> {
   }
 }
 
-const list: Array<Item> = [
-  {a: 123, b: 'xyz'}
-];
+const list: Array<Item> = [{ a: 123, b: 'xyz' }];
 const x = (
   <DraggableList<Item, void, MyTemp>
     itemKey="foo"
     list={list}
     template={MyTemp}
-    onMoveEnd={ignoredNewList => {
+    onMoveEnd={(ignoredNewList) => {
       // ignore
     }}
   />
@@ -39,4 +37,4 @@ const x = (
 x;
 const renderedDL: DraggableList<Item, void, MyTemp> = null as any;
 const renderedItem = renderedDL.getItemInstance('foo');
-(renderedItem as MyTemp);
+renderedItem as MyTemp;
