@@ -729,3 +729,78 @@ test('updating commonProps works', () => {
     )
   ).toEqual(list.map(() => ({ b: 6 })));
 });
+
+test('onDragEnd and onDragStart callbacks are correctly called', () => {
+  let _scrollTop = 0;
+  const containerEl: any = {
+    get scrollTop() {
+      return _scrollTop;
+    },
+    set scrollTop(x) {
+      _scrollTop = x;
+    },
+  };
+
+  let list: Item[] = [
+    { name: 'alice' },
+    { name: 'bob' },
+    { name: 'charlie' },
+    { name: 'deb' },
+    { name: 'ethan' },
+  ];
+
+  const div = document.createElement('div');
+
+  const onMoveEnd = jest.fn((newList) => {
+    list = newList;
+    render();
+  });
+
+  const onDragStart = jest.fn(() => {
+
+  });
+
+  const onDragEnd = jest.fn(() => {
+    
+  });
+
+  const rootRef = React.createRef<DraggableList<Item, any, TestTemplate>>();
+  function render() {
+    ReactDOM.render(
+      <DraggableList
+        ref={rootRef}
+        itemKey="name"
+        list={list}
+        template={TestTemplate}
+        onMoveEnd={onMoveEnd}
+        springConfig={springConfig}
+        container={() => containerEl}
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+      />,
+      div
+    );
+  }
+  render();
+  const root = rootRef.current!;
+
+  const renderedHandles: Array<TestTemplate> =
+    TestUtils.scryRenderedComponentsWithType(root, TestTemplate) as any;
+
+  expect(onDragStart).toHaveBeenCalledTimes(0);
+
+  renderedHandles[0].props.dragHandleProps.onMouseDown({
+    pageY: 500,
+    preventDefault() {},
+  });
+
+  expect(onDragStart).toHaveBeenCalledTimes(1);
+  expect(onDragEnd).toHaveBeenCalledTimes(0);
+
+  (root as any)._handleMouseMove({ pageY: 600 });
+
+  root._handleMouseUp();
+
+  expect(onDragEnd).toHaveBeenCalledTimes(1);
+
+});
