@@ -1,3 +1,7 @@
+## 4.1.0 (2022-08-12)
+
+- Implemented `onDragStart` and `onDragEnd` props. ([@JayHales](https://github.com/JayHales) in [#52](https://github.com/StreakYC/react-draggable-list/pull/52))
+
 ## 4.0.4 (2021-09-22)
 
 - Updated peerDependencies list to mark compatibility with React 17.
