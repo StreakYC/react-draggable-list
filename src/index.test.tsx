@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 /* eslint-disable @typescript-eslint/no-use-before-define, @typescript-eslint/no-empty-function */
 
 import delay from 'pdelay';
@@ -761,7 +764,7 @@ test('onDragEnd and onDragStart callbacks are correctly called', () => {
   });
 
   const onDragEnd = jest.fn(() => {
-    
+
   });
 
   const rootRef = React.createRef<DraggableList<Item, any, TestTemplate>>();
