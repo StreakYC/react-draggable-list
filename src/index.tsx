@@ -63,6 +63,8 @@ export interface Props<I, C, T> {
   autoScrollMaxSpeed?: number;
   autoScrollRegionSize?: number;
   commonProps?: C;
+  onDragStart?: () => void;
+  onDragEnd?: () => void;
 }
 interface State {
   useAbsolutePositioning: boolean;
@@ -171,6 +173,10 @@ export default class DraggableList<
     window.addEventListener('touchend', this._handleMouseUp);
     window.addEventListener('touchmove', this._handleTouchMove);
     window.addEventListener('mousemove', this._handleMouseMove);
+
+    if (this.props.onDragStart) {
+      this.props.onDragStart();
+    }
 
     // If an element has focus while we drag around the parent, some browsers
     // try to scroll the parent element to keep the focused element in view.
@@ -364,7 +370,7 @@ export default class DraggableList<
     if (document.documentElement) document.documentElement.style.cursor = '';
     this._lastScrollDelta = 0;
 
-    const { list, onMoveEnd } = this.props;
+    const { list, onMoveEnd, onDragEnd } = this.props;
     const { dragging, lastDrag } = this.state;
 
     if (dragging && lastDrag && onMoveEnd) {
@@ -376,6 +382,12 @@ export default class DraggableList<
 
         onMoveEnd(newList, list[dragIndex], dragIndex, newIndex);
       }
+
+      if (onDragEnd) {
+        onDragEnd();
+      }
+      
+
       this.setState({ dragging: false });
     }
   };

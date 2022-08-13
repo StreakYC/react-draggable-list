@@ -64,6 +64,8 @@ following props:
   region that triggers auto-scrolling when dragged onto to be overridden.
 - `commonProps` is an optional value that will be passed as the `commonProps`
   prop to every template component instance.
+- `onDragStart` is an optional function which is called once a list item beings to be dragged.
+- `onDragEnd` is an optional function which is called once a list item is no longer being dragged. It differs to `onMoveEnd` in the fact that for it to be called the order of the list does not have to have been changed. For example, an item just picked up then dropped. 
 
 A DraggableList instance has the following methods:
 
