@@ -153,10 +153,10 @@ export default class DraggableList<
     event.stopPropagation();
     
     const { list, onItemClick } = this.props;
-    if(onItemClick) {
+    if (onItemClick) {
       const keyFn = this._getKeyFn();
       const itemIndex = DraggableList._getIndexOfItemWithKey(keyFn, list, itemKey);
-      onItemClick(list[itemIndex])
+      onItemClick(list[itemIndex]);
     }
 
     this._handleStartDrag(itemKey, pressY, event.touches[0].pageY);
@@ -170,10 +170,10 @@ export default class DraggableList<
     event.preventDefault();
 
     const { list, onItemClick } = this.props;
-    if(onItemClick) {
+    if (onItemClick) {
       const keyFn = this._getKeyFn();
       const itemIndex = DraggableList._getIndexOfItemWithKey(keyFn, list, itemKey);
-      onItemClick(list[itemIndex])
+      onItemClick(list[itemIndex]);
     }
 
     this._handleStartDrag(itemKey, pressY, event.pageY);
