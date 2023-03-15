@@ -67,6 +67,7 @@ following props:
 - `onDragStart` is an optional function which is called once a list item starts
   being dragged.
 - `onDragEnd` is an optional function which is called once a list item is no longer being dragged. It differs from `onMoveEnd` in that it's called even if the user does not reorder any items in the lists, like when an item is just picked up and then dropped.
+- `onItemClick` is an optional function which is called once a list item is clicked or touched. It provides `clickedItem: Object` as an argument. Use this prop if you want the user to be able to select some item in the list and run custom logic with that item, regardless of if it is dragged.
 
 A DraggableList instance has the following methods:
 

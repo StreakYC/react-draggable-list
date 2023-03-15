@@ -65,6 +65,7 @@ export interface Props<I, C, T> {
   commonProps?: C;
   onDragStart?: () => void;
   onDragEnd?: () => void;
+  onItemClick?: (clickedItem: I) => void;
 }
 interface State {
   useAbsolutePositioning: boolean;
@@ -150,6 +151,14 @@ export default class DraggableList<
     event: TouchEvent | React.TouchEvent
   ) {
     event.stopPropagation();
+    
+    const { list, onItemClick } = this.props;
+    if(onItemClick) {
+      const keyFn = this._getKeyFn();
+      const itemIndex = DraggableList._getIndexOfItemWithKey(keyFn, list, itemKey);
+      onItemClick(list[itemIndex])
+    }
+
     this._handleStartDrag(itemKey, pressY, event.touches[0].pageY);
   }
 
@@ -159,6 +168,14 @@ export default class DraggableList<
     event: MouseEvent | React.MouseEvent
   ) {
     event.preventDefault();
+
+    const { list, onItemClick } = this.props;
+    if(onItemClick) {
+      const keyFn = this._getKeyFn();
+      const itemIndex = DraggableList._getIndexOfItemWithKey(keyFn, list, itemKey);
+      onItemClick(list[itemIndex])
+    }
+
     this._handleStartDrag(itemKey, pressY, event.pageY);
   }
 
