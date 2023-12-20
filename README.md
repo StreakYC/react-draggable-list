@@ -30,10 +30,8 @@ following props:
 - `itemKey` must be the name of a property of the list's objects to use as a
   key to identify the objects, or it must be a function that takes an object as
   an argument and returns a key.
-- `template` must be a React component used to render the list items. This must
-  not be a stateless-functional component. If possible, don't pass a new
-  class instance on every render. See the next section for more information
-  on the template including a description of the props passed to the component.
+- `renderTemplate` must be a function component used to render the list items. If possible, don't pass a new function instance on every render. See the next section for more information
+  on the template including a description of the args passed to the function.
 - `onMoveEnd` may be a function which will be called when the user drags and
   drops an item to a new position in the list. The arguments to the function
   will be `(newList: Array<Object>, movedItem: Object, oldIndex: number, newIndex: number)`. A component using DraggableList should immediately store
@@ -73,10 +71,11 @@ A DraggableList instance has the following methods:
 - `getItemInstance(key)` will return a reference to the mounted instance of the
   template for a given key.
 
-## Template
+## `renderTemplate`
 
-The template component is passed the following props:
+The `renderTemplate` function prop is passed the following:
 
+- `instanceRef` If the returned value of `renderTemplate` is a function component that accepts refs or a class component, this prop can be used to forward refs to the imperative handle `getItemInstance` on `DraggableList` refs.
 - `item` is an object from the list prop passed to DraggableList.
 - `itemSelected` is a number from 0 to 1. It starts at 0, and quickly increases
   to 1 when the item is picked up by the user. This may be used to animate the
