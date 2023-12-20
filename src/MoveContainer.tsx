@@ -1,5 +1,6 @@
 import * as React from 'react';
 import TemplateContainer from './TemplateContainer';
+import type { RenderTemplate } from '.';
 
 export interface HeightData {
   natural: number;
@@ -8,7 +9,7 @@ export interface HeightData {
 
 interface Props<I, C, T> {
   item: I;
-  template: new (props: any, context?: any) => T;
+  renderTemplate: RenderTemplate<I, C, T>;
   padding: number;
   y: number | undefined;
   itemSelected: number;
@@ -16,7 +17,7 @@ interface Props<I, C, T> {
   height: HeightData;
   zIndex: React.CSSProperties['zIndex'];
   makeDragHandleProps: (getY: () => number | undefined) => object;
-  commonProps: C;
+  commonProps?: C;
 }
 
 export default class MoveContainer<
@@ -32,8 +33,8 @@ export default class MoveContainer<
     return this._el.current!;
   }
 
-  getTemplate(): T {
-    return this._templateContainer.current!.getTemplate();
+  get template() {
+    return this._templateContainer.current!.template.current;
   }
 
   shouldComponentUpdate(nextProps: Props<I, C, T>): boolean {
@@ -41,7 +42,7 @@ export default class MoveContainer<
       this.props.anySelected !== nextProps.anySelected ||
       this.props.itemSelected !== nextProps.itemSelected ||
       this.props.item !== nextProps.item ||
-      this.props.template !== nextProps.template ||
+      this.props.renderTemplate !== nextProps.renderTemplate ||
       this.props.y !== nextProps.y ||
       this.props.height !== nextProps.height ||
       this.props.zIndex !== nextProps.zIndex ||
@@ -60,7 +61,7 @@ export default class MoveContainer<
       anySelected,
       height,
       zIndex,
-      template,
+      renderTemplate,
       commonProps,
     } = this.props;
 
@@ -86,7 +87,7 @@ export default class MoveContainer<
         <TemplateContainer
           ref={this._templateContainer}
           item={item}
-          template={template}
+          renderTemplate={renderTemplate}
           itemSelected={itemSelected}
           anySelected={anySelected}
           dragHandleProps={this._dragHandleProps}

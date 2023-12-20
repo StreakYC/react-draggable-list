@@ -7,7 +7,7 @@ import delay from 'pdelay';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as TestUtils from 'react-dom/test-utils';
-import DraggableList from '../src';
+import { DraggableList, RenderTemplate } from '../src';
 
 interface Item {
   name: string;
@@ -56,6 +56,22 @@ class TestTemplate extends React.Component<TestTemplateProps> {
   }
 }
 
+const renderTestTemplate: RenderTemplate<Item, any, TestTemplate> = ({
+  commonProps,
+  dragHandleProps,
+  instanceRef,
+  item,
+}) => {
+  return (
+    <TestTemplate
+      commonProps={commonProps}
+      dragHandleProps={dragHandleProps}
+      item={item}
+      ref={instanceRef}
+    />
+  );
+};
+
 const springConfig = { stiffness: 1500, damping: 50 };
 
 test('drag works', async () => {
@@ -94,7 +110,7 @@ test('drag works', async () => {
         ref={rootRef}
         itemKey="name"
         list={list}
-        template={TestTemplate}
+        renderTemplate={renderTestTemplate}
         onMoveEnd={onMoveEnd}
         springConfig={springConfig}
         container={() => containerEl}
@@ -200,7 +216,7 @@ test('two drags work', async () => {
         itemKey="name"
         list={list}
         onMoveEnd={onMoveEnd}
-        template={TestTemplate}
+        renderTemplate={renderTestTemplate}
         springConfig={springConfig}
         container={() => containerEl}
       />,
@@ -319,7 +335,7 @@ test('props reordered during drag works', () => {
         ref={rootRef}
         itemKey="name"
         list={list}
-        template={TestTemplate}
+        renderTemplate={renderTestTemplate}
         onMoveEnd={onMoveEnd}
         springConfig={springConfig}
       />,
@@ -407,7 +423,7 @@ test('item removed during drag works', () => {
         ref={rootRef}
         itemKey="name"
         list={list}
-        template={TestTemplate}
+        renderTemplate={renderTestTemplate}
         onMoveEnd={onMoveEnd}
         springConfig={springConfig}
       />,
@@ -492,7 +508,7 @@ test('item removed before drag end works', async () => {
         ref={rootRef}
         itemKey="name"
         list={list}
-        template={TestTemplate}
+        renderTemplate={renderTestTemplate}
         onMoveEnd={onMoveEnd}
         springConfig={springConfig}
       />,
@@ -572,7 +588,7 @@ test('dragged item removed after drag during animation works', () => {
         ref={rootRef}
         itemKey="name"
         list={list}
-        template={TestTemplate}
+        renderTemplate={renderTestTemplate}
         onMoveEnd={onMoveEnd}
         springConfig={springConfig}
       />,
@@ -645,7 +661,7 @@ test('list is shown with correct positions after being fully changed during anim
         ref={rootRef}
         itemKey="name"
         list={list}
-        template={TestTemplate}
+        renderTemplate={renderTestTemplate}
         onMoveEnd={onMoveEnd}
         springConfig={springConfig}
       />,
@@ -701,7 +717,7 @@ test('updating commonProps works', () => {
         ref={rootRef}
         itemKey="name"
         list={list}
-        template={TestTemplate}
+        renderTemplate={renderTestTemplate}
         onMoveEnd={onMoveEnd}
         springConfig={springConfig}
         commonProps={commonProps}
@@ -759,13 +775,9 @@ test('onDragEnd and onDragStart callbacks are correctly called', () => {
     render();
   });
 
-  const onDragStart = jest.fn(() => {
+  const onDragStart = jest.fn(() => {});
 
-  });
-
-  const onDragEnd = jest.fn(() => {
-
-  });
+  const onDragEnd = jest.fn(() => {});
 
   const rootRef = React.createRef<DraggableList<Item, any, TestTemplate>>();
   function render() {
@@ -774,7 +786,7 @@ test('onDragEnd and onDragStart callbacks are correctly called', () => {
         ref={rootRef}
         itemKey="name"
         list={list}
-        template={TestTemplate}
+        renderTemplate={renderTestTemplate}
         onMoveEnd={onMoveEnd}
         springConfig={springConfig}
         container={() => containerEl}
@@ -805,5 +817,4 @@ test('onDragEnd and onDragStart callbacks are correctly called', () => {
   root._handleMouseUp();
 
   expect(onDragEnd).toHaveBeenCalledTimes(1);
-
 });

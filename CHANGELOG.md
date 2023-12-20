@@ -1,3 +1,12 @@
+## 5.0.0 (????-??-??)
+
+### Breaking Changes
+
+- Use render props `renderTemplate` instead of a component prop for `template`. This also allows using function components as templates.
+- `DraggableList` is no longer a default export. Use the named export `DraggableList` instead.
+- `dragHandleProps` are stricter than before.
+- Flow support has been dropped
+
 ## 4.1.0 (2022-08-12)
 
 - Implemented `onDragStart` and `onDragEnd` props. ([@JayHales](https://github.com/JayHales) in [#52](https://github.com/StreakYC/react-draggable-list/pull/52))

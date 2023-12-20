@@ -37,17 +37,27 @@ interface Drag {
   mouseOffset: number;
 }
 
-export interface TemplateProps<I, C> {
+export interface DragHandleProps {
+  onMouseDown(e: React.MouseEvent): void;
+  onTouchStart(e: React.TouchEvent): void;
+}
+
+export interface TemplateProps<I, C, T> {
   item: I;
   itemSelected: number;
   anySelected: number;
-  dragHandleProps: object;
-  commonProps: C;
+  dragHandleProps: Partial<DragHandleProps>;
+  commonProps?: C;
+  instanceRef: React.Ref<T>;
 }
+
+export type RenderTemplate<I, C, T> = (
+  props: TemplateProps<I, C, T>
+) => React.ReactNode;
 
 export interface Props<I, C, T> {
   itemKey: string | ((item: I) => string);
-  template: new (props: any, context?: any) => T;
+  renderTemplate: RenderTemplate<I, C, T>;
   list: ReadonlyArray<I>;
   onMoveEnd?: (
     newList: ReadonlyArray<I>,
@@ -72,14 +82,13 @@ interface State {
   lastDrag: Drag | null;
   heights: { [key: string]: HeightData } | null;
 }
-export default class DraggableList<
+export class DraggableList<
   I,
   C,
-  T extends React.Component<Partial<TemplateProps<I, C>>>
+  T extends React.Component<Partial<TemplateProps<I, C, T>>>
 > extends React.Component<Props<I, C, T>, State> {
   public static propTypes = {
     itemKey: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
-    template: PropTypes.func,
     list: PropTypes.array.isRequired,
     onMoveEnd: PropTypes.func,
     container: PropTypes.func,
@@ -99,8 +108,7 @@ export default class DraggableList<
     autoScrollMaxSpeed: 15,
     autoScrollRegionSize: 30,
   };
-  private readonly _itemRefs: MultiRef<string, MoveContainer<I, any, T>> =
-    new MultiRef();
+  private readonly _itemRefs = new MultiRef<string, MoveContainer<I, any, T>>();
   private _autoScrollerTimer: any;
 
   private _listRef = React.createRef<HTMLDivElement>();
@@ -112,10 +120,10 @@ export default class DraggableList<
     heights: null,
   };
 
-  public getItemInstance(key: string): T {
+  public getItemInstance(key: string) {
     const ref = this._itemRefs.map.get(key);
-    if (!ref) throw new Error('key not found');
-    return ref.getTemplate();
+    if (!ref?.template) throw new Error('key not found');
+    return ref.template;
   }
 
   public static getDerivedStateFromProps<I, C, T>(
@@ -206,7 +214,7 @@ export default class DraggableList<
         const refEl = containerRef
           ? containerRef.getDOMNode().firstElementChild
           : null;
-        const ref = containerRef ? containerRef.getTemplate() : null;
+        const ref = containerRef ? containerRef.template : null;
         const natural =
           refEl instanceof HTMLElement
             ? refEl.offsetHeight
@@ -386,7 +394,6 @@ export default class DraggableList<
       if (onDragEnd) {
         onDragEnd();
       }
-      
 
       this.setState({ dragging: false });
     }
@@ -568,7 +575,7 @@ export default class DraggableList<
       list,
       springConfig,
       container,
-      template,
+      renderTemplate,
       unsetZIndex,
       commonProps,
     } = this.props;
@@ -604,7 +611,7 @@ export default class DraggableList<
         anySelected,
         ...selectedStyle,
       };
-      const makeDragHandleProps = (getY: () => number | undefined): object => ({
+      const makeDragHandleProps = (getY: () => number | undefined) => ({
         onMouseDown: (e: React.MouseEvent) =>
           this._handleMouseDown(key, getY(), e),
         onTouchStart: (e: React.TouchEvent) =>
@@ -619,7 +626,7 @@ export default class DraggableList<
             <MoveContainer
               ref={this._itemRefs.ref(key)}
               y={useAbsolutePositioning ? y : undefined}
-              template={template}
+              renderTemplate={renderTemplate}
               padding={padding}
               item={item}
               itemSelected={itemSelected}

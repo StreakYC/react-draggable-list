@@ -1,5 +1,5 @@
 import * as React from 'react';
-import DraggableList from '../src';
+import { DraggableList } from '../src';
 
 // This file isn't meant to be executed. It's just a test for the type definitions.
 
@@ -28,7 +28,9 @@ const x = (
   <DraggableList<Item, void, MyTemp>
     itemKey="foo"
     list={list}
-    template={MyTemp}
+    renderTemplate={({ item, itemSelected, dragHandleProps }) => (
+      <MyTemp {...{ item, itemSelected, dragHandleProps }} />
+    )}
     onMoveEnd={(ignoredNewList) => {
       // ignore
     }}

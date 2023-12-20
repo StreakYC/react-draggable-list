@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import cx from 'classnames';
-import DraggableList from '../src';
+import { DraggableList, RenderTemplate } from '../src';
 
 interface PlanetListItem {
   name: string;
@@ -115,6 +115,20 @@ export default class Example extends React.Component<{}, ExampleState> {
     this.setState({ list: newList });
   }
 
+  static #renderTemplate: RenderTemplate<PlanetListItem, void, PlanetItem> = ({
+    instanceRef,
+    item,
+    itemSelected,
+    dragHandleProps,
+  }) => (
+    <PlanetItem
+      ref={instanceRef}
+      item={item}
+      itemSelected={itemSelected}
+      dragHandleProps={dragHandleProps}
+    />
+  );
+
   render() {
     const { useContainer } = this.state;
 
@@ -161,7 +175,7 @@ export default class Example extends React.Component<{}, ExampleState> {
         >
           <DraggableList<PlanetListItem, void, PlanetItem>
             itemKey="name"
-            template={PlanetItem}
+            renderTemplate={Example.#renderTemplate}
             list={this.state.list}
             onMoveEnd={(newList) => this._onListChange(newList)}
             container={() =>
