@@ -1,6 +1,6 @@
 import * as React from 'react';
 import TemplateContainer from './TemplateContainer';
-import type { RenderTemplate } from '.';
+import type { DragHandleProps, RenderTemplate } from '.';
 
 export interface HeightData {
   natural: number;
@@ -16,7 +16,7 @@ interface Props<I, C, T> {
   anySelected: number;
   height: HeightData;
   zIndex: React.CSSProperties['zIndex'];
-  makeDragHandleProps: (getY: () => number | undefined) => object;
+  makeDragHandleProps: (getY: () => number | undefined) => DragHandleProps;
   commonProps?: C;
 }
 

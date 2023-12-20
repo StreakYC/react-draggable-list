@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import cx from 'classnames';
-import { DraggableList, RenderTemplate } from '../src';
+import { DragHandleProps, DraggableList, RenderTemplate } from '../src';
 
 interface PlanetListItem {
   name: string;
@@ -12,7 +12,7 @@ interface PlanetListItem {
 interface PlanetProps {
   item: PlanetListItem;
   itemSelected: number;
-  dragHandleProps: object;
+  dragHandleProps: DragHandleProps;
 }
 interface PlanetState {
   value: number;

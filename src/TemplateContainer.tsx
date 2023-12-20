@@ -6,7 +6,7 @@ interface Props<I, C, T> {
   renderTemplate: RenderTemplate<I, C, T>;
   itemSelected: number;
   anySelected: number;
-  dragHandleProps: Partial<DragHandleProps>;
+  dragHandleProps: DragHandleProps;
   commonProps?: C;
 }
 

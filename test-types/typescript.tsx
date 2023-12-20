@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { DraggableList } from '../src';
+import { DragHandleProps, DraggableList } from '../src';
 
 // This file isn't meant to be executed. It's just a test for the type definitions.
 
@@ -12,7 +12,7 @@ interface MyTempProps {
   item: Item;
   itemSelected: number;
   // purposefully omit anySelected here
-  dragHandleProps: object;
+  dragHandleProps: DragHandleProps;
 }
 interface MyTempState {
   foo: number;

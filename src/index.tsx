@@ -46,7 +46,7 @@ export interface TemplateProps<I, C, T> {
   item: I;
   itemSelected: number;
   anySelected: number;
-  dragHandleProps: Partial<DragHandleProps>;
+  dragHandleProps: DragHandleProps;
   commonProps?: C;
   instanceRef: React.Ref<T>;
 }
