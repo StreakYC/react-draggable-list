@@ -7,9 +7,9 @@ export interface HeightData {
   drag: number;
 }
 
-interface Props<I, C, T> {
+interface Props<I, T> {
   item: I;
-  renderTemplate: RenderTemplate<I, C, T>;
+  renderTemplate: RenderTemplate<I, T>;
   padding: number;
   y: number | undefined;
   itemSelected: number;
@@ -17,16 +17,11 @@ interface Props<I, C, T> {
   height: HeightData;
   zIndex: React.CSSProperties['zIndex'];
   makeDragHandleProps: (getY: () => number | undefined) => DragHandleProps;
-  commonProps?: C;
 }
 
-export default class MoveContainer<
-  I,
-  C,
-  T extends React.Component<any, any>
-> extends React.Component<Props<I, C, T>> {
+export default class MoveContainer<I, T> extends React.Component<Props<I, T>> {
   private readonly _templateContainer =
-    React.createRef<TemplateContainer<I, C, T>>();
+    React.createRef<TemplateContainer<I, T>>();
   private readonly _el = React.createRef<HTMLDivElement>();
 
   getDOMNode(): HTMLElement {
@@ -37,7 +32,7 @@ export default class MoveContainer<
     return this._templateContainer.current!.template;
   }
 
-  shouldComponentUpdate(nextProps: Props<I, C, T>): boolean {
+  shouldComponentUpdate(nextProps: Props<I, T>): boolean {
     return (
       this.props.anySelected !== nextProps.anySelected ||
       this.props.itemSelected !== nextProps.itemSelected ||
@@ -45,8 +40,7 @@ export default class MoveContainer<
       this.props.renderTemplate !== nextProps.renderTemplate ||
       this.props.y !== nextProps.y ||
       this.props.height !== nextProps.height ||
-      this.props.zIndex !== nextProps.zIndex ||
-      this.props.commonProps !== nextProps.commonProps
+      this.props.zIndex !== nextProps.zIndex
     );
   }
 
@@ -62,7 +56,6 @@ export default class MoveContainer<
       height,
       zIndex,
       renderTemplate,
-      commonProps,
     } = this.props;
 
     return (
@@ -91,7 +84,6 @@ export default class MoveContainer<
           itemSelected={itemSelected}
           anySelected={anySelected}
           dragHandleProps={this._dragHandleProps}
-          commonProps={commonProps}
         />
       </div>
     );

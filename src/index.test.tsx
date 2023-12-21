@@ -17,7 +17,6 @@ interface Item {
 interface TestTemplateProps {
   item: Item;
   dragHandleProps: any;
-  commonProps: any;
 }
 
 class TestTemplate extends React.Component<TestTemplateProps> {
@@ -56,15 +55,13 @@ class TestTemplate extends React.Component<TestTemplateProps> {
   }
 }
 
-const renderTestTemplate: RenderTemplate<Item, any, TestTemplate> = ({
-  commonProps,
+const renderTestTemplate: RenderTemplate<Item, TestTemplate> = ({
   dragHandleProps,
   instanceRef,
   item,
 }) => {
   return (
     <TestTemplate
-      commonProps={commonProps}
       dragHandleProps={dragHandleProps}
       item={item}
       ref={instanceRef}
@@ -94,7 +91,6 @@ test('drag works', async () => {
     { name: 'grif' },
     { name: 'donut' },
   ];
-  const commonProps = { a: 'foo' };
 
   const div = document.createElement('div');
 
@@ -103,7 +99,7 @@ test('drag works', async () => {
     render();
   });
 
-  const rootRef = React.createRef<DraggableList<Item, any, TestTemplate>>();
+  const rootRef = React.createRef<DraggableList<Item, TestTemplate>>();
   function render() {
     ReactDOM.render(
       <DraggableList
@@ -114,7 +110,6 @@ test('drag works', async () => {
         onMoveEnd={onMoveEnd}
         springConfig={springConfig}
         container={() => containerEl}
-        commonProps={commonProps}
       />,
       div
     );
@@ -130,7 +125,6 @@ test('drag works', async () => {
 
   expect(root.getItemInstance('grif').getName()).toBe('grif');
   expect(root.getItemInstance('grif').getDragHeight()).toBe(30);
-  expect(root.getItemInstance('grif').props.commonProps).toBe(commonProps);
 
   const renderedHandles: Array<TestTemplate> =
     TestUtils.scryRenderedComponentsWithType(root, TestTemplate) as any;
@@ -208,7 +202,7 @@ test('two drags work', async () => {
     render();
   });
 
-  const rootRef = React.createRef<DraggableList<Item, any, TestTemplate>>();
+  const rootRef = React.createRef<DraggableList<Item, TestTemplate>>();
   function render() {
     ReactDOM.render(
       <DraggableList
@@ -328,7 +322,7 @@ test('props reordered during drag works', () => {
     render();
   });
 
-  const rootRef = React.createRef<DraggableList<Item, any, TestTemplate>>();
+  const rootRef = React.createRef<DraggableList<Item, TestTemplate>>();
   function render() {
     ReactDOM.render(
       <DraggableList
@@ -416,7 +410,7 @@ test('item removed during drag works', () => {
     render();
   });
 
-  const rootRef = React.createRef<DraggableList<Item, any, TestTemplate>>();
+  const rootRef = React.createRef<DraggableList<Item, TestTemplate>>();
   function render() {
     ReactDOM.render(
       <DraggableList
@@ -501,7 +495,7 @@ test('item removed before drag end works', async () => {
     render();
   });
 
-  const rootRef = React.createRef<DraggableList<Item, any, TestTemplate>>();
+  const rootRef = React.createRef<DraggableList<Item, TestTemplate>>();
   function render() {
     ReactDOM.render(
       <DraggableList
@@ -581,7 +575,7 @@ test('dragged item removed after drag during animation works', () => {
     render();
   });
 
-  const rootRef = React.createRef<DraggableList<Item, any, TestTemplate>>();
+  const rootRef = React.createRef<DraggableList<Item, TestTemplate>>();
   function render() {
     ReactDOM.render(
       <DraggableList
@@ -654,7 +648,7 @@ test('list is shown with correct positions after being fully changed during anim
     render();
   });
 
-  const rootRef = React.createRef<DraggableList<Item, any, TestTemplate>>();
+  const rootRef = React.createRef<DraggableList<Item, TestTemplate>>();
   function render() {
     ReactDOM.render(
       <DraggableList
@@ -700,55 +694,6 @@ test('list is shown with correct positions after being fully changed during anim
   ).toBe('relative');
 });
 
-test('updating commonProps works', () => {
-  let list: Item[] = [{ name: 'caboose' }, { name: 'donut' }];
-  let commonProps: any = { a: 5 };
-  const div = document.createElement('div');
-
-  const onMoveEnd = jest.fn((newList) => {
-    list = newList;
-    render();
-  });
-
-  const rootRef = React.createRef<DraggableList<Item, any, TestTemplate>>();
-  function render() {
-    ReactDOM.render(
-      <DraggableList
-        ref={rootRef}
-        itemKey="name"
-        list={list}
-        renderTemplate={renderTestTemplate}
-        onMoveEnd={onMoveEnd}
-        springConfig={springConfig}
-        commonProps={commonProps}
-      />,
-      div
-    );
-  }
-  render();
-  const root = rootRef.current!;
-
-  expect(
-    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(
-      (e) => e.props.item
-    )
-  ).toEqual(list);
-  expect(
-    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(
-      (e) => e.props.commonProps
-    )
-  ).toEqual(list.map(() => ({ a: 5 })));
-
-  commonProps = { b: 6 };
-  render();
-
-  expect(
-    TestUtils.scryRenderedComponentsWithType(root, TestTemplate).map(
-      (e) => e.props.commonProps
-    )
-  ).toEqual(list.map(() => ({ b: 6 })));
-});
-
 test('onDragEnd and onDragStart callbacks are correctly called', () => {
   let _scrollTop = 0;
   const containerEl: any = {
@@ -779,7 +724,7 @@ test('onDragEnd and onDragStart callbacks are correctly called', () => {
 
   const onDragEnd = jest.fn(() => {});
 
-  const rootRef = React.createRef<DraggableList<Item, any, TestTemplate>>();
+  const rootRef = React.createRef<DraggableList<Item, TestTemplate>>();
   function render() {
     ReactDOM.render(
       <DraggableList

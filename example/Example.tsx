@@ -115,7 +115,7 @@ export default class Example extends React.Component<{}, ExampleState> {
     this.setState({ list: newList });
   }
 
-  static #renderTemplate: RenderTemplate<PlanetListItem, void, PlanetItem> = ({
+  static #renderTemplate: RenderTemplate<PlanetListItem, PlanetItem> = ({
     instanceRef,
     item,
     itemSelected,
@@ -173,7 +173,7 @@ export default class Example extends React.Component<{}, ExampleState> {
             border: useContainer ? '1px solid gray' : '',
           }}
         >
-          <DraggableList<PlanetListItem, void, PlanetItem>
+          <DraggableList<PlanetListItem, PlanetItem>
             itemKey="name"
             renderTemplate={Example.#renderTemplate}
             list={this.state.list}

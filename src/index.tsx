@@ -42,22 +42,21 @@ export interface DragHandleProps {
   onTouchStart(e: React.TouchEvent): void;
 }
 
-export interface TemplateProps<I, C, T> {
+export interface TemplateProps<I, T> {
   item: I;
   itemSelected: number;
   anySelected: number;
   dragHandleProps: DragHandleProps;
-  commonProps?: C;
   instanceRef: React.Ref<T>;
 }
 
-export type RenderTemplate<I, C, T> = (
-  props: TemplateProps<I, C, T>
+export type RenderTemplate<I, T> = (
+  props: TemplateProps<I, T>
 ) => React.ReactNode;
 
-export interface Props<I, C, T> {
+export interface Props<I, T> {
   itemKey: string | ((item: I) => string);
-  renderTemplate: RenderTemplate<I, C, T>;
+  renderTemplate: RenderTemplate<I, T>;
   list: ReadonlyArray<I>;
   onMoveEnd?: (
     newList: ReadonlyArray<I>,
@@ -72,7 +71,6 @@ export interface Props<I, C, T> {
   unsetZIndex?: boolean;
   autoScrollMaxSpeed?: number;
   autoScrollRegionSize?: number;
-  commonProps?: C;
   onDragStart?: () => void;
   onDragEnd?: () => void;
 }
@@ -82,11 +80,7 @@ interface State {
   lastDrag: Drag | null;
   heights: { [key: string]: HeightData } | null;
 }
-export class DraggableList<
-  I,
-  C,
-  T extends React.Component<Partial<TemplateProps<I, C, T>>>
-> extends React.Component<Props<I, C, T>, State> {
+export class DraggableList<I, T> extends React.Component<Props<I, T>, State> {
   public static propTypes = {
     itemKey: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
     list: PropTypes.array.isRequired,
@@ -100,7 +94,7 @@ export class DraggableList<
     autoScrollRegionSize: PropTypes.number.isRequired,
     commonProps: PropTypes.object,
   };
-  public static defaultProps: Partial<Props<any, any, any>> = {
+  public static defaultProps: Partial<Props<any, any>> = {
     springConfig: { stiffness: 300, damping: 50 },
     padding: 10,
     unsetZIndex: false,
@@ -108,7 +102,7 @@ export class DraggableList<
     autoScrollMaxSpeed: 15,
     autoScrollRegionSize: 30,
   };
-  private readonly _itemRefs = new MultiRef<string, MoveContainer<I, any, T>>();
+  private readonly _itemRefs = new MultiRef<string, MoveContainer<I, T>>();
   private _autoScrollerTimer: any;
 
   private _listRef = React.createRef<HTMLDivElement>();
@@ -126,8 +120,8 @@ export class DraggableList<
     return ref.template;
   }
 
-  public static getDerivedStateFromProps<I, C, T>(
-    newProps: Props<I, C, T>,
+  public static getDerivedStateFromProps<I, T>(
+    newProps: Props<I, T>,
     state: State
   ): Partial<State> | null {
     const { list } = newProps;
@@ -571,14 +565,8 @@ export class DraggableList<
 
   render() {
     const padding = this.props.padding!;
-    const {
-      list,
-      springConfig,
-      container,
-      renderTemplate,
-      unsetZIndex,
-      commonProps,
-    } = this.props;
+    const { list, springConfig, container, renderTemplate, unsetZIndex } =
+      this.props;
     const { dragging, lastDrag, useAbsolutePositioning } = this.state;
 
     const keyFn = this._getKeyFn();
@@ -640,7 +628,6 @@ export class DraggableList<
                   : i
               }
               makeDragHandleProps={makeDragHandleProps}
-              commonProps={commonProps}
             />
           )}
         />

@@ -25,7 +25,7 @@ class MyTemp extends React.Component<MyTempProps, MyTempState> {
 
 const list: Array<Item> = [{ a: 123, b: 'xyz' }];
 const x = (
-  <DraggableList<Item, void, MyTemp>
+  <DraggableList<Item, MyTemp>
     itemKey="foo"
     list={list}
     renderTemplate={({ item, itemSelected, dragHandleProps }) => (
@@ -37,6 +37,6 @@ const x = (
   />
 );
 x;
-const renderedDL: DraggableList<Item, void, MyTemp> = null as any;
+const renderedDL: DraggableList<Item, MyTemp> = null as any;
 const renderedItem = renderedDL.getItemInstance('foo');
 renderedItem as MyTemp;
