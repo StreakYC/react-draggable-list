@@ -28,7 +28,7 @@ export default class TemplateContainer<
   }
 
   get template() {
-    return this.#template;
+    return this.#template.current;
   }
 
   render() {

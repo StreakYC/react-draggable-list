@@ -34,7 +34,7 @@ export default class MoveContainer<
   }
 
   get template() {
-    return this._templateContainer.current!.template.current;
+    return this._templateContainer.current!.template;
   }
 
   shouldComponentUpdate(nextProps: Props<I, C, T>): boolean {
