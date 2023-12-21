@@ -114,7 +114,7 @@ export class DraggableList<I, T> extends React.Component<Props<I, T>, State> {
     heights: null,
   };
 
-  public getItemInstance(key: string) {
+  getItemInstance(key: string): T {
     const ref = this._itemRefs.map.get(key);
     if (!ref?.template) throw new Error('key not found');
     return ref.template;
