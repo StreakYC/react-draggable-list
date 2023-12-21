@@ -50,7 +50,7 @@ export interface TemplateProps<I, T> {
   instanceRef: React.Ref<T>;
 }
 
-export type RenderTemplate<I, T> = (
+export type RenderTemplate<I, T = unknown> = (
   props: TemplateProps<I, T>
 ) => React.ReactNode;
 
