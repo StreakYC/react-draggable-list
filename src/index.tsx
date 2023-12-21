@@ -80,7 +80,10 @@ interface State {
   lastDrag: Drag | null;
   heights: { [key: string]: HeightData } | null;
 }
-export class DraggableList<I, T> extends React.Component<Props<I, T>, State> {
+export class DraggableList<I, T = unknown> extends React.Component<
+  Props<I, T>,
+  State
+> {
   public static propTypes = {
     itemKey: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
     list: PropTypes.array.isRequired,
