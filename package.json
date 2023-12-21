@@ -6,8 +6,8 @@
   "sideEffects": false,
   "scripts": {
     "prepare": "rimraf dist && babel -s true -d dist/src/ src/ -x .ts,.tsx --ignore '**/*.test.tsx' && tsc",
-    "example-build": "parcel build example/main.tsx -d example/dist --public-url .",
-    "example-watch": "parcel watch example/main.tsx -d example/dist --no-hmr --public-url .",
+    "example-build": "esbuild example/main.tsx --bundle --outdir=example/dist --public-path=.",
+    "example-watch": "yarn example-build --watch",
     "test": "yarn run lint && jest && tsc --noEmit --emitDeclarationOnly false",
     "lint": "eslint . --ext ts,tsx",
     "lint-fix": "eslint . --ext ts,tsx --fix"
@@ -52,11 +52,11 @@
     "babel-jest": "^28.1.3",
     "babel-plugin-add-module-exports": "^1.0.0",
     "classnames": "^2.2.3",
+    "esbuild": "^0.19.10",
     "eslint": "^8.21.0",
     "eslint-plugin-react": "^7.4.0",
     "jest": "^28.1.3",
     "jest-environment-jsdom": "^28.1.3",
-    "parcel-bundler": "^1.10.3",
     "pdelay": "^2.0.0",
     "prettier": "~2.4.1",
     "react": "^17.0.2",
