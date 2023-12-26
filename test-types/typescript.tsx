@@ -28,10 +28,10 @@ const x = (
   <DraggableList<Item, MyTemp>
     itemKey="foo"
     list={list}
-    renderTemplate={({ item, itemSelected, dragHandleProps }) => (
+    renderItem={({ item, itemSelected, dragHandleProps }) => (
       <MyTemp {...{ item, itemSelected, dragHandleProps }} />
     )}
-    onMoveEnd={(ignoredNewList) => {
+    onItemsChange={(ignoredNewList) => {
       // ignore
     }}
   />

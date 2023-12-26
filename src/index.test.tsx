@@ -7,7 +7,7 @@ import delay from 'pdelay';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as TestUtils from 'react-dom/test-utils';
-import { DraggableList, RenderTemplate } from '../src';
+import { DraggableList, ItemRenderer } from '../src';
 
 interface Item {
   name: string;
@@ -55,7 +55,7 @@ class TestTemplate extends React.Component<TestTemplateProps> {
   }
 }
 
-const renderTestTemplate: RenderTemplate<Item, TestTemplate> = ({
+const renderTestTemplate: ItemRenderer<Item, TestTemplate> = ({
   dragHandleProps,
   instanceRef,
   item,
@@ -106,8 +106,8 @@ test('drag works', async () => {
         ref={rootRef}
         itemKey="name"
         list={list}
-        renderTemplate={renderTestTemplate}
-        onMoveEnd={onMoveEnd}
+        renderItem={renderTestTemplate}
+        onItemsChange={onMoveEnd}
         springConfig={springConfig}
         container={() => containerEl}
       />,
@@ -209,8 +209,8 @@ test('two drags work', async () => {
         ref={rootRef}
         itemKey="name"
         list={list}
-        onMoveEnd={onMoveEnd}
-        renderTemplate={renderTestTemplate}
+        onItemsChange={onMoveEnd}
+        renderItem={renderTestTemplate}
         springConfig={springConfig}
         container={() => containerEl}
       />,
@@ -329,8 +329,8 @@ test('props reordered during drag works', () => {
         ref={rootRef}
         itemKey="name"
         list={list}
-        renderTemplate={renderTestTemplate}
-        onMoveEnd={onMoveEnd}
+        renderItem={renderTestTemplate}
+        onItemsChange={onMoveEnd}
         springConfig={springConfig}
       />,
       div
@@ -417,8 +417,8 @@ test('item removed during drag works', () => {
         ref={rootRef}
         itemKey="name"
         list={list}
-        renderTemplate={renderTestTemplate}
-        onMoveEnd={onMoveEnd}
+        renderItem={renderTestTemplate}
+        onItemsChange={onMoveEnd}
         springConfig={springConfig}
       />,
       div
@@ -502,8 +502,8 @@ test('item removed before drag end works', async () => {
         ref={rootRef}
         itemKey="name"
         list={list}
-        renderTemplate={renderTestTemplate}
-        onMoveEnd={onMoveEnd}
+        renderItem={renderTestTemplate}
+        onItemsChange={onMoveEnd}
         springConfig={springConfig}
       />,
       div
@@ -582,8 +582,8 @@ test('dragged item removed after drag during animation works', () => {
         ref={rootRef}
         itemKey="name"
         list={list}
-        renderTemplate={renderTestTemplate}
-        onMoveEnd={onMoveEnd}
+        renderItem={renderTestTemplate}
+        onItemsChange={onMoveEnd}
         springConfig={springConfig}
       />,
       div
@@ -655,8 +655,8 @@ test('list is shown with correct positions after being fully changed during anim
         ref={rootRef}
         itemKey="name"
         list={list}
-        renderTemplate={renderTestTemplate}
-        onMoveEnd={onMoveEnd}
+        renderItem={renderTestTemplate}
+        onItemsChange={onMoveEnd}
         springConfig={springConfig}
       />,
       div
@@ -731,8 +731,8 @@ test('onDragEnd and onDragStart callbacks are correctly called', () => {
         ref={rootRef}
         itemKey="name"
         list={list}
-        renderTemplate={renderTestTemplate}
-        onMoveEnd={onMoveEnd}
+        renderItem={renderTestTemplate}
+        onItemsChange={onMoveEnd}
         springConfig={springConfig}
         container={() => containerEl}
         onDragStart={onDragStart}

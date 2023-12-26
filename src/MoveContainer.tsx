@@ -1,6 +1,6 @@
 import * as React from 'react';
 import TemplateContainer from './TemplateContainer';
-import type { DragHandleProps, RenderTemplate } from '.';
+import type { DragHandleProps, ItemRenderer } from '.';
 
 export interface HeightData {
   natural: number;
@@ -9,7 +9,7 @@ export interface HeightData {
 
 interface Props<I, T> {
   item: I;
-  renderTemplate: RenderTemplate<I, T>;
+  renderItem: ItemRenderer<I, T>;
   padding: number;
   y: number | undefined;
   itemSelected: number;
@@ -37,7 +37,7 @@ export default class MoveContainer<I, T> extends React.Component<Props<I, T>> {
       this.props.anySelected !== nextProps.anySelected ||
       this.props.itemSelected !== nextProps.itemSelected ||
       this.props.item !== nextProps.item ||
-      this.props.renderTemplate !== nextProps.renderTemplate ||
+      this.props.renderItem !== nextProps.renderItem ||
       this.props.y !== nextProps.y ||
       this.props.height !== nextProps.height ||
       this.props.zIndex !== nextProps.zIndex
@@ -55,7 +55,7 @@ export default class MoveContainer<I, T> extends React.Component<Props<I, T>> {
       anySelected,
       height,
       zIndex,
-      renderTemplate,
+      renderItem,
     } = this.props;
 
     return (
@@ -80,7 +80,7 @@ export default class MoveContainer<I, T> extends React.Component<Props<I, T>> {
         <TemplateContainer
           ref={this._templateContainer}
           item={item}
-          renderTemplate={renderTemplate}
+          itemRender={renderItem}
           itemSelected={itemSelected}
           anySelected={anySelected}
           dragHandleProps={this._dragHandleProps}

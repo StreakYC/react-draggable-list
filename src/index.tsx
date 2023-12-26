@@ -43,22 +43,59 @@ export interface DragHandleProps {
 }
 
 export interface TemplateProps<I, T> {
+  /**
+   * `item` is an object from the list prop passed to DraggableList.
+   */
   item: I;
+  /**
+   * `itemSelected` is a number from 0 to 1. It starts at 0, and quickly increases
+   * to 1 when the item is picked up by the user. This may be used to animate the
+   * item when the user picks it up or drops it.
+   */
   itemSelected: number;
+  /**
+   * `anySelected` is a number from 0 to 1. It starts at 0, and quickly increases
+  to 1 when any item is picked up by the user.
+   */
   anySelected: number;
+  /**
+   * `dragHandleProps` is an object which should be spread as props on the HTML
+   * element to be used as the drag handle. The whole item will be draggable by the
+   * wrapped element. See the
+   * [example](https://github.com/StreakYC/react-draggable-list/blob/master/example/Example.js)
+   * to see how it should be used.
+   */
   dragHandleProps: DragHandleProps;
   instanceRef: React.Ref<T>;
 }
 
-export type RenderTemplate<I, T = unknown> = (
+export type ItemRenderer<I, T = unknown> = (
   props: TemplateProps<I, T>
 ) => React.ReactNode;
 
 export interface Props<I, T> {
+  /**
+   * `itemKey` must be the name of a property of the list's objects to use as a
+   * key to identify the objects, or it must be a function that takes an object as
+   *  an argument and returns a key.
+   */
   itemKey: string | ((item: I) => string);
-  renderTemplate: RenderTemplate<I, T>;
+  /**
+   * If the returned value of `renderItem` is a component that accepts refs, this prop can be used to forward refs to the imperative handle
+   * `getItemInstance` on `DraggableList` refs.
+   */
+  renderItem: ItemRenderer<I, T>;
+  /**
+   * `list` must be an array of objects representing your list's items.
+   */
   list: ReadonlyArray<I>;
-  onMoveEnd?: (
+  /**
+   * `onItemsChange` may be a function which will be called when the user drags and
+   * drops an item to a new position in the list. The arguments to the function
+   * will be `(newList: Array<Object>, movedItem: Object, oldIndex: number, newIndex: number)`. A component using DraggableList should immediately store
+   * the newList into its state and then pass the new list (or an equivalent list)
+   */
+  onItemsChange?: (
     newList: ReadonlyArray<I>,
     movedItem: I,
     oldIndex: number,
@@ -84,10 +121,11 @@ export class DraggableList<I, T = unknown> extends React.Component<
   Props<I, T>,
   State
 > {
-  public static propTypes = {
+  public static propTypes: Partial<Record<keyof Props<any, any>, unknown>> = {
     itemKey: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
     list: PropTypes.array.isRequired,
-    onMoveEnd: PropTypes.func,
+    renderItem: PropTypes.func.isRequired,
+    onItemsChange: PropTypes.func,
     container: PropTypes.func,
     springConfig: PropTypes.object,
     constrainDrag: PropTypes.bool,
@@ -95,7 +133,6 @@ export class DraggableList<I, T = unknown> extends React.Component<
     unsetZIndex: PropTypes.bool,
     autoScrollMaxSpeed: PropTypes.number.isRequired,
     autoScrollRegionSize: PropTypes.number.isRequired,
-    commonProps: PropTypes.object,
   };
   public static defaultProps: Partial<Props<any, any>> = {
     springConfig: { stiffness: 300, damping: 50 },
@@ -375,7 +412,7 @@ export class DraggableList<I, T = unknown> extends React.Component<
     if (document.documentElement) document.documentElement.style.cursor = '';
     this._lastScrollDelta = 0;
 
-    const { list, onMoveEnd, onDragEnd } = this.props;
+    const { list, onItemsChange: onMoveEnd, onDragEnd } = this.props;
     const { dragging, lastDrag } = this.state;
 
     if (dragging && lastDrag && onMoveEnd) {
@@ -568,8 +605,13 @@ export class DraggableList<I, T = unknown> extends React.Component<
 
   render() {
     const padding = this.props.padding!;
-    const { list, springConfig, container, renderTemplate, unsetZIndex } =
-      this.props;
+    const {
+      list,
+      springConfig,
+      container,
+      renderItem: renderTemplate,
+      unsetZIndex,
+    } = this.props;
     const { dragging, lastDrag, useAbsolutePositioning } = this.state;
 
     const keyFn = this._getKeyFn();
@@ -617,7 +659,7 @@ export class DraggableList<I, T = unknown> extends React.Component<
             <MoveContainer
               ref={this._itemRefs.ref(key)}
               y={useAbsolutePositioning ? y : undefined}
-              renderTemplate={renderTemplate}
+              renderItem={renderTemplate}
               padding={padding}
               item={item}
               itemSelected={itemSelected}
