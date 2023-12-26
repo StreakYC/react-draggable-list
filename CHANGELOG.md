@@ -2,7 +2,8 @@
 
 ### Breaking Changes
 
-- Use render props `renderTemplate` instead of a component prop for `template`. This also allows using function components as templates.
+- Use render props `renderItem` instead of a component prop for `template`. This also allows using function components as templates.
+- The `onMoveEnd` prop has been renamed `onItemsChange`
 - `DraggableList` is no longer a default export. Use the named export `DraggableList` instead.
 - `dragHandleProps` are stricter than before.
 - Flow support has been dropped
