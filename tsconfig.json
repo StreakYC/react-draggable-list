@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "removeComments": false,
     "emitDeclarationOnly": true,
     "outDir": "dist",
     "rootDir": ".",
