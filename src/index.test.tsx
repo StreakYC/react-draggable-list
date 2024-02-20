@@ -798,6 +798,7 @@ test('onDragEnd and onDragStart callbacks are correctly called', () => {
   });
 
   expect(onDragStart).toHaveBeenCalledTimes(1);
+  expect(onDragStart).toHaveBeenLastCalledWith({name: 'alice'});
   expect(onDragEnd).toHaveBeenCalledTimes(0);
 
   (root as any)._handleMouseMove({ pageY: 600 });
@@ -805,5 +806,6 @@ test('onDragEnd and onDragStart callbacks are correctly called', () => {
   (root as any)._handleMouseUp();
 
   expect(onDragEnd).toHaveBeenCalledTimes(1);
+  expect(onDragEnd).toHaveBeenLastCalledWith({name: 'alice'});
 
 });

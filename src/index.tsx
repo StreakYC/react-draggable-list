@@ -63,8 +63,8 @@ export interface Props<I, C, T> {
   autoScrollMaxSpeed?: number;
   autoScrollRegionSize?: number;
   commonProps?: C;
-  onDragStart?: () => void;
-  onDragEnd?: () => void;
+  onDragStart?: (draggedItem: I) => void;
+  onDragEnd?: (draggedItem: I) => void;
 }
 interface State {
   useAbsolutePositioning: boolean;
@@ -174,8 +174,12 @@ export default class DraggableList<
     window.addEventListener('touchmove', this._handleTouchMove);
     window.addEventListener('mousemove', this._handleMouseMove);
 
+    const keyFn = this._getKeyFn();
+
     if (this.props.onDragStart) {
-      this.props.onDragStart();
+      const {list} = this.props;
+      const draggedItem = list[DraggableList._getIndexOfItemWithKey(keyFn, list, itemKey)];
+      this.props.onDragStart(draggedItem);
     }
 
     // If an element has focus while we drag around the parent, some browsers
@@ -193,8 +197,6 @@ export default class DraggableList<
         document.activeElement.blur();
       }
     }
-
-    const keyFn = this._getKeyFn();
 
     let newHeights = null;
     if (this.state.heights == null) {
@@ -377,16 +379,15 @@ export default class DraggableList<
       const dragIndex = this._getDragListIndex();
       const newIndex = this._getDragVisualIndex();
 
+      if (onDragEnd) {
+        onDragEnd(list[dragIndex]);
+      }
+
       if (dragIndex !== newIndex) {
         const newList = this._getVisualListDuringDrag();
 
         onMoveEnd(newList, list[dragIndex], dragIndex, newIndex);
       }
-
-      if (onDragEnd) {
-        onDragEnd();
-      }
-      
 
       this.setState({ dragging: false });
     }
