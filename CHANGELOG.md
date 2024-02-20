@@ -1,3 +1,7 @@
+## 4.2.0 (2024-02-19)
+
+- Added `draggedItem` parameter to the `onDragStart` and `onDragEnd` callback props.
+
 ## 4.1.0 (2022-08-12)
 
 - Implemented `onDragStart` and `onDragEnd` props. ([@JayHales](https://github.com/JayHales) in [#52](https://github.com/StreakYC/react-draggable-list/pull/52))
