@@ -132,7 +132,7 @@ test('drag works', async () => {
 
   expect(root.state.dragging).toBe(true);
   expect(onMoveEnd).toHaveBeenCalledTimes(0);
-  root._handleMouseUp();
+  (root as any)._handleMouseUp();
   expect(root.state.dragging).toBe(false);
   expect(onMoveEnd).toHaveBeenCalledTimes(1);
 
@@ -229,7 +229,7 @@ test('two drags work', async () => {
   await delay(30);
   expect(root.state.dragging).toBe(true);
   expect(onMoveEnd).toHaveBeenCalledTimes(0);
-  root._handleMouseUp();
+  (root as any)._handleMouseUp();
   expect(root.state.dragging).toBe(false);
   expect(onMoveEnd).toHaveBeenCalledTimes(1);
 
@@ -264,7 +264,7 @@ test('two drags work', async () => {
   (root as any)._handleMouseMove({ pageY: 650 });
   expect(root.state.dragging).toBe(true);
   expect(onMoveEnd).toHaveBeenCalledTimes(1);
-  root._handleMouseUp();
+  (root as any)._handleMouseUp();
   expect(root.state.dragging).toBe(false);
   expect(onMoveEnd).toHaveBeenCalledTimes(2);
 
@@ -356,7 +356,7 @@ test('props reordered during drag works', () => {
   (root as any)._handleMouseMove({ pageY: 450 });
   expect(root.state.dragging).toBe(true);
   expect(onMoveEnd).toHaveBeenCalledTimes(0);
-  root._handleMouseUp();
+  (root as any)._handleMouseUp();
   expect(root.state.dragging).toBe(false);
   expect(onMoveEnd).toHaveBeenCalledTimes(1);
 
@@ -457,7 +457,7 @@ test('item removed during drag works', () => {
 
   expect(root.state.dragging).toBe(false);
   expect(onMoveEnd).toHaveBeenCalledTimes(0);
-  root._handleMouseUp();
+  (root as any)._handleMouseUp();
   expect(root.state.dragging).toBe(false);
   expect(onMoveEnd).toHaveBeenCalledTimes(0);
 
@@ -529,7 +529,7 @@ test('item removed before drag end works', async () => {
   render();
   expect(root.state.dragging).toBe(true);
   expect(onMoveEnd).toHaveBeenCalledTimes(0);
-  root._handleMouseUp();
+  (root as any)._handleMouseUp();
   expect(root.state.dragging).toBe(false);
   expect(onMoveEnd).toHaveBeenCalledTimes(1);
 
@@ -598,7 +598,7 @@ test('dragged item removed after drag during animation works', () => {
 
   expect(root.state.dragging).toBe(true);
   expect(onMoveEnd).toHaveBeenCalledTimes(0);
-  root._handleMouseUp();
+  (root as any)._handleMouseUp();
   expect(root.state.dragging).toBe(false);
   expect(onMoveEnd).toHaveBeenCalledTimes(1);
 
@@ -664,7 +664,7 @@ test('list is shown with correct positions after being fully changed during anim
 
   await delay(100);
 
-  root._handleMouseUp();
+  (root as any)._handleMouseUp();
   await delay(1);
 
   expect(
@@ -802,7 +802,7 @@ test('onDragEnd and onDragStart callbacks are correctly called', () => {
 
   (root as any)._handleMouseMove({ pageY: 600 });
 
-  root._handleMouseUp();
+  (root as any)._handleMouseUp();
 
   expect(onDragEnd).toHaveBeenCalledTimes(1);
 

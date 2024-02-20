@@ -180,7 +180,7 @@ export default class DraggableList<
 
     // If an element has focus while we drag around the parent, some browsers
     // try to scroll the parent element to keep the focused element in view.
-    // Stop that.
+    // Prevent that by unfocusing the element if it is focused.
     {
       const listEl = this._listRef.current;
       if (!listEl) throw new Error('Should not happen');
@@ -246,7 +246,7 @@ export default class DraggableList<
         useAbsolutePositioning: true,
         dragging: true,
         lastDrag: {
-          itemKey: itemKey,
+          itemKey,
           startY,
           mouseY: startY,
           mouseOffset: pageY - startY + containerScroll,
@@ -360,7 +360,7 @@ export default class DraggableList<
     this.setState({ lastDrag: { ...lastDrag, mouseY } });
   };
 
-  _handleMouseUp = () => {
+  private _handleMouseUp = () => {
     clearInterval(this._autoScrollerTimer);
     window.removeEventListener('mouseup', this._handleMouseUp);
     window.removeEventListener('touchend', this._handleMouseUp);
@@ -392,7 +392,7 @@ export default class DraggableList<
     }
   };
 
-  _scrollContainer(delta: number) {
+  private _scrollContainer(delta: number) {
     const containerEl = this._getContainer();
     if (!containerEl) return;
     if (window.scrollBy && containerEl === document.body) {
@@ -403,13 +403,13 @@ export default class DraggableList<
   }
 
   private _lastScrollDelta = 0;
-  _adjustScrollAtEnd(delta: number) {
+  private _adjustScrollAtEnd(delta: number) {
     const frameDelta = Math.round(delta - this._lastScrollDelta);
     this._scrollContainer(frameDelta);
     this._lastScrollDelta += frameDelta;
   }
 
-  static _getIndexOfItemWithKey<I>(
+  private static _getIndexOfItemWithKey<I>(
     keyFn: (item: I) => string,
     list: ReadonlyArray<I>,
     itemKey: string
@@ -422,7 +422,7 @@ export default class DraggableList<
     throw new Error('Failed to find drag index');
   }
 
-  _getDragListIndex(): number {
+  private _getDragListIndex(): number {
     const { list } = this.props;
     const { lastDrag } = this.state;
     if (!lastDrag) {
@@ -432,7 +432,7 @@ export default class DraggableList<
     return DraggableList._getIndexOfItemWithKey(keyFn, list, lastDrag.itemKey);
   }
 
-  _getDragVisualIndex(): number {
+  private _getDragVisualIndex(): number {
     const { list } = this.props;
     const padding = this.props.padding!;
     const { dragging, lastDrag } = this.state;
@@ -465,7 +465,7 @@ export default class DraggableList<
     return newIndex;
   }
 
-  _getVisualListDuringDrag(): ReadonlyArray<I> {
+  private _getVisualListDuringDrag(): ReadonlyArray<I> {
     const { list } = this.props;
     const { dragging, lastDrag } = this.state;
     if (!dragging || !lastDrag)
@@ -484,7 +484,7 @@ export default class DraggableList<
     });
   }
 
-  _getItemHeight(key: string): HeightData {
+  private _getItemHeight(key: string): HeightData {
     return this.state.heights != null && key in this.state.heights
       ? this.state.heights[key]
       : DEFAULT_HEIGHT;
@@ -493,7 +493,7 @@ export default class DraggableList<
   // Get the distance between the tops of two items in the list.
   // Does not consider how the dragged item may be rendered in a different position
   // unless you pass in the re-ordered list as a parameter.
-  _getDistance(
+  private _getDistance(
     start: number,
     end: number,
     dragging: boolean,
@@ -513,7 +513,7 @@ export default class DraggableList<
     return distance;
   }
 
-  _getDistanceFromTopDuringDrag(
+  private _getDistanceFromTopDuringDrag(
     lastDrag: Drag,
     itemKey: string,
     visualList: ReadonlyArray<I>
