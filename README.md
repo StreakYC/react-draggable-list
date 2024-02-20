@@ -65,8 +65,8 @@ following props:
 - `commonProps` is an optional value that will be passed as the `commonProps`
   prop to every template component instance.
 - `onDragStart` is an optional function which is called once a list item starts
-  being dragged.
-- `onDragEnd` is an optional function which is called once a list item is no longer being dragged. It differs from `onMoveEnd` in that it's called even if the user does not reorder any items in the lists, like when an item is just picked up and then dropped.
+  being dragged. Receives the dragged item as an argument.
+- `onDragEnd` is an optional function which is called once a list item is no longer being dragged. Receives the dragged item as an argument. It differs from `onMoveEnd` in that it's called even if the user does not reorder any items in the lists, like when an item is just picked up and then dropped.
 
 A DraggableList instance has the following methods:
 
