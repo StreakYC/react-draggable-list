@@ -227,7 +227,7 @@ export default class DraggableList<
     // are set using the correct state.heights and then can animate from there.
 
     const afterHeights = () => {
-      const itemIndex = this.props.list.map(keyFn).indexOf(itemKey);
+      const itemIndex = DraggableList._getIndexOfItemWithKey(keyFn, this.props.list, itemKey);
 
       // pressY will be non-null if the list is currently animating (because the
       // clicked item has its `y` prop set). pressY will be null if the list is
