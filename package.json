@@ -8,9 +8,9 @@
     "prepare": "rimraf dist && babel -s true -d dist/src/ src/ -x .ts,.tsx --ignore '**/*.test.tsx' && tsc",
     "example-build": "esbuild example/main.tsx --bundle --outdir=example/dist --public-path=.",
     "example-watch": "yarn example-build --watch",
-    "test": "yarn run lint && yarn run flow check && jest && tsc --noEmit --emitDeclarationOnly false",
-    "lint": "eslint . --ext ts,tsx",
-    "lint-fix": "eslint . --ext ts,tsx --fix"
+    "test": "yarn run lint && flow check && jest && tsc --noEmit --emitDeclarationOnly false",
+    "lint": "eslint . --ext js,jsx,ts,tsx",
+    "lint-fix": "eslint . --ext js,jsx,ts,tsx --fix"
   },
   "repository": {
     "type": "git",
@@ -42,7 +42,6 @@
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.6.0",
-    "@babel/register": "^7.0.0",
     "@types/classnames": "^2.2.9",
     "@types/jest": "^29.5.12",
     "@types/react": "^17.0.24",
