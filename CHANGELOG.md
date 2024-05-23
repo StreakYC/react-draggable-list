@@ -1,3 +1,7 @@
+## 4.2.1 (2024-05-23)
+
+- Reupload package to work around minor file metadata issue caused by Yarn (https://github.com/yarnpkg/yarn/issues/8109). This version contains no other changes.
+
 ## 4.2.0 (2024-02-19)
 
 - Added `draggedItem` parameter to the `onDragStart` and `onDragEnd` callback props.
