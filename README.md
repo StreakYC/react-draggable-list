@@ -1,6 +1,6 @@
 # react-draggable-list
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/StreakYC/react-draggable-list/blob/master/LICENSE.txt) [![npm version](https://img.shields.io/npm/v/react-draggable-list.svg?style=flat)](https://www.npmjs.com/package/react-draggable-list)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/StreakYC/react-draggable-list/blob/master/LICENSE.txt) [![npm version](https://img.shields.io/npm/v/react-draggable-list.svg?style=flat)](https://www.npmjs.com/package/react-draggable-list) [![Node.js CI](https://github.com/StreakYC/react-draggable-list/actions/workflows/node.js.yml/badge.svg)](https://github.com/StreakYC/react-draggable-list/actions/workflows/node.js.yml)
 
 This component lets you make a user re-orderable list that animates nicely so
 that the user can easily move large items:
