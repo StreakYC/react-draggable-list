@@ -15,10 +15,10 @@ You can find its code in the `example` directory. The example may be compiled
 by running:
 
 ```
-yarn
-yarn example-build
+npm i --force
+npm run example-build
 # or use this to auto-rebuild on changes:
-yarn example-watch
+npm run example-watch
 ```
 
 ## DraggableList
