@@ -47,7 +47,7 @@ export interface TemplateProps<I, C> {
 
 export interface Props<I, C, T> {
   itemKey: string | ((item: I) => string);
-  template: new (props: any, context?: any) => T;
+  template: (props: any, context?: any) => React.JSX.Element;
   list: ReadonlyArray<I>;
   onMoveEnd?: (
     newList: ReadonlyArray<I>,
