@@ -163,6 +163,7 @@ export default class Example extends React.Component<{}, ExampleState> {
             itemKey="name"
             template={PlanetItem}
             list={this.state.list}
+            lockedItems={['Venus']}
             onMoveEnd={(newList) => this._onListChange(newList)}
             container={() =>
               useContainer ? this._container.current! : document.body
