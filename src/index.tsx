@@ -497,7 +497,10 @@ export default class DraggableList<
 
     // Ensure locked items remain in their original positions
     if (lockedItems) {
-      lockedItems.forEach((lockedItemKey) => {
+      // Iterate over locked items in reverse order
+      // to avoid multiple consecutive locked items
+      // to move each other.
+      [...lockedItems].reverse().forEach((lockedItemKey) => {
         const lockedIndex = list.findIndex(
           (item) => this._getKeyFn()(item) === lockedItemKey
         );
