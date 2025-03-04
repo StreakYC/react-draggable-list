@@ -7,7 +7,7 @@
   "scripts": {
     "prepare": "rimraf dist && babel -s true -d dist/src/ src/ -x .ts,.tsx --ignore '**/*.test.tsx' && tsc",
     "example-build": "esbuild example/main.tsx --bundle --outdir=example/dist --public-path=.",
-    "example-watch": "npm run example-build --watch",
+    "example-watch": "npm example-build --watch",
     "test": "npm run lint && flow check && jest && tsc --noEmit --emitDeclarationOnly false",
     "lint": "eslint . --ext js,jsx,ts,tsx",
     "lint-fix": "eslint . --ext js,jsx,ts,tsx --fix"
@@ -76,5 +76,8 @@
     "prop-types": "^15.6.0",
     "react-motion": "^0.5.2",
     "react-multi-ref": "^1.0.0"
+  },
+  "peerDependencies": {
+    "react": "^16.6.0 || ^17.0.0"
   }
 }
