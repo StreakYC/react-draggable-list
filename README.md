@@ -86,7 +86,7 @@ The template component is passed the following props:
 - `dragHandleProps` is an object which should be spread as props on the HTML
   element to be used as the drag handle. The whole item will be draggable by the
   wrapped element. See the
-  [example](https://github.com/StreakYC/react-draggable-list/blob/master/example/Example.js)
+  [example](https://github.com/StreakYC/react-draggable-list/blob/master/example/Example.tsx)
   to see how it should be used.
 - `commonProps` will be set to the same value passed as the `commonProps` prop
   to the DraggableList component.
