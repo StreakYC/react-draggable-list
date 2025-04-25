@@ -63,6 +63,7 @@ export interface Props<I, C, T> {
   autoScrollMaxSpeed?: number;
   autoScrollRegionSize?: number;
   commonProps?: C;
+  disabled?: boolean;
   onDragStart?: (draggedItem: I) => void;
   onDragEnd?: (draggedItem: I) => void;
 }
@@ -90,6 +91,7 @@ export default class DraggableList<
     autoScrollMaxSpeed: PropTypes.number.isRequired,
     autoScrollRegionSize: PropTypes.number.isRequired,
     commonProps: PropTypes.object,
+    disabled: PropTypes.bool
   };
   public static defaultProps: Partial<Props<any, any, any>> = {
     springConfig: { stiffness: 300, damping: 50 },
@@ -98,6 +100,7 @@ export default class DraggableList<
     constrainDrag: false,
     autoScrollMaxSpeed: 15,
     autoScrollRegionSize: 30,
+    disabled: false,
   };
   private readonly _itemRefs: MultiRef<string, MoveContainer<I, any, T>> =
     new MultiRef();
@@ -606,10 +609,11 @@ export default class DraggableList<
         ...selectedStyle,
       };
       const makeDragHandleProps = (getY: () => number | undefined): object => ({
-        onMouseDown: (e: React.MouseEvent) =>
-          this._handleMouseDown(key, getY(), e),
+        onMouseDown: (e: React.MouseEvent) => 
+          !this.props.disabled && this._handleMouseDown(key, getY(), e),
         onTouchStart: (e: React.TouchEvent) =>
-          this._handleTouchStart(key, getY(), e),
+          !this.props.disabled && this._handleTouchStart(key, getY(), e),
+        disabled: this.props.disabled
       });
       const height = this._getItemHeight(key);
       return (
