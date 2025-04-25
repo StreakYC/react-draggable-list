@@ -67,6 +67,7 @@ following props:
 - `onDragStart` is an optional function which is called once a list item starts
   being dragged. Receives the dragged item as an argument.
 - `onDragEnd` is an optional function which is called once a list item is no longer being dragged. Receives the dragged item as an argument. It differs from `onMoveEnd` in that it's called even if the user does not reorder any items in the lists, like when an item is just picked up and then dropped.
+- `disabled` is an optional boolean that defaults to false. If set to true, then the element will not be draggable.
 
 A DraggableList instance has the following methods:
 
@@ -85,7 +86,7 @@ The template component is passed the following props:
   to 1 when any item is picked up by the user.
 - `dragHandleProps` is an object which should be spread as props on the HTML
   element to be used as the drag handle. The whole item will be draggable by the
-  wrapped element. See the
+  wrapped element. It includes a `disabled` property that indicates whether dragging is disabled or not. See the
   [example](https://github.com/StreakYC/react-draggable-list/blob/master/example/Example.tsx)
   to see how it should be used.
 - `commonProps` will be set to the same value passed as the `commonProps` prop

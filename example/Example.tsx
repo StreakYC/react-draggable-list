@@ -167,6 +167,7 @@ export default class Example extends React.Component<{}, ExampleState> {
             container={() =>
               useContainer ? this._container.current! : document.body
             }
+            disabled={false}
           />
         </div>
         <footer>Footer here.</footer>
