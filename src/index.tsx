@@ -65,6 +65,7 @@ export interface Props<I, C, T> {
   commonProps?: C;
   onDragStart?: (draggedItem: I) => void;
   onDragEnd?: (draggedItem: I) => void;
+  lockedItems?: ReadonlyArray<string>;
 }
 interface State {
   useAbsolutePositioning: boolean;
@@ -167,6 +168,11 @@ export default class DraggableList<
     pressY: number | undefined,
     pageY: number
   ) {
+    const { lockedItems } = this.props;
+    if (lockedItems && lockedItems.includes(itemKey)) {
+      return; // Prevent dragging if the item is locked
+    }
+
     if (document.documentElement)
       document.documentElement.style.cursor = 'move';
     window.addEventListener('mouseup', this._handleMouseUp);
@@ -467,7 +473,7 @@ export default class DraggableList<
   }
 
   private _getVisualListDuringDrag(): ReadonlyArray<I> {
-    const { list } = this.props;
+    const { list, lockedItems } = this.props;
     const { dragging, lastDrag } = this.state;
     if (!dragging || !lastDrag)
       throw new Error(
@@ -477,12 +483,44 @@ export default class DraggableList<
     const dragListIndex = this._getDragListIndex();
     const dragVisualIndex = this._getDragVisualIndex();
 
-    return update(list, {
+    if (lockedItems && lockedItems.includes(lastDrag.itemKey)) {
+      return list; // Return the original list if the dragged item is locked
+    }
+
+    // Create a new list with the dragged item moved to the new position
+    let newList = update(list, {
       $splice: [
         [dragListIndex, 1],
         [dragVisualIndex, 0, list[dragListIndex]],
       ],
     });
+
+    // Ensure locked items remain in their original positions
+    if (lockedItems) {
+      // Iterate over locked items in reverse order
+      // to avoid multiple consecutive locked items
+      // to move each other.
+      [...lockedItems].reverse().forEach((lockedItemKey) => {
+        const lockedIndex = list.findIndex(
+          (item) => this._getKeyFn()(item) === lockedItemKey
+        );
+        const currentLockedIndex = newList.findIndex(
+          (item) => this._getKeyFn()(item) === lockedItemKey
+        );
+
+        if (lockedIndex !== currentLockedIndex) {
+          const lockedItem = newList[currentLockedIndex];
+          newList = update(newList, {
+            $splice: [
+              [currentLockedIndex, 1],
+              [lockedIndex, 0, lockedItem],
+            ],
+          });
+        }
+      });
+    }
+
+    return newList;
   }
 
   private _getItemHeight(key: string): HeightData {
